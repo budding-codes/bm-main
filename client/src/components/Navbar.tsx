@@ -40,8 +40,7 @@ const Navbar = () => {
 
   return (
     <nav className={`fixed w-full z-50 transition-all duration-300 bg-gradient-to-b from-[#18181b] to-black border-b border-white shadow-none`}>
-      {/* Remove max-w-7xl and horizontal padding for full width */}
-      <div className="px-4 md:px-8">
+      <div>
         {/* Top Bar - Desktop Only */}
         <div className="hidden md:flex items-center h-10 border-b border-white relative overflow-hidden">
           <div className="absolute inset-0 flex items-center">
@@ -101,9 +100,9 @@ const Navbar = () => {
           </div>
         </div>
         {/* Main Bar */}
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-16 px-4 md:px-8">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
+          <Link to="/" className="flex items-center space-x-4">
             <div className="bg-black p-2 rounded-full flex items-center justify-center">
               <img src={logo} alt="BM Logo" className="h-12 w-12 object" />
             </div>
@@ -168,6 +167,12 @@ const Navbar = () => {
                 </Link>
               )
             )}
+            <Link
+              to="/free-materials"
+              className="text-white hover:text-yellow-400 transition-colors duration-200 font-semibold text-sm tracking-wide ml-4"
+            >
+              Free Materials
+            </Link>
           </div>
           {/* Mobile menu button */}
           <div className="md:hidden">

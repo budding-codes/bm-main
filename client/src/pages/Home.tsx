@@ -25,7 +25,7 @@ const Home = () => {
   const compassRotation = useMotionValue(0);
   const backgroundX = useTransform(compassRotation, [-90, 90], ['-30%', '0%']);
 
-  const [centerIndex, setCenterIndex] = useState(2);
+  const [centerIndex, setCenterIndex] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const AnimatedStat = ({ value, label, suffix = '' }: { value: number; label: string; suffix?: string }) => {
@@ -68,13 +68,38 @@ const Home = () => {
   };
 
   // Only provide the link for each short
-  const youtubeShorts = [
-    { id: 1, link: 'https://youtube.com/shorts/9IcZRS2AfK4?si=UnBLtcwnTwLYA6m3'},
-    { id: 2, link: 'https://youtube.com/shorts/5BebPB4MAmw?si=-AcctHKfFla_WgYx' },
-    { id: 3, link: 'https://youtube.com/shorts/_sVoBYAEkSg?si=NB16kTk-B6Pljcdd' },
-    { id: 4, link: 'https://youtube.com/shorts/372-IZDZWLc?si=28_VoLWrtBsSn7P_' },
-    { id: 5, link: 'https://youtube.com/shorts/rfF9kR2bGq0?si=76OwbiROcSpzZyFe' },
-  ];
+ const youtubeShorts = [
+  { id: 1, link: 'https://youtube.com/shorts/-1sAw0gCnlQ?si=kbIwdLJtxNgo1CBu' },
+  { id: 2, link: 'https://youtube.com/shorts/SjEg4VFtslo?si=Z4z6LqxKM9pdYOAY' },
+  { id: 3, link: 'https://youtube.com/shorts/Pwj0hWIKb3Y?si=TID0l86PCCdvYPJi' },
+  { id: 4, link: 'https://youtube.com/shorts/qcHX3DJQojk?si=ICGZT95cpbPd-pbm' },
+  { id: 5, link: 'https://youtube.com/shorts/csRrcGrp9LA?si=ZonsNM_JndY9vTuC' },
+  { id: 6, link: 'https://youtube.com/shorts/RRIwJO3N1Uk?si=jI4heQvMwzDGKLu2' },
+  { id: 7, link: 'https://youtube.com/shorts/4nXr_wOW_Z8?si=RbCoPEJV__D2IQkV' },
+  { id: 8, link: 'https://youtube.com/shorts/wecUMgjUD2c?si=qmqdcKmyWO2Ag6tc' },
+  { id: 9, link: 'https://youtube.com/shorts/I9Rdo9IS0LA?si=p_xeRomexUQWuCEr' },
+  { id: 10, link: 'https://youtube.com/shorts/mkc-7bMSdDg?si=9uN3RU3BrPTI5ccC' },
+  { id: 11, link: 'https://youtube.com/shorts/if9C5YPmOPk?si=Y4CekEcCxMXPaK_U' },
+  { id: 12, link: 'https://youtube.com/shorts/r4y3Wzd-Bhs?si=ZXxsJEV52HWd5V9C' },
+  { id: 13, link: 'https://youtube.com/shorts/toboVC9ij-8?si=avNbzeLYVkHomHY-' },
+  { id: 14, link: 'https://youtube.com/shorts/wjZcpjh5UpQ?si=NJ9c3FUqT9_-NZ0K' },
+  { id: 15, link: 'https://youtube.com/shorts/P3Xpo0_Qb8Y?si=q46pki8Lqi9qH5Cm' },
+  { id: 16, link: 'https://youtube.com/shorts/GdjSxMDRAlg?si=2qfQeOKD5u6LD246' },
+  { id: 17, link: 'https://youtube.com/shorts/MWFcY3hU2rQ?si=EUaUNeZT-nasDgnR' },
+  { id: 18, link: 'https://youtube.com/shorts/upL3QVUT-vI?si=eBxJZfAntXJ-WW0B' },
+  { id: 19, link: 'https://youtube.com/shorts/J9TSQMT06do?si=OTepfLL7A8_v6i7n' },
+  { id: 20, link: 'https://youtube.com/shorts/pXs9-gJQONQ?si=tUFrhwSZTW-bF6cQ' },
+  { id: 21, link: 'https://youtube.com/shorts/G9o9BCzFfDo?si=NFan0go6Bkg2FKJP' },
+  { id: 22, link: 'https://youtube.com/shorts/dR25NqMOGZM?si=fiobIAHpjqUaB_zK' },
+  { id: 23, link: 'https://youtube.com/shorts/OyGMW2tCNnc?si=iyn9BPyKiHuk1PfK' },
+  { id: 24, link: 'https://youtube.com/shorts/0UIMsxYiztM?si=erV6iBqVpV4mUL8N' },
+  { id: 25, link: 'https://youtube.com/shorts/MaQQ1q0s33g?si=ge6TLTXWbY97rDDO' },
+  { id: 26, link: 'https://youtube.com/shorts/0UIMsxYiztM?si=d-axFU3byAgDHVe-' },
+  { id: 27, link: 'https://youtube.com/shorts/ZSZoPd8bucU?si=mmeo_VwOKPollYxw' },
+  { id: 28, link: 'https://youtube.com/shorts/ZSZoPd8bucU?si=jbiNxCN8dkszimtl' },
+  { id: 29, link: 'https://youtube.com/shorts/fawbP9OLOLU?si=TNCSpUVd3Jeoyaa2' },
+  { id: 30, link: 'https://youtube.com/shorts/5wM0nkcbeJU?si=m0PBeAYPL5lzrm8p' },
+];
 
   // Extract video ID from YouTube Shorts link
   const getShortId = (url: string) => {
@@ -126,12 +151,31 @@ const Home = () => {
     }
   };
 
-  useEffect(() => {
+  // Helper to scroll to a given index and center it
+  const scrollToIndex = (index: number) => {
+    if (!scrollContainerRef.current) return;
+    const cardWidth = window.innerWidth < 768 ? 240 : 280;
     const container = scrollContainerRef.current;
-    if (container) {
-      container.addEventListener('scroll', handleShortsScroll);
-      return () => container.removeEventListener('scroll', handleShortsScroll);
-    }
+    const scrollLeft =
+      index * cardWidth - container.clientWidth / 2 + cardWidth / 2;
+    container.scrollTo({
+      left: scrollLeft,
+      behavior: 'smooth',
+    });
+  };
+
+  // On mount, set center index to middle and scroll to it
+  useEffect(() => {
+    const middle = Math.floor(youtubeShorts.length / 2);
+    setCenterIndex(middle);
+    scrollToIndex(middle);
+    // eslint-disable-next-line
+  }, []);
+
+  // When centerIndex changes, scroll to it
+  useEffect(() => {
+    scrollToIndex(centerIndex);
+    // eslint-disable-next-line
   }, [centerIndex]);
 
   // Use the 14 imported logos for the moving banner
@@ -475,11 +519,6 @@ const Home = () => {
               onClick={() => {
                 const newIndex = Math.max(0, centerIndex - 1);
                 setCenterIndex(newIndex);
-                const cardWidth = window.innerWidth < 768 ? 240 : 280;
-                scrollContainerRef.current?.scrollTo({
-                  left: newIndex * cardWidth - scrollContainerRef.current.clientWidth / 2 + cardWidth / 2,
-                  behavior: 'smooth'
-                });
               }}
               className="absolute left-0 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white p-2 rounded-full z-10"
               disabled={centerIndex === 0}
@@ -491,11 +530,6 @@ const Home = () => {
               onClick={() => {
                 const newIndex = Math.min(youtubeShorts.length - 1, centerIndex + 1);
                 setCenterIndex(newIndex);
-                const cardWidth = window.innerWidth < 768 ? 240 : 280;
-                scrollContainerRef.current?.scrollTo({
-                  left: newIndex * cardWidth - scrollContainerRef.current.clientWidth / 2 + cardWidth / 2,
-                  behavior: 'smooth'
-                });
               }}
               className="absolute right-0 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white p-2 rounded-full z-10"
               disabled={centerIndex === youtubeShorts.length - 1}
@@ -557,14 +591,7 @@ const Home = () => {
             {youtubeShorts.map((_, index) => (
               <button
                 key={index}
-                onClick={() => {
-                  setCenterIndex(index);
-                  const cardWidth = window.innerWidth < 768 ? 240 : 280;
-                  scrollContainerRef.current?.scrollTo({
-                    left: index * cardWidth - scrollContainerRef.current.clientWidth / 2 + cardWidth / 2,
-                    behavior: 'smooth'
-                  });
-                }}
+                onClick={() => setCenterIndex(index)}
                 className={`w-2 h-2 md:w-3 md:h-3 rounded-full transition-all duration-300 ${
                   index === centerIndex ? 'bg-primary-400 scale-125' : 'bg-white/30 hover:bg-white/50'
                 }`}

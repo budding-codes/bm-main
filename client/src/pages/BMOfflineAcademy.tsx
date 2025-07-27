@@ -40,10 +40,9 @@ import parents from '../../assets/Parents.png';
 
 // Add YouTube links for "Want to Know More" section
 const wantToKnowMoreVideos = [
-  'https://www.youtube.com/watch?v=9IcZRS2AfK4',
-  'https://www.youtube.com/watch?v=5BebPB4MAmw',
-  'https://www.youtube.com/watch?v=_sVoBYAEkSg',
-  'https://www.youtube.com/watch?v=372-IZDZWLc',
+  'https://www.youtube.com/watch?v=to6Mb7eh1c8',
+  'https://www.youtube.com/watch?v=dEmN-d6XqEk',
+  'https://www.youtube.com/watch?v=DmERLSYhIOM',
 ];
 
 // Helper to get YouTube thumbnail from link
@@ -335,43 +334,56 @@ const BMOfflineAcademy = () => {
         </h2>
         <div className="flex flex-wrap justify-center gap-8 px-2 mb-8">
           {facultyList.map((faculty, idx) => (
-            <button
-              key={idx}
-              onClick={() => setSelectedFaculty(idx)}
-              className={`flex flex-col items-center justify-center rounded-2xl border-4 transition-all duration-200
-                ${selectedFaculty === idx
-                  ? 'border-yellow-400 bg-white'
-                  : 'border-gray-700 bg-gray-800 grayscale opacity-70 hover:opacity-100 hover:grayscale-0'
+            <div key={idx} className="flex flex-col items-center">
+              <button
+                onClick={() => setSelectedFaculty(idx)}
+                className={`flex flex-col items-center justify-center rounded-2xl border-4 transition-all duration-200
+                  ${selectedFaculty === idx
+                    ? 'border-yellow-400 bg-white'
+                    : 'border-gray-700 bg-gray-800 grayscale opacity-70 hover:opacity-100 hover:grayscale-0'
                 }`}
-              style={{
-                width: 220,
-                height: 280,
-                boxShadow: selectedFaculty === idx ? '0 0 0 4px #fde047' : undefined,
-                outline: 'none',
-                padding: 0,
-              }}
-              aria-label={faculty.name}
-            >
-              <div className="w-full h-[200px] flex items-center justify-center rounded-t-xl overflow-hidden">
-                <img
-                  src={faculty.img}
-                  alt={faculty.name}
-                  className={`object-contain w-full h-[240px] transition-all duration-200
-                    ${selectedFaculty === idx ? '' : 'grayscale'}`}
-                  style={{
-                    filter: selectedFaculty === idx ? 'none' : 'grayscale(100%)',
-                    borderBottom: selectedFaculty === idx ? '2px solid #fde047' : '2px solid #444',
-                  }}
-                />
-              </div>
-              <div className={`w-full px-2 py-2 text-center text-base font-semibold
-                ${selectedFaculty === idx ? 'text-black' : 'text-white/80'}`}>
-                {faculty.name}
-              </div>
-            </button>
+                style={{
+                  width: 220,
+                  height: 280,
+                  boxShadow: selectedFaculty === idx ? '0 0 0 4px #fde047' : undefined,
+                  outline: 'none',
+                  padding: 0,
+                }}
+                aria-label={faculty.name}
+              >
+                <div className="w-full h-[200px] flex items-center justify-center rounded-t-xl overflow-hidden">
+                  <img
+                    src={faculty.img}
+                    alt={faculty.name}
+                    className={`object-contain w-full h-[240px] transition-all duration-200
+                      ${selectedFaculty === idx ? '' : 'grayscale'}`}
+                    style={{
+                      filter: selectedFaculty === idx ? 'none' : 'grayscale(100%)',
+                      borderBottom: selectedFaculty === idx ? '2px solid #fde047' : '2px solid #444',
+                    }}
+                  />
+                </div>
+                <div className={`w-full px-2 py-2 text-center text-base font-semibold
+                  ${selectedFaculty === idx ? 'text-black' : 'text-white/80'}`}>
+                  {faculty.name}
+                </div>
+              </button>
+              {/* Show description below the selected mentor in mobile view */}
+              {selectedFaculty === idx && (
+                <div className="block md:hidden w-full mt-2 bg-[#18181b] rounded-xl border-2 border-yellow-400 p-4 text-center shadow-lg">
+                  <div className="text-lg font-bold text-yellow-400 mb-1">{faculty.name}</div>
+                  <div className="text-white font-semibold mb-1">{faculty.title}</div>
+                  {faculty.role && (
+                    <div className="text-white/80 text-sm mb-2">{faculty.role}</div>
+                  )}
+                  <div className="text-white/90 text-base">{faculty.description}</div>
+                </div>
+              )}
+            </div>
           ))}
         </div>
-        <div className="max-w-2xl mx-auto bg-[#18181b] rounded-xl border-2 border-yellow-400 p-6 text-center shadow-lg">
+        {/* Desktop view remains unchanged */}
+        <div className="hidden md:block max-w-2xl mx-auto bg-[#18181b] rounded-xl border-2 border-yellow-400 p-6 text-center shadow-lg">
           <div className="text-xl font-bold text-yellow-400 mb-1">{facultyList[selectedFaculty].name}</div>
           <div className="text-white font-semibold mb-1">{facultyList[selectedFaculty].title}</div>
           {facultyList[selectedFaculty].role && (
@@ -566,3 +578,4 @@ const BMOfflineAcademy = () => {
 };
 
 export default BMOfflineAcademy;
+
