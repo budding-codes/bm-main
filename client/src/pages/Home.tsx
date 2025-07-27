@@ -107,10 +107,10 @@ const Home = () => {
     return match ? match[1] : '';
   };
 
-  // Get thumbnail from video ID
-  const getThumbnail = (url: string) => {
+  // Get embed link for Shorts
+  const getEmbedLink = (url: string) => {
     const id = getShortId(url);
-    return id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : '';
+    return id ? `https://www.youtube.com/embed/${id}?autoplay=0` : '';
   };
 
   // Fetch video title using YouTube oEmbed API
@@ -541,41 +541,45 @@ const Home = () => {
             <div
               ref={scrollContainerRef}
               className="flex overflow-x-auto space-x-4 md:space-x-6 pb-6 scrollbar-hide snap-x snap-mandatory scroll-smooth px-8"
+              style={{ marginTop: '2.5rem' }} // Add margin to pull boxes down
             >
               {youtubeShorts.map((video, index) => {
                 const title = useYoutubeTitle(video.link);
                 return (
                   <motion.div
                     key={video.id}
-                    className={`flex-shrink-0 w-56 md:w-64 h-80 md:h-96 rounded-2xl overflow-hidden cursor-pointer transition-all duration-500 snap-center ${
+                    className={`flex-shrink-0 w-56 md:w-64 h-80 md:h-96 rounded-2xl overflow-hidden cursor-pointer transition-all duration-500 snap-center border-4 ${
                       index === centerIndex
-                        ? 'shadow-2xl ring-4 ring-primary-400 scale-105'
-                        : 'grayscale hover:grayscale-75 scale-95'
+                        ? 'shadow-2xl ring-4 ring-primary-400 scale-105 border-yellow-400'
+                        : 'grayscale hover:grayscale-75 scale-95 border-gray-700'
                     }`}
-                    onClick={() => {
-                      window.open(video.link, '_blank', 'noopener');
-                    }}
+                    style={{ background: '#18181b' }}
                   >
-                    <div className="relative h-full bg-gray-900">
-                      <img src={getThumbnail(video.link)} alt={title} className="w-full h-full object-cover" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-black/30" />
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <button
-                          className="bg-primary-400/90 rounded-full p-3 md:p-4 hover:bg-primary-400 transition-colors"
-                          onClick={e => {
-                            e.stopPropagation();
-                            window.open(video.link, '_blank', 'noopener');
-                          }}
-                        >
-                          <Play className="h-6 w-6 md:h-8 md:w-8 text-black fill-current" />
-                        </button>
-                      </div>
-                      <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4">
-                        <h3 className="text-white font-bold text-base md:text-lg mb-1 line-clamp-1">{title}</h3>
-                        <div className="flex items-center justify-end">
-                          <div className="flex items-center space-x-1">
-                            <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-                            <span className="text-white/60 text-xs">SHORTS</span>
+                    <div className="relative h-full bg-gray-900 flex flex-col">
+                      <iframe
+                        src={getEmbedLink(video.link)}
+                        title={title}
+                        width="100%"
+                        height="100%"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        style={{
+                          border: 0,
+                          borderRadius: '16px 16px 0 0',
+                          width: '100%',
+                          height: '75%',
+                          minHeight: '180px',
+                          background: '#000'
+                        }}
+                      />
+                      <div className="flex-1 flex flex-col justify-end">
+                        <div className="p-3 md:p-4">
+                          <h3 className="text-white font-bold text-base md:text-lg mb-1 line-clamp-1">{title}</h3>
+                          <div className="flex items-center justify-end">
+                            <div className="flex items-center space-x-1">
+                              <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                              <span className="text-white/60 text-xs">SHORTS</span>
+                            </div>
                           </div>
                         </div>
                       </div>

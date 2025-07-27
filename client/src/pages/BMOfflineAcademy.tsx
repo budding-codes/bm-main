@@ -45,6 +45,13 @@ const wantToKnowMoreVideos = [
   'https://www.youtube.com/watch?v=DmERLSYhIOM',
 ];
 
+// Add YouTube embed links for "Want to Know More" section
+const wantToKnowMoreEmbeds = [
+  'https://www.youtube.com/embed/to6Mb7eh1c8?si=a_JLxTDuiZgR6dcH',
+  'https://www.youtube.com/embed/dEmN-d6XqEk?si=rCiOlaXgy4J3P0Zz',
+  'https://www.youtube.com/embed/DmERLSYhIOM?si=pWckWtf83rpj3kM3',
+];
+
 // Helper to get YouTube thumbnail from link
 const getYoutubeThumbnail = (url: string) => {
   const match = url.match(/v=([a-zA-Z0-9_-]{11})/);
@@ -519,21 +526,25 @@ const BMOfflineAcademy = () => {
           Want to Know More?
         </h2>
         <div className="flex flex-wrap justify-center gap-4 px-2">
-          {wantToKnowMoreVideos.map((yt, idx) => (
+          {wantToKnowMoreEmbeds.map((yt, idx) => (
             <div
               key={idx}
-              className="bg-gray-800 rounded-lg shadow border border-white/10 flex flex-col items-center justify-center cursor-pointer overflow-hidden"
-              style={{ width: 260, height: 180 }}
-              onClick={() => window.open(yt, '_blank', 'noopener')}
+              className="bg-gray-800 rounded-lg shadow border border-white/10 flex flex-col items-center justify-center overflow-hidden"
+              style={{ width: 320, height: 200 }}
             >
-              <img
-                src={getYoutubeThumbnail(yt)}
-                alt="YouTube Video"
-                className="object-cover w-full h-[120px]"
-                style={{ borderRadius: '8px 8px 0 0' }}
+              <iframe
+                width="100%"
+                height="170"
+                src={yt}
+                title={`YouTube video ${idx + 1}`}
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+                style={{ borderRadius: '8px 8px 0 0', background: '#000' }}
               />
               <div className="text-yellow-400 font-bold text-xs text-center px-2 py-1 w-full bg-black">
-                Watch on YouTube
+                Watch here
               </div>
             </div>
           ))}
