@@ -235,7 +235,7 @@ const BMHostel = () => {
           <div className="flex-1 w-full min-w-0">
             <h2 className="text-2xl font-bold text-white mb-2">Parents, We've Got You Covered...</h2>
             <ul className="list-disc pl-6 text-white/80 space-y-2">
-              <li>Warden contact for instant update</li>
+              <li>Warden contact for instant updates</li>
               <li>Security of aspirants is our #1 priority</li>
               <li>Focus on character building & discipline</li>
             </ul>
