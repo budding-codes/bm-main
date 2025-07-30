@@ -24,7 +24,7 @@ const materials = [
 		download: 'https://drive.google.com/file/d/1ZSRLJz9Fx-eYGgT9tUcRjpnXTb_yeX7A/view?usp=drive_link',
 	},
 	{
-		title: 'QNA RELATED TO MERCHANT NAVY',  // here
+		title: 'QNA RELATED TO MERCHANT NAVY',
 		download: 'https://drive.google.com/file/d/1l_JHcXnD7nJzCeU5WvGf4hQ2hpElL1nY/view?usp=drive_link',
 	},
 	{
@@ -194,7 +194,7 @@ const FreeMaterials = () => {
 							{idx === 0 && "TS REHMAN (EXPECTED QUESTIONS)"}
 							{idx === 1 && "SIMS IMPORTANT QUESTIONS"}
 							{idx === 2 && "SI UNITS"}
-							{idx === 3 && "RIVERS & ORIGINS"} {/**/}
+							{idx === 3 && "RIVERS & ORIGINS"} 
 							{idx === 4 && "REAGENTS & THEIR PROPERTIES"}
 							{idx === 5 && "QNA RELATED TO MERCHANT NAVY"}
 							{idx === 6 && "PYQS OF PHYSICS (SUBJECTIVE)"}
