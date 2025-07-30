@@ -21,23 +21,119 @@ const materials = [
 	},
 	{
 		title: 'REAGENTS & THEIR PROPERTIES',
-		download: 'https://drive.google.com/file/d/1bH3pASdORQI_gYfwGB3ESJ6OxN4nTb_O/view?usp=drive_link',
+		download: 'https://drive.google.com/file/d/1ZSRLJz9Fx-eYGgT9tUcRjpnXTb_yeX7A/view?usp=drive_link',
 	},
 	{
-		title: 'Asia Country And Capital -1',
-		download: 'https://drive.google.com/file/d/1DcOQZat7A2DeyR-3wEQhhsont_5G-N1T/view?usp=drive_link',
+		title: 'QNA RELATED TO MERCHANT NAVY',  // here
+		download: 'https://drive.google.com/file/d/1l_JHcXnD7nJzCeU5WvGf4hQ2hpElL1nY/view?usp=drive_link',
 	},
 	{
-		title: 'ALL ABOUT B.tech',
-		download: 'https://drive.google.com/file/d/1CgQwxmgy5ikcK3nelUu6ExGYJLowecIi/view?usp=drive_link',
+		title: 'PYQs OF PHYSICS (SUBJECTIVE)',
+		download: 'https://drive.google.com/file/d/1JF3GAJie7U3HJa8m7zRKpAKnfOjr5cWn/view?usp=drive_link',
 	},
 	{
-		title: 'RIVERS & ORIGINS',
-		download: 'https://drive.google.com/file/d/1BOCOu2YOuq_lIXT-pVyA3OHxFZJL2Li1/view?usp=drive_link',
+		title: 'PYQS OF IOC',
+		download: 'https://drive.google.com/file/d/1e6DJecA4McF_df6i4bPwH9mqp-HKLoS2/view?usp=drive_link',
 	},
 	{
-		title: 'Country And Their Currency',
-		download: 'https://drive.google.com/file/d/158lorc_5m8iaRotTbi3MgwYLca7iAf_3/view?usp=drive_link',
+		title: 'PSYCHOMETRY QUESTIONS',
+		download: 'https://drive.google.com/file/d/1ujVMtAkimhcyI1j2pdgfOpPPQpA8EI2-/view?usp=drive_link',
+	},
+	{
+		title: 'ORGANIC IMPORTANT REACTIONS',
+		download: 'https://drive.google.com/file/d/1k1RpE7UWPoz764jSZTF_0uwIBpfRHOEh/view?usp=drive_link',
+	},
+	{
+		title: 'MATHS IMPORTANT QUESTIONS',
+		download: 'https://drive.google.com/file/d/1XdnfJ33jyGmPs6OfbZ4LsCSTJJ4FYhTZ/view?usp=drive_link',
+	},
+	{
+		title: 'INTERVIEW QUESTIONS',
+		download: 'https://drive.google.com/file/d/1TF5GgPsNO0g2VK5cHYc4WyRZm_QFjX_6/view?usp=drive_link',
+	},
+	{
+		title: 'INTERVIEW QUESTIONS - 2',
+		download: 'https://drive.google.com/file/d/1BjhAI85NQCIZdbTJdUEb0WWAUZCvtdlV/view?usp=drive_link',
+	},
+	{
+		title: 'INDIAN PORTS',
+		download: 'https://drive.google.com/file/d/1ctayIywpCtr173EHIYGaX0JtlLiQ14ZE/view?usp=drive_link',
+	},
+	{
+		title: 'IMUCET SYLLABUS',
+		download: 'https://drive.google.com/file/d/1xoRgnH16I6LhcqtQPF3Ti6gNkp_qCUrM/view?usp=drive_link',
+	},
+	{
+		title: 'IMPORTANT PHYSICS DERIVATION',
+		download: 'https://drive.google.com/file/d/18Orn75LITPVUhZK23s6ZCKkaa4dKfbLP/view?usp=drive_link',
+	},
+	{
+		title: 'IMPORTANT MATHS FORMULA',
+		download: 'https://drive.google.com/file/d/1FMeoG1Vl-AdOLF0kfQryppwoVrihK5Rr/view?usp=drive_link',
+	},
+	{
+		title: 'GREAT EASTERN EXPECTED QUESTIONS',
+		download: 'https://drive.google.com/file/d/1Kp8BF0KrK7HeEwyMEB3fjgNU7CVgfJ8F/view?usp=drive_link',
+	},
+	{
+		title: 'GK IMPORTANT QUESTIONS',
+		download: 'https://drive.google.com/file/d/1Qx2XmfrzpfPiyyhVBo4tu7s4AAnivzHn/view?usp=drive_link',
+	},
+	{
+		title: 'GEOGRAPHY IMPORTANT QUESTIONS',
+		download: 'https://drive.google.com/file/d/1lHhl_hjxIODO-z-ZXVsUZrve1PnuKuJD/view?usp=drive_link',
+	},
+	{
+		title: 'FLEET IMPORTANT QUESTIONS',
+		download: 'https://drive.google.com/file/d/1GkK-KJpcWwB1kpsJvM0D4iUs07Ix0OdY/view?usp=drive_link',
+	},
+	{
+		title: 'ENGLISH IMPORTANT QUESTIONS',
+		download: 'https://drive.google.com/file/d/1DsEzABPBzEgV-W9lYdITalSbUeFdqaWv/view?usp=drive_link',
+	},
+	{
+		title: 'D’AMICO IMPORTANT QUESTIONS',
+		download: 'https://drive.google.com/file/d/1Wk8mqtr33Na7zZuu_ir7cdxe76PhzhoQ/view?usp=drive_link',
+	},
+	{
+		title: 'COUNTRY & THEIR CURRENCY',
+		download: 'https://drive.google.com/file/d/1OtGqJC-4ybeAdII-sKhZCgNUov7ERBge/view?usp=drive_link',
+	},
+	{
+		title: 'COUNTRY & THEIR CAPITAL',
+		download: 'https://drive.google.com/file/d/1n0-4KRWJ06QSz7_-CFBq_-Af6Z6k4n_w/view?usp=drive_link',
+	},
+	{
+		title: 'COUNTRY & THEIR CAPITAL - 2',
+		download: 'https://drive.google.com/file/d/11_zvSZyVoW4p8OU_WNAmVzPwBzFGr_7y/view?usp=drive_link',
+	},
+	{
+		title: 'COMPANY KNOWLEDGE',
+		download: 'https://drive.google.com/file/d/16fUWPD6HZwcZFh-j0DFfJb1xfaoTNrQe/view?usp=drive_link',
+	},
+	{
+		title: 'BIOSPHERE RESERVES',
+		download: 'https://drive.google.com/file/d/1k_76n9WIOatpsJvGd8OGEXQ-AcRPK_b4/view?usp=drive_link',
+	},
+	{
+		title: 'ANGLO EASTERN EXPECTED QUESTIONS',
+		download: 'https://drive.google.com/file/d/1nUbCC0V1c8jNN51I8Xh24j6gw1volpZw/view?usp=drive_link',
+	},
+	{
+		title: 'ALL ABOUT DNS',
+		download: 'https://drive.google.com/file/d/11ui7N1SEXqdJzdnG8518sy9R777DRAd8/view?usp=drive_link',
+	},
+	{
+		title: 'ALL ABOUT B.TECH',
+		download: 'https://drive.google.com/file/d/1fkNiEUrtInuFcaHhZj1k0O-s5dVYN4rP/view?usp=drive_link',
+	},
+	{
+		title: 'ALL ABOUT B.SC',
+		download: 'https://drive.google.com/file/d/11Fe7RtVDWg--99m00LWSz1WS9fyHxYPa/view?usp=drive_link',
+	},
+	{
+		title: '7 ISLANDS (EXPECTED QUESTIONS)',
+		download: 'https://drive.google.com/file/d/1-RhjXwTWsw0bnPESQBwCu8diF234elM-/view?usp=drive_link',
 	},
 ];
 
@@ -95,15 +191,39 @@ const FreeMaterials = () => {
 							</span>
 						</div>
 						<div className="font-bold text-base text-black mb-6">
-							{idx === 0 && "ORGANIC IMPORTANT REACTIONS"}
-							{idx === 1 && "ALL ABOUT B.SC"}
-							{idx === 2 && "INDIAN PORTS & THEIR STATES"}
-							{idx === 3 && "ASIA COUNTRY AND CAPITAL -2"}
-							{idx === 4 && "ALL ABOUT DNS"}
-							{idx === 5 && "ASIA COUNTRY AND CAPITAL -1"}
-							{idx === 6 && "ALL ABOUT B.TECH"}
-							{idx === 7 && "RIVERS & ORIGINS"}
-							{idx === 8 && "COUNTRY AND THEIR CURRENCY"}
+							{idx === 0 && "TS REHMAN (EXPECTED QUESTIONS)"}
+							{idx === 1 && "SIMS IMPORTANT QUESTIONS"}
+							{idx === 2 && "SI UNITS"}
+							{idx === 3 && "RIVERS & ORIGINS"} {/**/}
+							{idx === 4 && "REAGENTS & THEIR PROPERTIES"}
+							{idx === 5 && "QNA RELATED TO MERCHANT NAVY"}
+							{idx === 6 && "PYQS OF PHYSICS (SUBJECTIVE)"}
+							{idx === 7 && "PYQS OF IOC"}
+							{idx === 8 && "PSYCHOMETRY QUESTIONS"}
+							{idx === 9 && "ORGANIC IMPORTANT REACTIONS"}
+							{idx === 10 && "MATHS IMPORTANT QUESTIONS"}
+							{idx === 11 && "INTERVIEW QUESTIONS"}
+							{idx === 12 && "INTERVIEW QUESTIONS - 2"}
+							{idx === 13 && "INDIAN PORTS"}
+							{idx === 14 && "IMUCET SYLLABUS"}
+							{idx === 15 && "IMPORTANT PHYSICS DERIVATION"}
+							{idx === 16 && "IMPORTANT MATHS FORMULA"}
+							{idx === 17 && "GREAT EASTERN EXPECTED QUESTIONS"}
+							{idx === 18 && "GK IMPORTANT QUESTIONS"}
+							{idx === 19 && "GEOGRAPHY IMPORTANT QUESTIONS"}
+							{idx === 20 && "FLEET IMPORTANT QUESTIONS"}
+							{idx === 21 && "ENGLISH IMPORTANT QUESTIONS"}
+							{idx === 22 && "D’AMICO IMPORTANT QUESTIONS"}
+							{idx === 23 && "COUNTRY & THEIR CURRENCY"}
+							{idx === 24 && "COUNTRY & THEIR CAPITAL"}
+							{idx === 25 && "COUNTRY & THEIR CAPITAL - 2"}
+							{idx === 26 && "COMPANY KNOWLEDGE"}
+							{idx === 27 && "BIOSPHERE RESERVES"}
+							{idx === 28 && "ANGLO EASTERN EXPECTED QUESTIONS"}
+							{idx === 29 && "ALL ABOUT DNS"}
+							{idx === 30 && "ALL ABOUT B.TECH"}
+							{idx === 31 && "ALL ABOUT B.SC"}
+							{idx === 32 && "7 ISLANDS (EXPECTED QUESTIONS)"}
 						</div>
 						<a
 							href={mat.download}
