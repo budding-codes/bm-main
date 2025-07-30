@@ -34,7 +34,6 @@ const Navbar = () => {
     { name: 'About', path: '/about' },
     { name: 'BM Store', external: true, url: 'https://storebybm.com/' },
     { name: 'Calculators', path: '/calculators' },
-    // { name: 'Blog', path: '/blog' },
     { name: 'Free Materials', path: '/free-materials' },
   ];
 
@@ -167,12 +166,6 @@ const Navbar = () => {
                 </Link>
               )
             )}
-            <Link
-              to="/free-materials"
-              className="text-white hover:text-yellow-400 transition-colors duration-200 font-semibold text-sm tracking-wide ml-4"
-            >
-              Free Materials
-            </Link>
           </div>
           {/* Mobile menu button */}
           <div className="md:hidden">

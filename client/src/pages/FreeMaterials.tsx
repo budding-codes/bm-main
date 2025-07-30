@@ -4,23 +4,23 @@ import { Download, FileText } from 'lucide-react';
 
 const materials = [
 	{
-		title: 'Organic Important Reactions',
-		download: 'https://drive.google.com/file/d/1wyo918TLyBoZ7Fuo8CTW9fpvYh_Rkv1j/view?usp=drive_link',
+		title: 'TS REHMAN (EXPECTED QUESTIONS)',
+		download: 'https://drive.google.com/file/d/1PQ32fIjTQD789jfKtvXsFCr4HYvjiyzP/view?usp=drive_link',
 	},
 	{
-		title: 'ALL ABOUT B.sc',
-		download: 'https://drive.google.com/file/d/1u4HS291Rx__vJpz9WPj11TO_megzR7Vj/view?usp=drive_link',
+		title: 'SIMS IMPORTANT QUESTIONS',
+		download: 'https://drive.google.com/file/d/1IFhBIxXVfMkQFKiSb63_IKnI9mLNaGXU/view?usp=drive_link',
 	},
 	{
-		title: 'Indian Ports & Their States',
-		download: 'https://drive.google.com/file/d/1sp2dtHWrXFyASfHpoH3CMOZPWsGW--0n/view?usp=drive_link',
+		title: 'SI UNITS',
+		download: 'https://drive.google.com/file/d/1Pz0siRW99U-uHiN-N7qPrNzuKN2due_P/view?usp=drive_link',
 	},
 	{
-		title: 'Asia Country And Capital -2',
-		download: 'https://drive.google.com/file/d/1fkknzo2k8SjNEL8uhjv5O05huUg6eabK/view?usp=drive_link',
+		title: 'RIVERS & ORIGINS',
+		download: 'https://drive.google.com/file/d/1_vrYdKpg11rqzg2KNhY9fRIGu2tVnWmA/view?usp=drive_link',
 	},
 	{
-		title: 'ALL ABOUT DNS',
+		title: 'REAGENTS & THEIR PROPERTIES',
 		download: 'https://drive.google.com/file/d/1bH3pASdORQI_gYfwGB3ESJ6OxN4nTb_O/view?usp=drive_link',
 	},
 	{
