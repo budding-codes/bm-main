@@ -500,110 +500,136 @@ const Home = () => {
       </section>
 
       {/* YouTube Shorts Section */}
-      <section className="py-12 md:py-16 lg:py-20 bg-black relative">
-        <div className="max-w-7xl mx-auto px-4">
-          <motion.h2
-            className="text-2xl md:text-3xl lg:text-4xl font-bold text-center text-white mb-3"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
-            Stories of Officers of <span className="text-primary-400">Budding Mariners</span>
-          </motion.h2>
-          <p className="text-center text-white/70 mb-8 md:mb-12">Success stories from our maritime community</p>
+      // Optimized YouTube Shorts Section
+<section className="py-12 md:py-16 lg:py-20 bg-black relative">
+  <div className="max-w-7xl mx-auto px-4">
+    <motion.h2
+      className="text-2xl md:text-3xl lg:text-4xl font-bold text-center text-white mb-3"
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      viewport={{ once: true }}
+    >
+      Stories of Officers of <span className="text-primary-400">Budding Mariners</span>
+    </motion.h2>
+    <p className="text-center text-white/70 mb-8 md:mb-12">Success stories from our maritime community</p>
 
-          {/* Arrows */}
-          <div className="relative">
-            <button
-              onClick={() => {
-                const newIndex = Math.max(0, centerIndex - 1);
-                setCenterIndex(newIndex);
-              }}
-              className="absolute left-0 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white p-2 rounded-full z-10"
-              disabled={centerIndex === 0}
-            >
-              <ChevronLeft size={24} />
-            </button>
+    {/* Arrows */}
+    <div className="relative">
+      <button
+        onClick={() => setCenterIndex(prev => Math.max(0, prev - 1))}
+        className="absolute left-0 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white p-2 rounded-full z-10"
+        disabled={centerIndex === 0}
+      >
+        <ChevronLeft size={24} />
+      </button>
 
-            <button
-              onClick={() => {
-                const newIndex = Math.min(youtubeShorts.length - 1, centerIndex + 1);
-                setCenterIndex(newIndex);
-              }}
-              className="absolute right-0 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white p-2 rounded-full z-10"
-              disabled={centerIndex === youtubeShorts.length - 1}
-            >
-              <ChevronRight size={24} />
-            </button>
+      <button
+        onClick={() => setCenterIndex(prev => Math.min(youtubeShorts.length - 1, prev + 1))}
+        className="absolute right-0 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white p-2 rounded-full z-10"
+        disabled={centerIndex === youtubeShorts.length - 1}
+      >
+        <ChevronRight size={24} />
+      </button>
 
-            {/* Scrollable Cards */}
-            <div
-              ref={scrollContainerRef}
-              className="flex overflow-x-auto space-x-4 md:space-x-6 pb-6 scrollbar-hide snap-x snap-mandatory scroll-smooth px-8"
-              style={{ marginTop: '2.5rem' }} // Add margin to pull boxes down
+      {/* Scrollable Cards */}
+      <div
+        ref={scrollContainerRef}
+        className="flex overflow-x-auto space-x-4 md:space-x-6 pb-6 scrollbar-hide snap-x snap-mandatory scroll-smooth px-8 mt-10"
+      >
+        {youtubeShorts.map((video, index) => {
+          const title = useYoutubeTitle(video.link);
+          const [isVisible, setIsVisible] = useState(false);
+          const videoRef = useRef(null);
+
+          useEffect(() => {
+            const observer = new IntersectionObserver(
+              ([entry]) => {
+                if (entry.isIntersecting) {
+                  setIsVisible(true);
+                  observer.disconnect();
+                }
+              },
+              { threshold: 0.25 }
+            );
+
+            if (videoRef.current) observer.observe(videoRef.current);
+            return () => observer.disconnect();
+          }, []);
+
+          return (
+            <motion.div
+              key={video.id}
+              ref={videoRef}
+              className={`flex-shrink-0 w-56 md:w-64 h-80 md:h-96 rounded-2xl overflow-hidden cursor-pointer transition-all duration-500 snap-center border-4 ${
+                index === centerIndex
+                  ? 'shadow-2xl ring-4 ring-primary-400 scale-105 border-yellow-400'
+                  : 'grayscale hover:grayscale-75 scale-95 border-gray-700'
+              }`}
+              style={{ background: '#18181b' }}
             >
-              {youtubeShorts.map((video, index) => {
-                const title = useYoutubeTitle(video.link);
-                return (
-                  <motion.div
-                    key={video.id}
-                    className={`flex-shrink-0 w-56 md:w-64 h-80 md:h-96 rounded-2xl overflow-hidden cursor-pointer transition-all duration-500 snap-center border-4 ${
-                      index === centerIndex
-                        ? 'shadow-2xl ring-4 ring-primary-400 scale-105 border-yellow-400'
-                        : 'grayscale hover:grayscale-75 scale-95 border-gray-700'
-                    }`}
-                    style={{ background: '#18181b' }}
-                  >
-                    <div className="relative h-full bg-gray-900 flex flex-col">
-                      <iframe
-                        src={getEmbedLink(video.link)}
-                        title={title}
-                        width="100%"
-                        height="100%"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                        style={{
-                          border: 0,
-                          borderRadius: '16px 16px 0 0',
-                          width: '100%',
-                          height: '75%',
-                          minHeight: '180px',
-                          background: '#000'
-                        }}
-                      />
-                      <div className="flex-1 flex flex-col justify-end">
-                        <div className="p-3 md:p-4">
-                          <h3 className="text-white font-bold text-base md:text-lg mb-1 line-clamp-1">{title}</h3>
-                          <div className="flex items-center justify-end">
-                            <div className="flex items-center space-x-1">
-                              <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-                              <span className="text-white/60 text-xs">SHORTS</span>
-                            </div>
-                          </div>
-                        </div>
+              <div className="relative h-full bg-gray-900 flex flex-col">
+                {isVisible ? (
+                  <iframe
+                    src={getEmbedLink(video.link)}
+                    title={title}
+                    width="100%"
+                    height="100%"
+                    allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    style={{
+                      border: 0,
+                      borderRadius: '16px 16px 0 0',
+                      width: '100%',
+                      height: '75%',
+                      minHeight: '180px',
+                      background: '#000'
+                    }}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      height: '75%',
+                      backgroundImage: `url(https://img.youtube.com/vi/${getShortId(video.link)}/hqdefault.jpg)`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center'
+                    }}
+                  />
+                )}
+
+                <div className="flex-1 flex flex-col justify-end">
+                  <div className="p-3 md:p-4">
+                    <h3 className="text-white font-bold text-base md:text-lg mb-1 line-clamp-1">{title}</h3>
+                    <div className="flex items-center justify-end">
+                      <div className="flex items-center space-x-1">
+                        <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                        <span className="text-white/60 text-xs">SHORTS</span>
                       </div>
                     </div>
-                  </motion.div>
-                );
-              })}
-            </div>
-          </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
+    </div>
 
-          {/* Dot Indicators */}
-          <div className="flex justify-center mt-4 md:mt-6 space-x-2">
-            {youtubeShorts.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCenterIndex(index)}
-                className={`w-2 h-2 md:w-3 md:h-3 rounded-full transition-all duration-300 ${
-                  index === centerIndex ? 'bg-primary-400 scale-125' : 'bg-white/30 hover:bg-white/50'
-                }`}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
+    {/* Dot Indicators */}
+    <div className="flex justify-center mt-4 md:mt-6 space-x-2">
+      {youtubeShorts.map((_, index) => (
+        <button
+          key={index}
+          onClick={() => setCenterIndex(index)}
+          className={`w-2 h-2 md:w-3 md:h-3 rounded-full transition-all duration-300 ${
+            index === centerIndex ? 'bg-primary-400 scale-125' : 'bg-white/30 hover:bg-white/50'
+          }`}
+        />
+      ))}
+    </div>
+  </div>
+</section>
+
       {/* CTA Section */}
       <section className="py-12 md:py-16 lg:py-20 bg-primary-400">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
