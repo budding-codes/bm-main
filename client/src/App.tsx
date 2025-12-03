@@ -12,13 +12,17 @@ import FreeMaterials from './pages/FreeMaterials';
 import Admin from './pages/Admin';
 import BMOfflineAcademy from './pages/BMOfflineAcademy';
 import BMHostel from './pages/BMHostel';
+import TermsOfUse from './pages/TermsOfUse';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import RefundPolicy from './pages/RefundPolicy';
+import FAQs from './pages/FAQs';
 
 function App() {
   return (
     <Router>
       <div className="min-h-screen bg-white">
         <Navbar />
-        <main>
+        <main className="pt-28">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/courses" element={<Courses />} />
@@ -30,6 +34,10 @@ function App() {
             <Route path="/admin" element={<Admin />} />
             <Route path="/bm-offline-academy" element={<BMOfflineAcademy />} />
             <Route path="/bm-hostel" element={<BMHostel />} />
+            <Route path="/terms-of-use" element={<TermsOfUse />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/refund-policy" element={<RefundPolicy />} />
+            <Route path="/faqs" element={<FAQs />} />
           </Routes>
         </main>
         <Footer />

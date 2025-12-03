@@ -44,10 +44,10 @@ const Footer = () => {
           <div>
             <div className="font-bold mb-2 font-geist">Legal</div>
             <ul className="space-y-1 text-sm font-poppins">
-              <li>Terms of use</li>
-              <li>Privacy policy</li>
-              <li>Refund policy</li>
-              <li>FAQs</li>
+              <li><Link to="/terms-of-use" className="hover:underline">Terms of use</Link></li>
+              <li><Link to="/privacy-policy" className="hover:underline">Privacy policy</Link></li>
+              <li><Link to="/refund-policy" className="hover:underline">Refund policy</Link></li>
+              {/* <li><Link to="/faqs" className="hover:underline">FAQs</Link></li> */}
             </ul>
           </div>
         </div>
