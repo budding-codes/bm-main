@@ -487,7 +487,7 @@ const BMOfflineAcademy = () => {
             </div>
             <div className="mb-2">
               <span className="font-bold text-white">Phone:</span>{' '}
-              <span className="text-yellow-400">097890 09509</span>
+              <span className="text-yellow-400">9799009509</span>
             </div>
           </div>
           <div className="flex-1 flex justify-center">
