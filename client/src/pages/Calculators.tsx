@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
-import { Calculator, DollarSign, CreditCard, BarChart2 } from 'lucide-react';
+import { Calculator, DollarSign, CreditCard, BarChart2, Anchor, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import shipAvif from '../../assets/ship.avif';
 
 const calculators = [
 	// {
@@ -38,6 +40,12 @@ const calculators = [
 		title: 'Company Eligibility Calculator',
 		description: 'Find out which shipping companies you are eligible for based on your marks and profile.',
 		icon: <BarChart2 className="w-6 h-6 text-yellow-400" />,
+	},
+	{
+		id: 'shipping-eligibility',
+		title: 'Shipping Eligibility Calculator',
+		description: 'Comprehensive eligibility check across leading companies and colleges for DNS, BSc, and BTech.',
+		icon: <Anchor className="w-6 h-6 text-yellow-400" />,
 	},
 ];
 
@@ -172,6 +180,7 @@ const Calculators = () => {
 		twelfthPCM: '',
 		twelfthEnglish: '',
 		twelfthStream: '',
+		class12Status: 'Passed',
 		// Class 10 fields
 		tenthEnglish: '',
 		// Diploma fields
@@ -213,6 +222,29 @@ const Calculators = () => {
 		nios: 'NO',
 	});
 	const [companyResult, setCompanyResult] = useState<string[] | null>(null);
+
+	// Shipping Eligibility Calculator
+	const [shippingForm, setShippingForm] = useState({
+		name: '',
+		whatsapp: '',
+		email: '',
+		status: 'Appearing',
+		nios: 'No',
+		improvement: 'No',
+		twelfthPercentage: '',
+		physics: '',
+		chemistry: '',
+		maths: '',
+		english: '',
+		height: '',
+		weight: '',
+		dob: '',
+	});
+	const [shippingResult, setShippingResult] = useState<{ dns: any[], bsc: any[], btech: any[] } | null>(null);
+	const [isCalculatingShipping, setIsCalculatingShipping] = useState(false);
+	const [expandedCompany, setExpandedCompany] = useState<string | null>(null);
+	const [expandedCollegeBsc, setExpandedCollegeBsc] = useState<string | null>(null);
+	const [expandedCollegeBtech, setExpandedCollegeBtech] = useState<string | null>(null);
 
 	// User info modal state
 	const [showUserModal, setShowUserModal] = useState(false);
@@ -272,8 +304,8 @@ const Calculators = () => {
 		// Trigger the pending calculator's submit after collecting user info
 		if (calcId === 'imu-rank') handleImuRank({ preventDefault: () => {} } as any);
 		if (calcId === 'college-predictor') handleCollegePredictor({ preventDefault: () => {} } as any);
-		if (calcId === 'course-eligibility') handleCourseEligibility({ preventDefault: () => {} } as any);
 		if (calcId === 'company-eligibility') handleCompanyEligibility({ preventDefault: () => {} } as any);
+		if (calcId === 'shipping-eligibility') handleShippingEligibility({ preventDefault: () => {} } as any);
 	};
 
 	const handleEligibility = (e: React.FormEvent) => {
@@ -619,6 +651,34 @@ const Calculators = () => {
 		{ name: 'MANET', pcm: 60, english: 50, improvement: 'Yes', nios: 'No', age: 25 },
 	];
 
+	const shippingDB = [
+		{ name: 'Anglo Eastern', p: null, c: null, m: null, pm: null, pcm: 70, eng10: 60, eng12: 60, agg12: 60, aggInd: 'Aggregate', ageMin: 17, ageMax: 25, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'Yes', improvement: 'Yes', colleges: ['AEMA'] },
+		{ name: 'Scorpio', p: 65, c: 65, m: 65, pm: null, pcm: 65, eng10: 60, eng12: 60, agg12: 60, aggInd: null, ageMin: 17, ageMax: 21, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'Yes', improvement: 'Yes', colleges: ['GANPAT', 'TMI'] },
+		{ name: 'Great Eastern', p: null, c: null, m: null, pm: null, pcm: 60, eng10: 50, eng12: 50, agg12: null, aggInd: null, ageMin: 17, ageMax: 25, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'No', improvement: 'Yes', colleges: ['GEIMS'] },
+		{ name: 'ESM-SIMS', p: 50, c: null, m: 50, pm: 60, pcm: 60, eng10: 50, eng12: 50, agg12: 60, aggInd: null, ageMin: 17, ageMax: 21, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'No', improvement: 'No', colleges: ['SIMS'] },
+		{ name: 'SISL', p: null, c: null, m: null, pm: null, pcm: 70, eng10: 60, eng12: 60, agg12: null, aggInd: null, ageMin: 17, ageMax: 25, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'No', improvement: 'Yes', colleges: ['SIMTI'] },
+		{ name: 'Fleet Management', p: null, c: null, m: null, pm: null, pcm: 70, eng10: null, eng12: 70, agg12: null, aggInd: null, ageMin: 17, ageMax: 20, heightMin: 160, bmiMax: 25, dropper: 'No', nios: 'No', improvement: 'No', colleges: ['IMI'] },
+		{ name: 'SCI', p: null, c: null, m: null, pm: null, pcm: 60, eng10: 50, eng12: 50, agg12: null, aggInd: null, ageMin: 17, ageMax: 25, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'Yes', improvement: 'Yes', colleges: ['SCI-MTI'] },
+		{ name: 'Wallem', p: null, c: null, m: null, pm: null, pcm: 60, eng10: 60, eng12: 50, agg12: null, aggInd: null, ageMin: 17, ageMax: 25, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'Yes', improvement: 'Yes', colleges: ['IMI'] },
+		{ name: 'MSC', p: null, c: null, m: null, pm: null, pcm: 65, eng10: 50, eng12: 50, agg12: null, aggInd: null, ageMin: 17, ageMax: 20, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'No', improvement: 'Yes', colleges: ['SOMS'] },
+		{ name: 'Synergy', p: null, c: null, m: null, pm: null, pcm: 60, eng10: 50, eng12: 50, agg12: null, aggInd: null, ageMin: 17, ageMax: 25, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'Yes', improvement: 'Yes', colleges: ['IMU CAMPUS', 'HIMT', 'TMI'] },
+		{ name: 'Dockendale', p: null, c: null, m: null, pm: null, pcm: 60, eng10: 50, eng12: 50, agg12: null, aggInd: null, ageMin: 17, ageMax: 25, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'No', improvement: 'No', colleges: ['AMET'] },
+		{ name: 'Goodwood', p: null, c: null, m: null, pm: null, pcm: 60, eng10: 50, eng12: 50, agg12: null, aggInd: null, ageMin: 17, ageMax: 20, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'No', improvement: 'Yes', colleges: ['TSR'] },
+		{ name: 'IMEC', p: null, c: null, m: null, pm: null, pcm: 60, eng10: 50, eng12: 50, agg12: null, aggInd: null, ageMin: 17, ageMax: 25, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'Yes', improvement: 'Yes', colleges: ['HIMT', 'TSR'] },
+		{ name: 'WSM', p: null, c: null, m: null, pm: null, pcm: 60, eng10: 50, eng12: 50, agg12: null, aggInd: null, ageMin: 17, ageMax: 20, heightMin: 157, bmiMax: 25, dropper: 'Yes', nios: 'No', improvement: 'No', colleges: ['GANPAT', 'MANET'] },
+		{ name: 'VShips', p: 60, c: 60, m: 60, pm: null, pcm: 70, eng10: 60, eng12: 60, agg12: null, aggInd: null, ageMin: 17, ageMax: 25, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'Yes', improvement: 'Yes', colleges: ['AMET'] },
+		{ name: 'MAERSK', p: null, c: null, m: null, pm: null, pcm: 60, eng10: 50, eng12: 50, agg12: null, aggInd: null, ageMin: 17, ageMax: 25, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'Yes', improvement: 'Yes', colleges: ['AMET'] },
+		{ name: 'BSM', p: null, c: null, m: null, pm: null, pcm: 60, eng10: 50, eng12: 50, agg12: null, aggInd: null, ageMin: 17, ageMax: 25, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'No', improvement: 'Yes', colleges: ['TSR'] },
+		{ name: 'TORM', p: null, c: null, m: null, pm: null, pcm: 60, eng10: 50, eng12: 50, agg12: null, aggInd: null, ageMin: 17, ageMax: 21, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'No', improvement: 'Yes', colleges: ['GANPAT', 'TMI'] },
+		{ name: "D'Amico", p: null, c: null, m: null, pm: null, pcm: 60, eng10: 50, eng12: 50, agg12: null, aggInd: null, ageMin: 17, ageMax: 21, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'No', improvement: 'Yes', colleges: ['GANPAT', 'TMI', 'IMI'] },
+		{ name: 'PIL', p: null, c: null, m: null, pm: null, pcm: 70, eng10: 60, eng12: 60, agg12: null, aggInd: null, ageMin: 17, ageMax: 25, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'No', improvement: 'No', colleges: ['AMET'] },
+		{ name: 'Seaspan', p: null, c: null, m: null, pm: null, pcm: 65, eng10: 60, eng12: 60, agg12: null, aggInd: null, ageMin: 17, ageMax: 21, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'No', improvement: 'No', colleges: ['SIMTI', 'TMI'] },
+		{ name: 'MMSI', p: null, c: null, m: null, pm: null, pcm: 60, eng10: 50, eng12: 50, agg12: null, aggInd: null, ageMin: 17, ageMax: 25, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'Yes', improvement: 'Yes', colleges: ['AMET'] },
+		{ name: 'VRM', p: null, c: null, m: null, pm: null, pcm: 60, eng10: 50, eng12: 50, agg12: null, aggInd: null, ageMin: 17, ageMax: 25, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'Yes', improvement: 'Yes', colleges: ['IMI'] },
+		{ name: 'T Erudite', p: null, c: null, m: null, pm: null, pcm: 60, eng10: 50, eng12: 50, agg12: null, aggInd: null, ageMin: 17, ageMax: 21, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'Yes', improvement: 'Yes', colleges: ['TMI'] },
+		{ name: 'OSM THOME', p: null, c: null, m: null, pm: null, pcm: 60, eng10: 50, eng12: 50, agg12: null, aggInd: null, ageMin: 17, ageMax: 21, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'Yes', improvement: 'Yes', colleges: ['TMI'] }
+	];
+
 	const handleCompanyEligibility = (e: React.FormEvent) => {
 		e.preventDefault();
 		const pcm = parseFloat(companyForm.pcm);
@@ -646,6 +706,97 @@ const Calculators = () => {
 		).map(c => c.name);
 
 		setCompanyResult(eligibleCompanies);
+	};
+
+	const handleShippingEligibility = (e: React.FormEvent) => {
+		e.preventDefault();
+		const {
+			name, whatsapp, email, status, nios, improvement,
+			twelfthPercentage, physics, chemistry, maths, english,
+			height, weight, dob
+		} = shippingForm;
+
+		if (!name || !whatsapp || !email || !dob || !height || !weight || !physics || !chemistry || !maths || !english) {
+			return;
+		}
+
+		// Calculate exact Age
+		const birthDate = new Date(dob);
+		const today = new Date();
+		let age = today.getFullYear() - birthDate.getFullYear();
+		const m = today.getMonth() - birthDate.getMonth();
+		if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+			age--;
+		}
+
+		// Calculate BMI
+		const hMeters = parseFloat(height) / 100;
+		const wKg = parseFloat(weight);
+		const bmi = wKg / (hMeters * hMeters);
+
+		const p = parseFloat(physics);
+		const c = parseFloat(chemistry);
+		const mth = parseFloat(maths);
+		const eng = parseFloat(english);
+		const pcmAgg = (p + c + mth) / 3;
+		const pmAgg = (p + mth) / 2;
+
+		setIsCalculatingShipping(true);
+		setShippingResult(null);
+		
+		setTimeout(() => {
+			const eligibleDns: any[] = [];
+			const eligibleBsc = new Set<string>();
+			const eligibleBtech = new Set<string>();
+
+			shippingDB.forEach(company => {
+				let isEligible = true;
+				
+				if (company.p && p < company.p) isEligible = false;
+				if (company.c && c < company.c) isEligible = false;
+				if (company.m && mth < company.m) isEligible = false;
+				if (company.pm && pmAgg < company.pm) isEligible = false;
+				if (company.pcm && pcmAgg < company.pcm) isEligible = false;
+				
+				// English rules: Since only one English % is provided, we check against the strictest requirement
+				const reqEng = Math.max(company.eng10 || 0, company.eng12 || 0);
+				if (reqEng > 0 && eng < reqEng) isEligible = false;
+				
+				const agg12 = parseFloat(twelfthPercentage);
+				if (company.agg12 && status === 'Dropper' && !isNaN(agg12)) {
+					if (agg12 < company.agg12) isEligible = false;
+				}
+
+				if (company.ageMin && age < company.ageMin) isEligible = false;
+				if (company.ageMax && age > company.ageMax) isEligible = false;
+				if (company.heightMin && parseFloat(height) < company.heightMin) isEligible = false;
+				if (company.bmiMax && bmi > company.bmiMax) isEligible = false;
+
+				if (company.dropper === 'No' && status === 'Dropper') isEligible = false;
+				if (company.nios === 'No' && nios === 'Yes') isEligible = false;
+				if (company.improvement === 'No' && improvement === 'Yes') isEligible = false;
+
+				if (isEligible) {
+					eligibleDns.push({
+						name: company.name,
+						colleges: company.colleges
+					});
+				}
+			});
+
+			const isCollegeEligible = pcmAgg >= 60 && eng >= 50 && age <= 25 && nios === 'No';
+			if (isCollegeEligible) {
+				['IMU NAVI MUMBAI', 'IMU CHENNAI', 'IMU KOCHI', 'TMI', 'AMET'].forEach(c => eligibleBsc.add(c));
+				['IMU KOLKATA', 'IMU MUMBAI PORT', 'IMU CHENNAI', 'TMI'].forEach(c => eligibleBtech.add(c));
+			}
+
+			setShippingResult({
+				dns: eligibleDns,
+				bsc: Array.from(eligibleBsc),
+				btech: Array.from(eligibleBtech)
+			});
+			setIsCalculatingShipping(false);
+		}, 3000); 
 	};
 
 	return (
@@ -1186,6 +1337,181 @@ const Calculators = () => {
 								)}
 							</div>
 						)}
+					</div>
+				)}
+
+				{selected === 'shipping-eligibility' && (
+					<div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-5xl flex flex-col items-center overflow-x-hidden">
+						<div className="flex flex-col items-center gap-2 mb-6">
+							<div className="flex items-center gap-2">
+								<Anchor className="w-8 h-8 text-yellow-500" />
+								<span className="font-extrabold text-2xl text-black font-geist text-center">Shipping Eligibility Calculator</span>
+							</div>
+							<p className="text-gray-600 text-center max-w-lg">Comprehensive eligibility check across leading companies and colleges for DNS, BSc, and BTech.</p>
+						</div>
+
+						{!shippingResult && !isCalculatingShipping ? (
+							<form className="w-full grid grid-cols-1 md:grid-cols-2 gap-4" onSubmit={requireUserInfo('shipping-eligibility', handleShippingEligibility)}>
+								{/* inputs */}
+								<div><label className="text-sm font-semibold text-gray-700 block mb-1">Name</label><input type="text" required value={shippingForm.name} onChange={e => setShippingForm(p => ({...p, name: e.target.value}))} className="w-full px-3 py-2 border border-gray-300 rounded text-black focus:ring-2 focus:ring-yellow-400" /></div>
+								<div><label className="text-sm font-semibold text-gray-700 block mb-1">WhatsApp Number</label><input type="number" required value={shippingForm.whatsapp} onChange={e => setShippingForm(p => ({...p, whatsapp: e.target.value}))} className="w-full px-3 py-2 border border-gray-300 rounded text-black focus:ring-2 focus:ring-yellow-400" /></div>
+								<div><label className="text-sm font-semibold text-gray-700 block mb-1">e-Mail</label><input type="email" required value={shippingForm.email} onChange={e => setShippingForm(p => ({...p, email: e.target.value}))} className="w-full px-3 py-2 border border-gray-300 rounded text-black focus:ring-2 focus:ring-yellow-400" /></div>
+								<div>
+									<label className="text-sm font-semibold text-gray-700 block mb-1">Status</label>
+									<select value={shippingForm.status} onChange={e => setShippingForm(p => ({...p, status: e.target.value}))} className="w-full px-3 py-2 border border-gray-300 rounded text-black focus:ring-2 focus:ring-yellow-400">
+										<option value="Appearing">Appearing</option>
+										<option value="Dropper">Dropper</option>
+									</select>
+								</div>
+								{shippingForm.status === 'Dropper' && (
+									<div><label className="text-sm font-semibold text-gray-700 block mb-1">12th Percentage (%)</label><input type="number" required value={shippingForm.twelfthPercentage} onChange={e => setShippingForm(p => ({...p, twelfthPercentage: e.target.value}))} className="w-full px-3 py-2 border border-gray-300 rounded text-black focus:ring-2 focus:ring-yellow-400" /></div>
+								)}
+								<div>
+									<label className="text-sm font-semibold text-gray-700 block mb-1">NIOS</label>
+									<select value={shippingForm.nios} onChange={e => setShippingForm(p => ({...p, nios: e.target.value}))} className="w-full px-3 py-2 border border-gray-300 rounded text-black focus:ring-2 focus:ring-yellow-400">
+										<option value="No">No</option><option value="Yes">Yes</option>
+									</select>
+								</div>
+								<div>
+									<label className="text-sm font-semibold text-gray-700 block mb-1">Improvement</label>
+									<select value={shippingForm.improvement} onChange={e => setShippingForm(p => ({...p, improvement: e.target.value}))} className="w-full px-3 py-2 border border-gray-300 rounded text-black focus:ring-2 focus:ring-yellow-400">
+										<option value="No">No</option><option value="Yes">Yes</option>
+									</select>
+								</div>
+								<div><label className="text-sm font-semibold text-gray-700 block mb-1">Physics (%)</label><input type="number" required value={shippingForm.physics} onChange={e => setShippingForm(p => ({...p, physics: e.target.value}))} className="w-full px-3 py-2 border border-gray-300 rounded text-black focus:ring-2 focus:ring-yellow-400" /></div>
+								<div><label className="text-sm font-semibold text-gray-700 block mb-1">Chemistry (%)</label><input type="number" required value={shippingForm.chemistry} onChange={e => setShippingForm(p => ({...p, chemistry: e.target.value}))} className="w-full px-3 py-2 border border-gray-300 rounded text-black focus:ring-2 focus:ring-yellow-400" /></div>
+								<div><label className="text-sm font-semibold text-gray-700 block mb-1">Maths (%)</label><input type="number" required value={shippingForm.maths} onChange={e => setShippingForm(p => ({...p, maths: e.target.value}))} className="w-full px-3 py-2 border border-gray-300 rounded text-black focus:ring-2 focus:ring-yellow-400" /></div>
+								<div><label className="text-sm font-semibold text-gray-700 block mb-1">English (%)</label><input type="number" required value={shippingForm.english} onChange={e => setShippingForm(p => ({...p, english: e.target.value}))} className="w-full px-3 py-2 border border-gray-300 rounded text-black focus:ring-2 focus:ring-yellow-400" /></div>
+								<div><label className="text-sm font-semibold text-gray-700 block mb-1">Height (in cm)</label><input type="number" required value={shippingForm.height} onChange={e => setShippingForm(p => ({...p, height: e.target.value}))} className="w-full px-3 py-2 border border-gray-300 rounded text-black focus:ring-2 focus:ring-yellow-400" /></div>
+								<div><label className="text-sm font-semibold text-gray-700 block mb-1">Weight (in kg)</label><input type="number" required value={shippingForm.weight} onChange={e => setShippingForm(p => ({...p, weight: e.target.value}))} className="w-full px-3 py-2 border border-gray-300 rounded text-black focus:ring-2 focus:ring-yellow-400" /></div>
+								<div><label className="text-sm font-semibold text-gray-700 block mb-1">DOB</label><input type="date" required value={shippingForm.dob} onChange={e => setShippingForm(p => ({...p, dob: e.target.value}))} className="w-full px-3 py-2 border border-gray-300 rounded text-black focus:ring-2 focus:ring-yellow-400" /></div>
+								
+								<div className="md:col-span-2 mt-4">
+									<button type="submit" disabled={usedCalculators['shipping-eligibility']} className="w-full bg-yellow-400 text-black font-bold py-3 rounded-lg hover:bg-yellow-500 transition shadow-md">
+										{usedCalculators['shipping-eligibility'] ? 'Used' : 'Find Best Colleges & Companies'}
+									</button>
+									{usedCalculators['shipping-eligibility'] && <div className="mt-2 text-sm text-center text-red-600 font-semibold">Refresh the page to use calculator again.</div>}
+								</div>
+							</form>
+						) : null}
+
+						{/* Loading State */}
+						<AnimatePresence>
+							{isCalculatingShipping && (
+								<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex flex-col items-center justify-center py-12">
+									<motion.img 
+										src={shipAvif} 
+										alt="Ship" 
+										className="w-48 h-auto object-contain mb-6 drop-shadow-xl"
+										animate={{ y: [0, -15, 0], rotate: [-2, 2, -2] }}
+										transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
+									/>
+									<motion.div 
+										className="text-xl font-bold text-blue-900 flex flex-col items-center"
+										animate={{ opacity: [0.5, 1, 0.5] }}
+										transition={{ repeat: Infinity, duration: 1.5 }}
+									>
+										<span>Finding and securing the...</span>
+										<span className="text-2xl mt-1 underline decoration-yellow-400 decoration-4">best college for you</span>
+									</motion.div>
+								</motion.div>
+							)}
+						</AnimatePresence>
+
+						{/* Results UI */}
+						{shippingResult && !isCalculatingShipping ? (
+							<div className="mt-8 w-full max-w-5xl">
+								<h3 className="text-3xl font-bold text-center text-black font-geist mb-8">
+									This could be your future!<br />
+									<span className="text-yellow-600 text-2xl">You are <span className="underline decoration-4 decoration-yellow-400 mr-2">eligible</span>🔥 Now let's look at your options!</span>
+								</h3>
+								<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+									{/* DNS */}
+									<div className="flex flex-col">
+										<div className="bg-[#0b1b45] text-yellow-400 font-bold py-3 text-center rounded-t-lg shadow-sm border border-[#0b1b45]">DNS Eligibility</div>
+										<div className="bg-gray-100 p-3 rounded-b-lg flex flex-col gap-3 shadow-inner border order-t-0 border-gray-300">
+											{shippingResult.dns.length > 0 ? shippingResult.dns.map((comp, idx) => (
+												<div key={idx} className="bg-white rounded-md border border-gray-200 overflow-hidden shadow-sm transition-all hover:border-gray-300">
+													<button onClick={() => setExpandedCompany(expandedCompany === comp.name ? null : comp.name)} className={`w-full flex justify-between items-center p-3 text-sm font-bold text-black ${expandedCompany === comp.name ? 'bg-yellow-400/20' : 'hover:bg-gray-50'}`}>
+														<span>{comp.name}</span>
+														{expandedCompany === comp.name ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+													</button>
+													<AnimatePresence>
+														{expandedCompany === comp.name && (
+															<motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} className="overflow-hidden">
+																<div className="p-4 bg-[#111827] text-white text-xs leading-relaxed border-t border-gray-200">
+																	<p className="font-bold text-gray-300 mb-1">Colleges you can go to:</p>
+																	<p className="mb-3 font-semibold text-yellow-400">{comp.colleges.join(', ')}</p>
+																	<p className="font-bold text-gray-300 mb-1">Official Company Page:</p>
+																	<a href="#" className="underline text-blue-300 cursor-pointer flex items-center gap-1 hover:text-blue-100"><ExternalLink size={12} /> Click here</a>
+																</div>
+															</motion.div>
+														)}
+													</AnimatePresence>
+												</div>
+											)) : <div className="text-gray-500 font-semibold p-4 text-center text-sm">Not eligible for any company</div>}
+										</div>
+									</div>
+
+									{/* BSc */}
+									<div className="flex flex-col">
+										<div className="bg-[#1a3a7f] text-white font-bold py-3 text-center rounded-t-lg shadow-sm border border-[#1a3a7f]">BSc Nautical Eligibility</div>
+										<div className="bg-gray-100 p-3 rounded-b-lg flex flex-col gap-3 shadow-inner border border-t-0 border-gray-300">
+											{shippingResult.bsc.length > 0 ? shippingResult.bsc.map((col, idx) => (
+												<div key={idx} className="bg-white rounded-md border border-gray-200 overflow-hidden shadow-sm transition-all hover:border-gray-300">
+													<button onClick={() => setExpandedCollegeBsc(expandedCollegeBsc === col ? null : col)} className={`w-full flex justify-between items-center p-3 text-sm font-bold text-black ${expandedCollegeBsc === col ? 'bg-yellow-400/20' : 'hover:bg-gray-50'}`}>
+														<span>{col}</span>
+														{expandedCollegeBsc === col ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+													</button>
+													<AnimatePresence>
+														{expandedCollegeBsc === col && (
+															<motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} className="overflow-hidden">
+																<div className="p-4 bg-[#111827] text-white text-xs leading-relaxed border-t border-gray-200">
+																	<p className="font-bold text-gray-300 mb-1">Official College Page:</p>
+																	<a href="#" className="underline text-blue-300 cursor-pointer flex items-center gap-1 hover:text-blue-100"><ExternalLink size={12} /> Click here</a>
+																</div>
+															</motion.div>
+														)}
+													</AnimatePresence>
+												</div>
+											)) : <div className="text-gray-500 font-semibold p-4 text-center text-sm">Not eligible for any college</div>}
+										</div>
+									</div>
+
+									{/* BTech */}
+									<div className="flex flex-col">
+										<div className="bg-[#2b56aa] text-white font-bold py-3 text-center rounded-t-lg shadow-sm border border-[#2b56aa]">BTech Marine Eligibility</div>
+										<div className="bg-gray-100 p-3 rounded-b-lg flex flex-col gap-3 shadow-inner border border-t-0 border-gray-300">
+											{shippingResult.btech.length > 0 ? shippingResult.btech.map((col, idx) => (
+												<div key={idx} className="bg-white rounded-md border border-gray-200 overflow-hidden shadow-sm transition-all hover:border-gray-300">
+													<button onClick={() => setExpandedCollegeBtech(expandedCollegeBtech === col ? null : col)} className={`w-full flex justify-between items-center p-3 text-sm font-bold text-black ${expandedCollegeBtech === col ? 'bg-yellow-400/20' : 'hover:bg-gray-50'}`}>
+														<span>{col}</span>
+														{expandedCollegeBtech === col ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+													</button>
+													<AnimatePresence>
+														{expandedCollegeBtech === col && (
+															<motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} className="overflow-hidden">
+																<div className="p-4 bg-[#111827] text-white text-xs leading-relaxed border-t border-gray-200">
+																	<p className="font-bold text-gray-300 mb-1">Official College Page:</p>
+																	<a href="#" className="underline text-blue-300 cursor-pointer flex items-center gap-1 hover:text-blue-100"><ExternalLink size={12} /> Click here</a>
+																</div>
+															</motion.div>
+														)}
+													</AnimatePresence>
+												</div>
+											)) : <div className="text-gray-500 font-semibold p-4 text-center text-sm">Not eligible for any college</div>}
+										</div>
+									</div>
+								</div>
+								
+								<div className="mt-12 text-center text-black bg-gray-50 py-8 rounded-xl border border-gray-200 shadow-sm">
+									<h4 className="text-2xl font-bold mb-4 font-geist">Want to know more?</h4>
+									<a href="https://docs.google.com/forms/d/e/1FAIpQLSfplFAt9uFYYr9r5LDg4-0sP6IpfgZ0bjjOogXFtpODXRTVQw/viewform" target="_blank" rel="noreferrer" className="inline-block bg-[#1a3a7f] shadow-lg text-white font-bold py-3 px-8 rounded-full hover:bg-blue-800 hover:shadow-xl hover:-translate-y-0.5 transition-all text-sm md:text-base">
+										Let's connect you with a mentor and start preparing!
+									</a>
+								</div>
+							</div>
+						) : null}
 					</div>
 				)}
 			</section>
