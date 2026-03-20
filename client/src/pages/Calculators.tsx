@@ -143,12 +143,12 @@ const subjectOptions = [
 // For demonstration, this will POST to /api/store-user-info (you must implement this API in your backend)
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://bm-promo.onrender.com';
 
-const storeUserInfo = async (name: string, phone: string) => {
+const storeUserInfo = async (name: string, phone: string, email?: string) => {
 	try {
 		await fetch(`${API_BASE}/api/store-user-info`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ name, phone }),
+			body: JSON.stringify({ name, phone, email }),
 		});
 	} catch (err) {
 		// Optionally handle error
@@ -710,6 +710,7 @@ const Calculators = () => {
 
 	const handleShippingEligibility = (e: React.FormEvent) => {
 		e.preventDefault();
+		if (usedCalculators['shipping-eligibility']) return;
 		const {
 			name, whatsapp, email, status, nios, improvement,
 			twelfthPercentage, physics, chemistry, maths, english,
@@ -740,6 +741,9 @@ const Calculators = () => {
 		const eng = parseFloat(english);
 		const pcmAgg = (p + c + mth) / 3;
 		const pmAgg = (p + mth) / 2;
+
+		storeUserInfo(name, whatsapp, email);
+		setUsedCalculators(prev => ({ ...prev, 'shipping-eligibility': true }));
 
 		setIsCalculatingShipping(true);
 		setShippingResult(null);
@@ -1351,7 +1355,7 @@ const Calculators = () => {
 						</div>
 
 						{!shippingResult && !isCalculatingShipping ? (
-							<form className="w-full grid grid-cols-1 md:grid-cols-2 gap-4" onSubmit={requireUserInfo('shipping-eligibility', handleShippingEligibility)}>
+							<form className="w-full grid grid-cols-1 md:grid-cols-2 gap-4" onSubmit={handleShippingEligibility}>
 								{/* inputs */}
 								<div><label className="text-sm font-semibold text-gray-700 block mb-1">Name</label><input type="text" required value={shippingForm.name} onChange={e => setShippingForm(p => ({...p, name: e.target.value}))} className="w-full px-3 py-2 border border-gray-300 rounded text-black focus:ring-2 focus:ring-yellow-400" /></div>
 								<div><label className="text-sm font-semibold text-gray-700 block mb-1">WhatsApp Number</label><input type="number" required value={shippingForm.whatsapp} onChange={e => setShippingForm(p => ({...p, whatsapp: e.target.value}))} className="w-full px-3 py-2 border border-gray-300 rounded text-black focus:ring-2 focus:ring-yellow-400" /></div>

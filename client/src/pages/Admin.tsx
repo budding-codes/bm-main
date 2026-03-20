@@ -8,6 +8,7 @@ type Lead = {
   _id: string;
   name: string;
   phone: string;
+  email?: string;
   called: string;
   interested: string;
 };
@@ -40,6 +41,7 @@ const Admin: React.FC = () => {
         _id: u._id || u.id || u.phone,
         name: u.name,
         phone: u.phone,
+        email: u.email || '-',
         called: u.called || 'Not Yet',
         interested: u.interested || 'Not Yet'
       })));
@@ -67,8 +69,8 @@ const Admin: React.FC = () => {
 
   // Export to Excel
   const exportToExcel = () => {
-    const header = ['Name', 'Phone', 'Called', 'Interested'];
-    const rows = leads.map(l => [l.name, l.phone, l.called, l.interested]);
+    const header = ['Name', 'Phone', 'Email', 'Called', 'Interested'];
+    const rows = leads.map(l => [l.name, l.phone, l.email || '-', l.called, l.interested]);
     const csvContent =
       header.join(',') +
       '\n' +
@@ -168,6 +170,7 @@ const Admin: React.FC = () => {
                 <tr>
                   <th className="px-4 py-2 text-left text-yellow-400">Name</th>
                   <th className="px-4 py-2 text-left text-yellow-400">Phone</th>
+                  <th className="px-4 py-2 text-left text-yellow-400">Email</th>
                   <th className="px-4 py-2 text-left text-yellow-400">Called</th>
                   <th className="px-4 py-2 text-left text-yellow-400">Interested</th>
                 </tr>
@@ -177,6 +180,7 @@ const Admin: React.FC = () => {
                   <tr key={lead._id} className="border-b border-white/10">
                     <td className="px-4 py-2">{lead.name}</td>
                     <td className="px-4 py-2">{lead.phone}</td>
+                    <td className="px-4 py-2">{lead.email || '-'}</td>
                     <td className="px-4 py-2">
                       <select
                         value={lead.called || 'Not Yet'}

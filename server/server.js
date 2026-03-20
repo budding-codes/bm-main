@@ -24,6 +24,7 @@ mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
 const UserInfoSchema = new mongoose.Schema({
 	name: { type: String, required: true },
 	phone: { type: String, required: true },
+	email: { type: String, required: false },
 	called: { type: String, default: 'Not Yet' },
 	interested: { type: String, default: 'Not Yet' }
 }, { timestamps: true });
@@ -32,12 +33,12 @@ const UserInfo = mongoose.model('UserInfo', UserInfoSchema);
 
 // API endpoint to store user info (no upsert, just create)
 app.post('/api/store-user-info', async (req, res) => {
-	const { name, phone } = req.body;
+	const { name, phone, email } = req.body;
 	if (!name || !phone) {
 		return res.status(400).json({ error: 'Name and phone are required.' });
 	}
 	try {
-		await UserInfo.create({ name, phone });
+		await UserInfo.create({ name, phone, email });
 		res.status(200).json({ message: 'User info stored successfully.' });
 	} catch (err) {
 		res.status(500).json({ error: 'Failed to store user info.' });
