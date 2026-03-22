@@ -235,12 +235,13 @@ const Calculators = () => {
 		physics: '',
 		chemistry: '',
 		maths: '',
-		english: '',
+		english10: '',
+		english12: '',
 		height: '',
 		weight: '',
 		dob: '',
 	});
-	const [shippingResult, setShippingResult] = useState<{ dns: any[], bsc: any[], btech: any[] } | null>(null);
+	const [shippingResult, setShippingResult] = useState<{ dns: { name: string; colleges: string[] }[], bsc: string[], btech: string[] } | null>(null);
 	const [isCalculatingShipping, setIsCalculatingShipping] = useState(false);
 	const [expandedCompany, setExpandedCompany] = useState<string | null>(null);
 	const [expandedCollegeBsc, setExpandedCollegeBsc] = useState<string | null>(null);
@@ -652,31 +653,286 @@ const Calculators = () => {
 	];
 
 	const shippingDB = [
-		{ name: 'Anglo Eastern', p: null, c: null, m: null, pm: null, pcm: 70, eng10: 60, eng12: 60, agg12: 60, aggInd: 'Aggregate', ageMin: 17, ageMax: 25, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'Yes', improvement: 'Yes', colleges: ['AEMA'] },
-		{ name: 'Scorpio', p: 65, c: 65, m: 65, pm: null, pcm: 65, eng10: 60, eng12: 60, agg12: 60, aggInd: null, ageMin: 17, ageMax: 21, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'Yes', improvement: 'Yes', colleges: ['GANPAT', 'TMI'] },
-		{ name: 'Great Eastern', p: null, c: null, m: null, pm: null, pcm: 60, eng10: 50, eng12: 50, agg12: null, aggInd: null, ageMin: 17, ageMax: 25, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'No', improvement: 'Yes', colleges: ['GEIMS'] },
-		{ name: 'ESM-SIMS', p: 50, c: null, m: 50, pm: 60, pcm: 60, eng10: 50, eng12: 50, agg12: 60, aggInd: null, ageMin: 17, ageMax: 21, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'No', improvement: 'No', colleges: ['SIMS'] },
-		{ name: 'SISL', p: null, c: null, m: null, pm: null, pcm: 70, eng10: 60, eng12: 60, agg12: null, aggInd: null, ageMin: 17, ageMax: 25, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'No', improvement: 'Yes', colleges: ['SIMTI'] },
-		{ name: 'Fleet Management', p: null, c: null, m: null, pm: null, pcm: 70, eng10: null, eng12: 70, agg12: null, aggInd: null, ageMin: 17, ageMax: 20, heightMin: 160, bmiMax: 25, dropper: 'No', nios: 'No', improvement: 'No', colleges: ['IMI'] },
-		{ name: 'SCI', p: null, c: null, m: null, pm: null, pcm: 60, eng10: 50, eng12: 50, agg12: null, aggInd: null, ageMin: 17, ageMax: 25, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'Yes', improvement: 'Yes', colleges: ['SCI-MTI'] },
-		{ name: 'Wallem', p: null, c: null, m: null, pm: null, pcm: 60, eng10: 60, eng12: 50, agg12: null, aggInd: null, ageMin: 17, ageMax: 25, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'Yes', improvement: 'Yes', colleges: ['IMI'] },
-		{ name: 'MSC', p: null, c: null, m: null, pm: null, pcm: 65, eng10: 50, eng12: 50, agg12: null, aggInd: null, ageMin: 17, ageMax: 20, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'No', improvement: 'Yes', colleges: ['SOMS'] },
-		{ name: 'Synergy', p: null, c: null, m: null, pm: null, pcm: 60, eng10: 50, eng12: 50, agg12: null, aggInd: null, ageMin: 17, ageMax: 25, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'Yes', improvement: 'Yes', colleges: ['IMU CAMPUS', 'HIMT', 'TMI'] },
-		{ name: 'Dockendale', p: null, c: null, m: null, pm: null, pcm: 60, eng10: 50, eng12: 50, agg12: null, aggInd: null, ageMin: 17, ageMax: 25, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'No', improvement: 'No', colleges: ['AMET'] },
-		{ name: 'Goodwood', p: null, c: null, m: null, pm: null, pcm: 60, eng10: 50, eng12: 50, agg12: null, aggInd: null, ageMin: 17, ageMax: 20, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'No', improvement: 'Yes', colleges: ['TSR'] },
-		{ name: 'IMEC', p: null, c: null, m: null, pm: null, pcm: 60, eng10: 50, eng12: 50, agg12: null, aggInd: null, ageMin: 17, ageMax: 25, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'Yes', improvement: 'Yes', colleges: ['HIMT', 'TSR'] },
-		{ name: 'WSM', p: null, c: null, m: null, pm: null, pcm: 60, eng10: 50, eng12: 50, agg12: null, aggInd: null, ageMin: 17, ageMax: 20, heightMin: 157, bmiMax: 25, dropper: 'Yes', nios: 'No', improvement: 'No', colleges: ['GANPAT', 'MANET'] },
-		{ name: 'VShips', p: 60, c: 60, m: 60, pm: null, pcm: 70, eng10: 60, eng12: 60, agg12: null, aggInd: null, ageMin: 17, ageMax: 25, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'Yes', improvement: 'Yes', colleges: ['AMET'] },
-		{ name: 'MAERSK', p: null, c: null, m: null, pm: null, pcm: 60, eng10: 50, eng12: 50, agg12: null, aggInd: null, ageMin: 17, ageMax: 25, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'Yes', improvement: 'Yes', colleges: ['AMET'] },
-		{ name: 'BSM', p: null, c: null, m: null, pm: null, pcm: 60, eng10: 50, eng12: 50, agg12: null, aggInd: null, ageMin: 17, ageMax: 25, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'No', improvement: 'Yes', colleges: ['TSR'] },
-		{ name: 'TORM', p: null, c: null, m: null, pm: null, pcm: 60, eng10: 50, eng12: 50, agg12: null, aggInd: null, ageMin: 17, ageMax: 21, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'No', improvement: 'Yes', colleges: ['GANPAT', 'TMI'] },
-		{ name: "D'Amico", p: null, c: null, m: null, pm: null, pcm: 60, eng10: 50, eng12: 50, agg12: null, aggInd: null, ageMin: 17, ageMax: 21, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'No', improvement: 'Yes', colleges: ['GANPAT', 'TMI', 'IMI'] },
-		{ name: 'PIL', p: null, c: null, m: null, pm: null, pcm: 70, eng10: 60, eng12: 60, agg12: null, aggInd: null, ageMin: 17, ageMax: 25, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'No', improvement: 'No', colleges: ['AMET'] },
-		{ name: 'Seaspan', p: null, c: null, m: null, pm: null, pcm: 65, eng10: 60, eng12: 60, agg12: null, aggInd: null, ageMin: 17, ageMax: 21, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'No', improvement: 'No', colleges: ['SIMTI', 'TMI'] },
-		{ name: 'MMSI', p: null, c: null, m: null, pm: null, pcm: 60, eng10: 50, eng12: 50, agg12: null, aggInd: null, ageMin: 17, ageMax: 25, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'Yes', improvement: 'Yes', colleges: ['AMET'] },
-		{ name: 'VRM', p: null, c: null, m: null, pm: null, pcm: 60, eng10: 50, eng12: 50, agg12: null, aggInd: null, ageMin: 17, ageMax: 25, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'Yes', improvement: 'Yes', colleges: ['IMI'] },
-		{ name: 'T Erudite', p: null, c: null, m: null, pm: null, pcm: 60, eng10: 50, eng12: 50, agg12: null, aggInd: null, ageMin: 17, ageMax: 21, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'Yes', improvement: 'Yes', colleges: ['TMI'] },
-		{ name: 'OSM THOME', p: null, c: null, m: null, pm: null, pcm: 60, eng10: 50, eng12: 50, agg12: null, aggInd: null, ageMin: 17, ageMax: 21, heightMin: 157, bmiMax: null, dropper: 'Yes', nios: 'Yes', improvement: 'Yes', colleges: ['TMI'] }
+	  {
+		name: 'Anglo Eastern',
+		p: null, c: null, m: null, pm: null, pcm: 70,
+		eng10: 60, eng12: 60,
+		agg12: 60, aggType: 'Aggregate',
+		imuRank: 'top40percent',
+		ageMin: 17, ageMax: 25, heightMin: 157, bmiMax: null,
+		dropper: 'Yes', nios: 'Yes', improvement: 'Yes',
+		colleges: ['AEMA'],
+	  },
+	  {
+		name: 'Scorpio',
+		p: 65, c: 65, m: 65, pm: null, pcm: 65,
+		eng10: 60, eng12: 60,
+		agg12: 60, aggType: null,
+		imuRank: null,
+		ageMin: 17, ageMax: 21, heightMin: 157, bmiMax: null,
+		dropper: 'Yes', nios: 'Yes', improvement: 'Yes',
+		colleges: ['GANPAT', 'TMI'],
+	  },
+	  {
+		name: 'Great Eastern',
+		p: null, c: null, m: null, pm: null, pcm: 60,
+		eng10: 50, eng12: 50,
+		agg12: null, aggType: null,
+		imuRank: null,
+		ageMin: 17, ageMax: 25, heightMin: 157, bmiMax: null,
+		dropper: 'Yes', nios: 'No', improvement: 'Yes',
+		colleges: ['GEIMS'],
+	  },
+	  {
+		name: 'ESM-SIMS',
+		p: 50, c: null, m: 50, pm: 60, pcm: 60,
+		eng10: 50, eng12: 50,
+		agg12: 60, aggType: null,
+		imuRank: null,
+		ageMin: 17, ageMax: 21, heightMin: 157, bmiMax: null,
+		dropper: 'Yes', nios: 'No', improvement: 'No',
+		colleges: ['SIMS'],
+	  },
+	  {
+		name: 'SISL',
+		p: null, c: null, m: null, pm: null, pcm: 70,
+		eng10: 60, eng12: 60,
+		agg12: null, aggType: null,
+		imuRank: 4000,
+		ageMin: 17, ageMax: 25, heightMin: 157, bmiMax: null,
+		dropper: 'Yes', nios: 'No', improvement: 'Yes',
+		colleges: ['SIMTI'],
+	  },
+	  {
+		name: 'Fleet Management',
+		p: null, c: null, m: null, pm: null, pcm: 70,
+		eng10: null, eng12: 70,
+		agg12: null, aggType: null,
+		imuRank: null,
+		ageMin: 17, ageMax: 20, heightMin: 160, bmiMax: 25,
+		dropper: 'No', nios: 'No', improvement: 'No',
+		colleges: ['IMI'],
+	  },
+	  {
+		name: 'SCI',
+		p: null, c: null, m: null, pm: null, pcm: 60,
+		eng10: 50, eng12: 50,
+		agg12: null, aggType: null,
+		imuRank: null,
+		ageMin: 17, ageMax: 25, heightMin: 157, bmiMax: null,
+		dropper: 'Yes', nios: 'Yes', improvement: 'Yes',
+		colleges: ['SCI-MTI'],
+	  },
+	  {
+		name: 'Wallem',
+		p: null, c: null, m: null, pm: null, pcm: 60,
+		eng10: 60, eng12: 50,
+		agg12: null, aggType: null,
+		imuRank: null,
+		ageMin: 17, ageMax: 25, heightMin: 157, bmiMax: null,
+		dropper: 'Yes', nios: 'Yes', improvement: 'Yes',
+		colleges: ['IMI'],
+	  },
+	  {
+		name: 'MSC',
+		p: null, c: null, m: null, pm: null, pcm: 65,
+		eng10: 50, eng12: 50,
+		agg12: null, aggType: null,
+		imuRank: null,
+		ageMin: 17, ageMax: 20, heightMin: 157, bmiMax: null,
+		dropper: 'Yes', nios: 'No', improvement: 'Yes',
+		colleges: ['SOMS'],
+	  },
+	  {
+		name: 'Synergy',
+		p: null, c: null, m: null, pm: null, pcm: 60,
+		eng10: 50, eng12: 50,
+		agg12: null, aggType: null,
+		imuRank: null,
+		ageMin: 17, ageMax: 25, heightMin: 157, bmiMax: null,
+		dropper: 'Yes', nios: 'Yes', improvement: 'Yes',
+		colleges: ['IMU CAMPUS', 'HIMT', 'TMI'],
+	  },
+	  {
+		name: 'Dockendale',
+		p: null, c: null, m: null, pm: null, pcm: 60,
+		eng10: 50, eng12: 50,
+		agg12: null, aggType: null,
+		imuRank: null,
+		ageMin: 17, ageMax: 25, heightMin: 157, bmiMax: null,
+		dropper: 'Yes', nios: 'No', improvement: 'No',
+		colleges: ['AMET'],
+	  },
+	  {
+		name: 'Goodwood',
+		p: null, c: null, m: null, pm: null, pcm: 60,
+		eng10: 50, eng12: 50,
+		agg12: null, aggType: null,
+		imuRank: null,
+		ageMin: 17, ageMax: 20, heightMin: 157, bmiMax: null,
+		dropper: 'Yes', nios: 'No', improvement: 'Yes',
+		colleges: ['TSR'],
+	  },
+	  {
+		name: 'IMEC',
+		p: null, c: null, m: null, pm: null, pcm: 60,
+		eng10: 50, eng12: 50,
+		agg12: null, aggType: null,
+		imuRank: null,
+		ageMin: 17, ageMax: 25, heightMin: 157, bmiMax: null,
+		dropper: 'Yes', nios: 'Yes', improvement: 'Yes',
+		colleges: ['HIMT', 'TSR'],
+	  },
+	  {
+		name: 'WSM',
+		p: null, c: null, m: null, pm: null, pcm: 60,
+		eng10: 50, eng12: 50,
+		agg12: null, aggType: null,
+		imuRank: null,
+		ageMin: 17, ageMax: 20, heightMin: 157, bmiMax: 25,
+		dropper: 'Yes', nios: 'No', improvement: 'No',
+		colleges: ['GANPAT', 'MANET'],
+	  },
+	  {
+		name: 'VShips',
+		p: 60, c: 60, m: 60, pm: null, pcm: 70,
+		eng10: 60, eng12: 60,
+		agg12: null, aggType: null,
+		imuRank: 6000,
+		ageMin: 17, ageMax: 25, heightMin: 157, bmiMax: null,
+		dropper: 'Yes', nios: 'Yes', improvement: 'Yes',
+		colleges: ['AMET'],
+	  },
+	  {
+		name: 'MAERSK',
+		p: null, c: null, m: null, pm: null, pcm: 60,
+		eng10: 50, eng12: 50,
+		agg12: null, aggType: null,
+		imuRank: null,
+		ageMin: 17, ageMax: 25, heightMin: 157, bmiMax: null,
+		dropper: 'Yes', nios: 'Yes', improvement: 'Yes',
+		colleges: ['AMET'],
+	  },
+	  {
+		name: 'BSM',
+		p: null, c: null, m: null, pm: null, pcm: 60,
+		eng10: 50, eng12: 50,
+		agg12: null, aggType: null,
+		imuRank: null,
+		ageMin: 17, ageMax: 25, heightMin: 157, bmiMax: null,
+		dropper: 'Yes', nios: 'No', improvement: 'Yes',
+		colleges: ['TSR'],
+	  },
+	  {
+		name: 'TORM',
+		p: null, c: null, m: null, pm: null, pcm: 60,
+		eng10: 50, eng12: 50,
+		agg12: null, aggType: null,
+		imuRank: null,
+		ageMin: 17, ageMax: 21, heightMin: 157, bmiMax: null,
+		dropper: 'Yes', nios: 'No', improvement: 'Yes',
+		colleges: ['GANPAT', 'TMI'],
+	  },
+	  {
+		name: "D'Amico",
+		p: null, c: null, m: null, pm: null, pcm: 60,
+		eng10: 50, eng12: 50,
+		agg12: null, aggType: null,
+		imuRank: null,
+		ageMin: 17, ageMax: 21, heightMin: 157, bmiMax: null,
+		dropper: 'Yes', nios: 'No', improvement: 'Yes',
+		colleges: ['GANPAT', 'TMI', 'IMI'],
+	  },
+	  {
+		name: 'PIL',
+		p: null, c: null, m: null, pm: null, pcm: 70,
+		eng10: 60, eng12: 60,
+		agg12: null, aggType: null,
+		imuRank: null,
+		ageMin: 17, ageMax: 25, heightMin: 157, bmiMax: null,
+		dropper: 'Yes', nios: 'No', improvement: 'No',
+		colleges: ['AMET'],
+	  },
+	  {
+		name: 'Seaspan',
+		p: null, c: null, m: null, pm: null, pcm: 65,
+		eng10: 60, eng12: 60,
+		agg12: null, aggType: null,
+		imuRank: null,
+		ageMin: 17, ageMax: 21, heightMin: 157, bmiMax: null,
+		dropper: 'Yes', nios: 'No', improvement: 'No',
+		colleges: ['SIMTI', 'TMI'],
+	  },
+	  {
+		name: 'MMSI',
+		p: null, c: null, m: null, pm: null, pcm: 60,
+		eng10: 50, eng12: 50,
+		agg12: null, aggType: null,
+		imuRank: null,
+		ageMin: 17, ageMax: 25, heightMin: 157, bmiMax: null,
+		dropper: 'Yes', nios: 'Yes', improvement: 'Yes',
+		colleges: ['AMET'],
+	  },
+	  {
+		name: 'VRM',
+		p: null, c: null, m: null, pm: null, pcm: 60,
+		eng10: 50, eng12: 50,
+		agg12: null, aggType: null,
+		imuRank: null,
+		ageMin: 17, ageMax: 25, heightMin: 157, bmiMax: null,
+		dropper: 'Yes', nios: 'Yes', improvement: 'Yes',
+		colleges: ['IMI'],
+	  },
+	  {
+		name: 'T Erudite',
+		p: null, c: null, m: null, pm: null, pcm: 60,
+		eng10: 50, eng12: 50,
+		agg12: null, aggType: null,
+		imuRank: null,
+		ageMin: 17, ageMax: 21, heightMin: 157, bmiMax: null,
+		dropper: 'Yes', nios: 'Yes', improvement: 'Yes',
+		colleges: ['TMI'],
+	  },
+	  {
+		name: 'OSM THOME',
+		p: null, c: null, m: null, pm: null, pcm: 60,
+		eng10: 50, eng12: 50,
+		agg12: null, aggType: null,
+		imuRank: null,
+		ageMin: 17, ageMax: 21, heightMin: 157, bmiMax: null,
+		dropper: 'Yes', nios: 'Yes', improvement: 'Yes',
+		colleges: ['TMI'],
+	  },
+	];
+	
+	const bscCollegeDB = [
+	  { name: 'AMET University',                                    pcm: 60, eng10: 50, eng12: 50, ageMin: 17, ageMax: 25, dropper: 'Yes', nios: 'Yes', improvement: 'Yes' },
+	  { name: 'Coimbatore Marine College',                          pcm: 60, eng10: 50, eng12: 50, ageMin: 17, ageMax: 25, dropper: 'Yes', nios: 'Yes', improvement: 'Yes' },
+	  { name: 'HIMT College',                                       pcm: 60, eng10: 50, eng12: 50, ageMin: 17, ageMax: 25, dropper: 'Yes', nios: 'Yes', improvement: 'Yes' },
+	  { name: 'IMU, Navi Mumbai Campus',                            pcm: 60, eng10: 50, eng12: 50, ageMin: 17, ageMax: 25, dropper: 'Yes', nios: 'Yes', improvement: 'Yes' },
+	  { name: 'Indian Maritime University (Kochi)',                  pcm: 60, eng10: 50, eng12: 50, ageMin: 17, ageMax: 25, dropper: 'Yes', nios: 'Yes', improvement: 'Yes' },
+	  { name: 'Indian Maritime University, Chennai',                 pcm: 60, eng10: 50, eng12: 50, ageMin: 17, ageMax: 25, dropper: 'Yes', nios: 'Yes', improvement: 'Yes' },
+	  { name: 'Maharashtra Academy of Naval Education & Training',   pcm: 60, eng10: 50, eng12: 50, ageMin: 17, ageMax: 25, dropper: 'Yes', nios: 'Yes', improvement: 'Yes' },
+	  { name: 'Seven Islands Maritime Training Institute',           pcm: 60, eng10: 50, eng12: 50, ageMin: 17, ageMax: 25, dropper: 'Yes', nios: 'Yes', improvement: 'Yes' },
+	  { name: 'TS Rahaman',                                         pcm: 60, eng10: 50, eng12: 50, ageMin: 17, ageMax: 25, dropper: 'Yes', nios: 'Yes', improvement: 'Yes' },
+	  { name: 'The Neotia University',                              pcm: 60, eng10: 50, eng12: 50, ageMin: 17, ageMax: 25, dropper: 'Yes', nios: 'Yes', improvement: 'Yes' },
+	  { name: 'Tolani Maritime Institute',                          pcm: 60, eng10: 50, eng12: 50, ageMin: 17, ageMax: 21, dropper: 'Yes', nios: 'Yes', improvement: 'Yes' },
+	  { name: 'Ganpat University',                                  pcm: 60, eng10: 50, eng12: 50, ageMin: 17, ageMax: 25, dropper: 'Yes', nios: 'No',  improvement: 'Yes' },
+	];
+	
+	const btechCollegeDB = [
+	  { name: 'AMET University',                                    pcm: 60, eng10: 50, eng12: 50, ageMin: 17, ageMax: 25, dropper: 'Yes', nios: 'Yes', improvement: 'Yes' },
+	  { name: 'Coimbatore Marine College',                          pcm: 60, eng10: 50, eng12: 50, ageMin: 17, ageMax: 25, dropper: 'Yes', nios: 'Yes', improvement: 'Yes' },
+	  { name: 'HIMT College',                                       pcm: 60, eng10: 50, eng12: 50, ageMin: 17, ageMax: 25, dropper: 'Yes', nios: 'Yes', improvement: 'Yes' },
+	  { name: 'IMU, Kolkata Campus',                                pcm: 60, eng10: 50, eng12: 50, ageMin: 17, ageMax: 25, dropper: 'Yes', nios: 'Yes', improvement: 'Yes' },
+	  { name: 'Indian Maritime University, Chennai',                 pcm: 60, eng10: 50, eng12: 50, ageMin: 17, ageMax: 25, dropper: 'Yes', nios: 'Yes', improvement: 'Yes' },
+	  { name: 'Indian Maritime University – Mumbai Port Campus',     pcm: 60, eng10: 50, eng12: 50, ageMin: 17, ageMax: 25, dropper: 'Yes', nios: 'Yes', improvement: 'Yes' },
+	  { name: 'International Maritime Institute',                    pcm: 60, eng10: 50, eng12: 50, ageMin: 17, ageMax: 25, dropper: 'Yes', nios: 'Yes', improvement: 'Yes' },
+	  { name: 'Maharashtra Academy of Naval Education & Training',   pcm: 60, eng10: 50, eng12: 50, ageMin: 17, ageMax: 25, dropper: 'Yes', nios: 'Yes', improvement: 'Yes' },
+	  { name: 'Samundra Institute of Maritime Studies',              pcm: 60, eng10: 50, eng12: 50, ageMin: 17, ageMax: 25, dropper: 'Yes', nios: 'Yes', improvement: 'Yes' },
+	  { name: 'The Neotia University',                              pcm: 60, eng10: 50, eng12: 50, ageMin: 17, ageMax: 25, dropper: 'Yes', nios: 'Yes', improvement: 'Yes' },
+	  { name: 'Tolani Maritime Institute',                          pcm: 60, eng10: 50, eng12: 50, ageMin: 17, ageMax: 25, dropper: 'Yes', nios: 'Yes', improvement: 'Yes' },
+	  { name: 'Ganpat University',                                  pcm: 60, eng10: 50, eng12: 50, ageMin: 17, ageMax: 25, dropper: 'Yes', nios: 'No',  improvement: 'Yes' },
 	];
 
 	const handleCompanyEligibility = (e: React.FormEvent) => {
@@ -711,96 +967,146 @@ const Calculators = () => {
 	const handleShippingEligibility = (e: React.FormEvent) => {
 		e.preventDefault();
 		if (usedCalculators['shipping-eligibility']) return;
+
 		const {
-			name, whatsapp, email, status, nios, improvement,
-			twelfthPercentage, physics, chemistry, maths, english,
+			name, whatsapp, email, status,
+			twelfthPercentage, physics, chemistry, maths,
+			english10, english12,
 			height, weight, dob
 		} = shippingForm;
 
-		if (!name || !whatsapp || !email || !dob || !height || !weight || !physics || !chemistry || !maths || !english) {
-			return;
-		}
+		// Derive nios and improvement from status or explicit fields
+		const derivedNios = status === 'NIOS' ? 'Yes' : shippingForm.nios;
+		const derivedImprovement = status === 'Improvement' ? 'Yes' : shippingForm.improvement;
 
-		// Calculate exact Age
+		if (!name || !whatsapp || !email || !dob || !height || !weight ||
+				!physics || !chemistry || !maths || !english10 || !english12) return;
+
+		// Calculate exact age from DOB
 		const birthDate = new Date(dob);
 		const today = new Date();
 		let age = today.getFullYear() - birthDate.getFullYear();
 		const m = today.getMonth() - birthDate.getMonth();
-		if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-			age--;
-		}
+		if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--;
 
 		// Calculate BMI
 		const hMeters = parseFloat(height) / 100;
 		const wKg = parseFloat(weight);
 		const bmi = wKg / (hMeters * hMeters);
 
-		const p = parseFloat(physics);
-		const c = parseFloat(chemistry);
+		const p   = parseFloat(physics);
+		const c   = parseFloat(chemistry);
 		const mth = parseFloat(maths);
-		const eng = parseFloat(english);
+		const e10 = parseFloat(english10);
+		const e12 = parseFloat(english12);
 		const pcmAgg = (p + c + mth) / 3;
-		const pmAgg = (p + mth) / 2;
+		const pmAgg  = (p + mth) / 2;
+		const agg12Val = parseFloat(twelfthPercentage) || 0;
 
 		storeUserInfo(name, whatsapp, email);
 		setUsedCalculators(prev => ({ ...prev, 'shipping-eligibility': true }));
-
 		setIsCalculatingShipping(true);
 		setShippingResult(null);
-		
+
 		setTimeout(() => {
-			const eligibleDns: any[] = [];
-			const eligibleBsc = new Set<string>();
-			const eligibleBtech = new Set<string>();
+
+			// ── DNS eligibility ──────────────────────────────────────
+			const eligibleDns: { name: string; colleges: string[] }[] = [];
 
 			shippingDB.forEach(company => {
-				let isEligible = true;
-				
-				if (company.p && p < company.p) isEligible = false;
-				if (company.c && c < company.c) isEligible = false;
-				if (company.m && mth < company.m) isEligible = false;
-				if (company.pm && pmAgg < company.pm) isEligible = false;
-				if (company.pcm && pcmAgg < company.pcm) isEligible = false;
-				
-				// English rules: Since only one English % is provided, we check against the strictest requirement
-				const reqEng = Math.max(company.eng10 || 0, company.eng12 || 0);
-				if (reqEng > 0 && eng < reqEng) isEligible = false;
-				
-				const agg12 = parseFloat(twelfthPercentage);
-				if (company.agg12 && status === 'Dropper' && !isNaN(agg12)) {
-					if (agg12 < company.agg12) isEligible = false;
+				let ok = true;
+
+				// Individual subject minimums
+				if (company.p   !== null && p   < company.p)   ok = false;
+				if (company.c   !== null && c   < company.c)   ok = false;
+				if (company.m   !== null && mth < company.m)   ok = false;
+				if (company.pm  !== null && pmAgg  < company.pm)  ok = false;
+				if (company.pcm !== null && pcmAgg < company.pcm) ok = false;
+
+				// English: check BOTH 10th and 12th thresholds separately
+				if (company.eng10 !== null && e10 < company.eng10) ok = false;
+				if (company.eng12 !== null && e12 < company.eng12) ok = false;
+
+				// Aggregate 12th % (only relevant for Dropper or when company specifies it)
+				if (company.agg12 !== null) {
+					if (agg12Val < company.agg12) ok = false;
 				}
 
-				if (company.ageMin && age < company.ageMin) isEligible = false;
-				if (company.ageMax && age > company.ageMax) isEligible = false;
-				if (company.heightMin && parseFloat(height) < company.heightMin) isEligible = false;
-				if (company.bmiMax && bmi > company.bmiMax) isEligible = false;
+				// Age
+				if (age < company.ageMin) ok = false;
+				if (age > company.ageMax) ok = false;
 
-				if (company.dropper === 'No' && status === 'Dropper') isEligible = false;
-				if (company.nios === 'No' && nios === 'Yes') isEligible = false;
-				if (company.improvement === 'No' && improvement === 'Yes') isEligible = false;
+				// Height
+				if (company.heightMin !== null && parseFloat(height) < company.heightMin) ok = false;
 
-				if (isEligible) {
+				// BMI
+				if (company.bmiMax !== null && bmi > company.bmiMax) ok = false;
+
+				// Dropper rule: if company says 'No', Droppers are not allowed
+				if (company.dropper === 'No' && status === 'Dropper') ok = false;
+
+				// NIOS rule: if company says 'No', NIOS students are not allowed
+				if (company.nios === 'No' && derivedNios === 'Yes') ok = false;
+
+				// Improvement rule: if company says 'No', Improvement students are not allowed
+				if (company.improvement === 'No' && derivedImprovement === 'Yes') ok = false;
+
+				// IMU CET Rank rule
+				// imuRank: null = no rank requirement
+				// imuRank: 4000 = student's rank must be <= 4000 (we don't collect rank in this form, so SKIP this check
+				//   and instead display a note in the result for SISL and VShips)
+				// imuRank: 'top40percent' = show a note for Anglo Eastern
+				// Since the form doesn't collect IMU CET rank, do NOT disqualify on rank — but flag it in the output.
+
+				if (ok) {
+					let rankNote = '';
+					if (company.imuRank === 'top40percent') rankNote = ' ⚠️ IMU CET rank must be in top 40%';
+					if (typeof company.imuRank === 'number') rankNote = ` ⚠️ IMU CET rank must be ≤ ${company.imuRank}`;
 					eligibleDns.push({
-						name: company.name,
-						colleges: company.colleges
+						name: company.name + rankNote,
+						colleges: company.colleges,
 					});
 				}
 			});
 
-			const isCollegeEligible = pcmAgg >= 60 && eng >= 50 && age <= 25 && nios === 'No';
-			if (isCollegeEligible) {
-				['IMU NAVI MUMBAI', 'IMU CHENNAI', 'IMU KOCHI', 'TMI', 'AMET'].forEach(c => eligibleBsc.add(c));
-				['IMU KOLKATA', 'IMU MUMBAI PORT', 'IMU CHENNAI', 'TMI'].forEach(c => eligibleBtech.add(c));
-			}
+			// ── BSc Nautical eligibility ──────────────────────────────
+			const eligibleBsc: string[] = [];
+			bscCollegeDB.forEach(college => {
+				let ok = true;
+				if (pcmAgg < college.pcm) ok = false;
+				if (e10 < college.eng10) ok = false;
+				if (e12 < college.eng12) ok = false;
+				if (age < college.ageMin) ok = false;
+				if (age > college.ageMax) ok = false;
+				if (college.dropper === 'No' && status === 'Dropper') ok = false;
+				if (college.nios === 'No' && derivedNios === 'Yes') ok = false;
+				if (college.improvement === 'No' && derivedImprovement === 'Yes') ok = false;
+				if (ok) eligibleBsc.push(college.name);
+			});
+
+			// ── BTech Marine eligibility ──────────────────────────────
+			const eligibleBtech: string[] = [];
+			btechCollegeDB.forEach(college => {
+				let ok = true;
+				if (pcmAgg < college.pcm) ok = false;
+				if (e10 < college.eng10) ok = false;
+				if (e12 < college.eng12) ok = false;
+				if (age < college.ageMin) ok = false;
+				if (age > college.ageMax) ok = false;
+				if (college.dropper === 'No' && status === 'Dropper') ok = false;
+				if (college.nios === 'No' && derivedNios === 'Yes') ok = false;
+				if (college.improvement === 'No' && derivedImprovement === 'Yes') ok = false;
+				if (ok) eligibleBtech.push(college.name);
+			});
 
 			setShippingResult({
 				dns: eligibleDns,
-				bsc: Array.from(eligibleBsc),
-				btech: Array.from(eligibleBtech)
+				bsc: eligibleBsc,
+				btech: eligibleBtech,
 			});
 			setIsCalculatingShipping(false);
-		}, 3000); 
+
+		}, 3000);
 	};
 
 	return (
@@ -1365,27 +1671,40 @@ const Calculators = () => {
 									<select value={shippingForm.status} onChange={e => setShippingForm(p => ({...p, status: e.target.value}))} className="w-full px-3 py-2 border border-gray-300 rounded text-black focus:ring-2 focus:ring-yellow-400">
 										<option value="Appearing">Appearing</option>
 										<option value="Dropper">Dropper</option>
+										<option value="NIOS">NIOS</option>
+										<option value="Improvement">Improvement</option>
 									</select>
 								</div>
 								{shippingForm.status === 'Dropper' && (
 									<div><label className="text-sm font-semibold text-gray-700 block mb-1">12th Percentage (%)</label><input type="number" required value={shippingForm.twelfthPercentage} onChange={e => setShippingForm(p => ({...p, twelfthPercentage: e.target.value}))} className="w-full px-3 py-2 border border-gray-300 rounded text-black focus:ring-2 focus:ring-yellow-400" /></div>
 								)}
-								<div>
-									<label className="text-sm font-semibold text-gray-700 block mb-1">NIOS</label>
-									<select value={shippingForm.nios} onChange={e => setShippingForm(p => ({...p, nios: e.target.value}))} className="w-full px-3 py-2 border border-gray-300 rounded text-black focus:ring-2 focus:ring-yellow-400">
-										<option value="No">No</option><option value="Yes">Yes</option>
-									</select>
-								</div>
-								<div>
-									<label className="text-sm font-semibold text-gray-700 block mb-1">Improvement</label>
-									<select value={shippingForm.improvement} onChange={e => setShippingForm(p => ({...p, improvement: e.target.value}))} className="w-full px-3 py-2 border border-gray-300 rounded text-black focus:ring-2 focus:ring-yellow-400">
-										<option value="No">No</option><option value="Yes">Yes</option>
-									</select>
-								</div>
+								{shippingForm.status !== 'NIOS' && (
+									<div>
+										<label className="text-sm font-semibold text-gray-700 block mb-1">NIOS</label>
+										<select value={shippingForm.nios} onChange={e => setShippingForm(p => ({...p, nios: e.target.value}))} className="w-full px-3 py-2 border border-gray-300 rounded text-black focus:ring-2 focus:ring-yellow-400">
+											<option value="No">No</option><option value="Yes">Yes</option>
+										</select>
+									</div>
+								)}
+								{shippingForm.status !== 'Improvement' && (
+									<div>
+										<label className="text-sm font-semibold text-gray-700 block mb-1">Improvement</label>
+										<select value={shippingForm.improvement} onChange={e => setShippingForm(p => ({...p, improvement: e.target.value}))} className="w-full px-3 py-2 border border-gray-300 rounded text-black focus:ring-2 focus:ring-yellow-400">
+											<option value="No">No</option><option value="Yes">Yes</option>
+										</select>
+									</div>
+								)}
 								<div><label className="text-sm font-semibold text-gray-700 block mb-1">Physics (%)</label><input type="number" required value={shippingForm.physics} onChange={e => setShippingForm(p => ({...p, physics: e.target.value}))} className="w-full px-3 py-2 border border-gray-300 rounded text-black focus:ring-2 focus:ring-yellow-400" /></div>
 								<div><label className="text-sm font-semibold text-gray-700 block mb-1">Chemistry (%)</label><input type="number" required value={shippingForm.chemistry} onChange={e => setShippingForm(p => ({...p, chemistry: e.target.value}))} className="w-full px-3 py-2 border border-gray-300 rounded text-black focus:ring-2 focus:ring-yellow-400" /></div>
 								<div><label className="text-sm font-semibold text-gray-700 block mb-1">Maths (%)</label><input type="number" required value={shippingForm.maths} onChange={e => setShippingForm(p => ({...p, maths: e.target.value}))} className="w-full px-3 py-2 border border-gray-300 rounded text-black focus:ring-2 focus:ring-yellow-400" /></div>
-								<div><label className="text-sm font-semibold text-gray-700 block mb-1">English (%)</label><input type="number" required value={shippingForm.english} onChange={e => setShippingForm(p => ({...p, english: e.target.value}))} className="w-full px-3 py-2 border border-gray-300 rounded text-black focus:ring-2 focus:ring-yellow-400" /></div>
+								<div>
+									<label className="text-sm font-semibold text-gray-700 block mb-1">English % (Class 10)</label>
+									<input type="number" required value={shippingForm.english10} onChange={e => setShippingForm(p => ({...p, english10: e.target.value}))} className="w-full px-3 py-2 border border-gray-300 rounded text-black focus:ring-2 focus:ring-yellow-400" />
+								</div>
+								<div>
+									<label className="text-sm font-semibold text-gray-700 block mb-1">English % (Class 12)</label>
+									<input type="number" required value={shippingForm.english12} onChange={e => setShippingForm(p => ({...p, english12: e.target.value}))} className="w-full px-3 py-2 border border-gray-300 rounded text-black focus:ring-2 focus:ring-yellow-400" />
+								</div>
 								<div><label className="text-sm font-semibold text-gray-700 block mb-1">Height (in cm)</label><input type="number" required value={shippingForm.height} onChange={e => setShippingForm(p => ({...p, height: e.target.value}))} className="w-full px-3 py-2 border border-gray-300 rounded text-black focus:ring-2 focus:ring-yellow-400" /></div>
 								<div><label className="text-sm font-semibold text-gray-700 block mb-1">Weight (in kg)</label><input type="number" required value={shippingForm.weight} onChange={e => setShippingForm(p => ({...p, weight: e.target.value}))} className="w-full px-3 py-2 border border-gray-300 rounded text-black focus:ring-2 focus:ring-yellow-400" /></div>
 								<div><label className="text-sm font-semibold text-gray-700 block mb-1">DOB</label><input type="date" required value={shippingForm.dob} onChange={e => setShippingForm(p => ({...p, dob: e.target.value}))} className="w-full px-3 py-2 border border-gray-300 rounded text-black focus:ring-2 focus:ring-yellow-400" /></div>
