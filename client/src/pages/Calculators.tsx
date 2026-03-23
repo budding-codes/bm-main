@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { Calculator, DollarSign, CreditCard, BarChart2, Anchor, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -618,6 +618,36 @@ const Calculators = () => {
 		});
 	};
 
+	const handleShippingReset = () => {
+		setShippingForm({
+			name: '',
+			whatsapp: '',
+			email: '',
+			status: 'Appearing',
+			nios: 'No',
+			improvement: 'No',
+			twelfthPercentage: '',
+			physics: '',
+			chemistry: '',
+			maths: '',
+			english10: '',
+			english12: '',
+			height: '',
+			weight: '',
+			dob: '',
+		});
+		setShippingResult(null);
+		setIsCalculatingShipping(false);
+		setExpandedCompany(null);
+		setExpandedCollegeBsc(null);
+		setExpandedCollegeBtech(null);
+		setUsedCalculators(prev => {
+			const next = { ...prev };
+			delete next['shipping-eligibility'];
+			return next;
+		});
+	};
+
 	const handleCompanyFormChange = (field: string, value: any) => {
 		setCompanyForm(f => ({ ...f, [field]: value }));
 	};
@@ -966,7 +996,6 @@ const Calculators = () => {
 
 	const handleShippingEligibility = (e: React.FormEvent) => {
 		e.preventDefault();
-		if (usedCalculators['shipping-eligibility']) return;
 
 		const {
 			name, whatsapp, email, status,
@@ -1004,7 +1033,6 @@ const Calculators = () => {
 		const agg12Val = parseFloat(twelfthPercentage) || 0;
 
 		storeUserInfo(name, whatsapp, email);
-		setUsedCalculators(prev => ({ ...prev, 'shipping-eligibility': true }));
 		setIsCalculatingShipping(true);
 		setShippingResult(null);
 
@@ -1664,7 +1692,7 @@ const Calculators = () => {
 							<form className="w-full grid grid-cols-1 md:grid-cols-2 gap-4" onSubmit={handleShippingEligibility}>
 								{/* inputs */}
 								<div><label className="text-sm font-semibold text-gray-700 block mb-1">Name</label><input type="text" required value={shippingForm.name} onChange={e => setShippingForm(p => ({...p, name: e.target.value}))} className="w-full px-3 py-2 border border-gray-300 rounded text-black focus:ring-2 focus:ring-yellow-400" /></div>
-								<div><label className="text-sm font-semibold text-gray-700 block mb-1">WhatsApp Number</label><input type="number" required value={shippingForm.whatsapp} onChange={e => setShippingForm(p => ({...p, whatsapp: e.target.value}))} className="w-full px-3 py-2 border border-gray-300 rounded text-black focus:ring-2 focus:ring-yellow-400" /></div>
+								<div><label className="text-sm font-semibold text-gray-700 block mb-1">WhatsApp Number</label><input type="tel" inputMode="numeric" pattern="[0-9]{10}" maxLength={10} required value={shippingForm.whatsapp} onChange={e => setShippingForm(p => ({...p, whatsapp: e.target.value.replace(/\D/g, '').slice(0, 10)}))} className="w-full px-3 py-2 border border-gray-300 rounded text-black focus:ring-2 focus:ring-yellow-400" /></div>
 								<div><label className="text-sm font-semibold text-gray-700 block mb-1">e-Mail</label><input type="email" required value={shippingForm.email} onChange={e => setShippingForm(p => ({...p, email: e.target.value}))} className="w-full px-3 py-2 border border-gray-300 rounded text-black focus:ring-2 focus:ring-yellow-400" /></div>
 								<div>
 									<label className="text-sm font-semibold text-gray-700 block mb-1">Status</label>
@@ -1710,10 +1738,9 @@ const Calculators = () => {
 								<div><label className="text-sm font-semibold text-gray-700 block mb-1">DOB</label><input type="date" required value={shippingForm.dob} onChange={e => setShippingForm(p => ({...p, dob: e.target.value}))} className="w-full px-3 py-2 border border-gray-300 rounded text-black focus:ring-2 focus:ring-yellow-400" /></div>
 								
 								<div className="md:col-span-2 mt-4">
-									<button type="submit" disabled={usedCalculators['shipping-eligibility']} className="w-full bg-yellow-400 text-black font-bold py-3 rounded-lg hover:bg-yellow-500 transition shadow-md">
-										{usedCalculators['shipping-eligibility'] ? 'Used' : 'Find Best Colleges & Companies'}
+									<button type="submit" className="w-full bg-yellow-400 text-black font-bold py-3 rounded-lg hover:bg-yellow-500 transition shadow-md">
+									Find Best Colleges &amp; Companies
 									</button>
-									{usedCalculators['shipping-eligibility'] && <div className="mt-2 text-sm text-center text-red-600 font-semibold">Refresh the page to use calculator again.</div>}
 								</div>
 							</form>
 						) : null}
@@ -1744,6 +1771,15 @@ const Calculators = () => {
 						{/* Results UI */}
 						{shippingResult && !isCalculatingShipping ? (
 							<div className="mt-8 w-full max-w-5xl">
+								<div className="flex justify-end mb-4">
+									<button
+										type="button"
+										onClick={handleShippingReset}
+										className="flex items-center gap-2 px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 active:bg-gray-400 transition font-semibold text-sm"
+									>
+										&#8635; Check Again
+									</button>
+								</div>
 								<h3 className="text-3xl font-bold text-center text-black font-geist mb-8">
 									This could be your future!<br />
 									<span className="text-yellow-600 text-2xl">You are <span className="underline decoration-4 decoration-yellow-400 mr-2">eligible</span>🔥 Now let's look at your options!</span>
