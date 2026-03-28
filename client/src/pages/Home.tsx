@@ -18,6 +18,15 @@ import cl13 from '../../assets/CL13.jpg';
 import b1 from '../../assets/highestselections.png';
 import b2 from '../../assets/Selection.png';
 import b3 from '../../assets/mocktest.png';
+import s1 from '../../assets/S1.jpg';
+import s2 from '../../assets/S2.jpg';
+import s3 from '../../assets/S3.jpg';
+import s4 from '../../assets/S4.png';
+import s5 from '../../assets/S5.png';
+import s6 from '../../assets/S6.png';
+import s7 from '../../assets/S7.png';
+import s8 from '../../assets/S8.png';
+import s9 from '../../assets/S9.png';
 
 
 const Home = () => {
@@ -499,8 +508,44 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Past Selections Section */}
+      <section className="bg-black py-8 border-b border-white/10">
+        <h2 className="text-xl font-bold text-center text-yellow-400 mb-6 uppercase tracking-wide">
+          Our Past Selections...
+        </h2>
+        <div className="relative overflow-hidden">
+          <div
+            className="flex items-center gap-8 md:gap-12"
+            style={{
+              animation: 'marqueePastSelectionsHome 30s linear infinite',
+              width: 'fit-content',
+            }}
+          >
+            {[...Array(2)].fill([s1, s2, s3, s4, s5, s6, s7, s8, s9]).flat().map((img: string, idx: number) => (
+              <div
+                key={idx}
+                className="flex-shrink-0 flex items-center justify-center"
+                style={{ minWidth: '200px', height: '200px' }}
+              >
+                <img
+                  src={img}
+                  alt={`Past Selection ${idx + 1}`}
+                  className="max-w-full max-h-full object-contain rounded"
+                  style={{ maxHeight: 200, maxWidth: 300 }}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+        <style>{`
+          @keyframes marqueePastSelectionsHome {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+          }
+        `}</style>
+      </section>
+
       {/* YouTube Shorts Section */}
-      // Optimized YouTube Shorts Section
 <section className="py-12 md:py-16 lg:py-20 bg-black relative">
   <div className="max-w-7xl mx-auto px-4">
     <motion.h2

@@ -1,8 +1,29 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
-import { Calculator, DollarSign, CreditCard, BarChart2, Anchor, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
+import { Calculator, DollarSign, CreditCard, BarChart2, Anchor, ExternalLink, ChevronDown, ChevronUp, FileDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { jsPDF } from 'jspdf';
 import shipAvif from '../../assets/ship.avif';
+import bmLogo from '../../assets/yellow on orange logomark.png';
+
+const collegeLinks: Record<string, string> = {
+	'AMET University': 'https://ametuniv.ac.in',
+	'Coimbatore Marine College': 'https://www.cmc.ac.in',
+	'HIMT College': 'https://himtmumbai.com',
+	'IMU, Navi Mumbai Campus': 'https://imu.edu.in',
+	'Indian Maritime University (Kochi)': 'https://imu.edu.in/kochi',
+	'Indian Maritime University, Chennai': 'https://imu.edu.in/chennai',
+	'Maharashtra Academy of Naval Education & Training': 'https://www.manet.edu.in',
+	'Seven Islands Maritime Training Institute': 'https://www.simti.ac.in',
+	'TS Rahaman': 'https://www.tsrahaman.com',
+	'The Neotia University': 'https://www.neotiauniversity.ac.in',
+	'Tolani Maritime Institute': 'https://tmi.tolani.edu',
+	'Ganpat University': 'https://www.ganpatuniversity.ac.in',
+	'IMU, Kolkata Campus': 'https://imu.edu.in/kolkata',
+	'Indian Maritime University – Mumbai Port Campus': 'https://imu.edu.in/mumbaiportcampus',
+	'International Maritime Institute': 'https://www.imindia.net',
+	'Samundra Institute of Maritime Studies': 'https://www.somsindia.com',
+};
 
 const calculators = [
 	// {
@@ -43,7 +64,7 @@ const calculators = [
 	},
 	{
 		id: 'shipping-eligibility',
-		title: 'Shipping Eligibility Calculator',
+		title: 'Merchant Navy Eligibility Calculator',
 		description: 'Comprehensive eligibility check across leading companies and colleges for DNS, BSc, and BTech.',
 		icon: <Anchor className="w-6 h-6 text-yellow-400" />,
 	},
@@ -241,7 +262,7 @@ const Calculators = () => {
 		weight: '',
 		dob: '',
 	});
-	const [shippingResult, setShippingResult] = useState<{ dns: { name: string; colleges: string[] }[], bsc: string[], btech: string[] } | null>(null);
+	const [shippingResult, setShippingResult] = useState<{ dns: { name: string; rankNote: string; colleges: string[] }[], bsc: string[], btech: string[] } | null>(null);
 	const [isCalculatingShipping, setIsCalculatingShipping] = useState(false);
 	const [expandedCompany, setExpandedCompany] = useState<string | null>(null);
 	const [expandedCollegeBsc, setExpandedCollegeBsc] = useState<string | null>(null);
@@ -1039,7 +1060,7 @@ const Calculators = () => {
 		setTimeout(() => {
 
 			// ── DNS eligibility ──────────────────────────────────────
-			const eligibleDns: { name: string; colleges: string[] }[] = [];
+const eligibleDns: { name: string; rankNote: string; colleges: string[] }[] = [];
 
 			shippingDB.forEach(company => {
 				let ok = true;
@@ -1088,10 +1109,11 @@ const Calculators = () => {
 
 				if (ok) {
 					let rankNote = '';
-					if (company.imuRank === 'top40percent') rankNote = ' ⚠️ IMU CET rank must be in top 40%';
-					if (typeof company.imuRank === 'number') rankNote = ` ⚠️ IMU CET rank must be ≤ ${company.imuRank}`;
+					if (company.imuRank === 'top40percent') rankNote = 'IMU CET rank must be in top 40%';
+					if (typeof company.imuRank === 'number') rankNote = `IMU CET rank must be ≤ ${company.imuRank}`;
 					eligibleDns.push({
-						name: company.name + rankNote,
+						name: company.name,
+						rankNote,
 						colleges: company.colleges,
 					});
 				}
@@ -1135,6 +1157,135 @@ const Calculators = () => {
 			setIsCalculatingShipping(false);
 
 		}, 3000);
+	};
+
+	const handleExportPdf = () => {
+		if (!shippingResult) return;
+		const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+		const pageW = doc.internal.pageSize.getWidth();
+		const pageH = doc.internal.pageSize.getHeight();
+		const margin = 14;
+
+		// Dark background
+		doc.setFillColor(10, 10, 10);
+		doc.rect(0, 0, pageW, pageH, 'F');
+
+		// Header bar
+		doc.setFillColor(234, 179, 8);
+		doc.rect(0, 0, pageW, 28, 'F');
+
+		// Logo image
+		try {
+			doc.addImage(bmLogo, 'PNG', margin, 4, 18, 18);
+		} catch (_) { /* skip if image load fails */ }
+
+		// Brand name
+		doc.setFont('helvetica', 'bold');
+		doc.setFontSize(16);
+		doc.setTextColor(10, 10, 10);
+		doc.text('BUDDING MARINERS', margin + 22, 16);
+
+		// Report subtitle
+		doc.setFontSize(8);
+		doc.setFont('helvetica', 'normal');
+		doc.text('Merchant Navy Eligibility Report', margin + 22, 22);
+
+		// Date top-right
+		doc.setFontSize(7);
+		doc.text(new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' }), pageW - margin, 14, { align: 'right' });
+
+		let y = 38;
+
+		// Title
+		doc.setFont('helvetica', 'bold');
+		doc.setFontSize(13);
+		doc.setTextColor(234, 179, 8);
+		doc.text('Your Eligibility Results', margin, y);
+		y += 10;
+
+		const drawSectionHeader = (title: string, color: [number, number, number]) => {
+			doc.setFillColor(...color);
+			doc.roundedRect(margin, y, pageW - margin * 2, 9, 2, 2, 'F');
+			doc.setFont('helvetica', 'bold');
+			doc.setFontSize(9);
+			doc.setTextColor(234, 179, 8);
+			doc.text(title, pageW / 2, y + 6, { align: 'center' });
+			y += 13;
+		};
+
+		const drawItem = (name: string, link: string, sub?: string) => {
+			if (y > pageH - 20) {
+				doc.addPage();
+				doc.setFillColor(10, 10, 10);
+				doc.rect(0, 0, pageW, pageH, 'F');
+				doc.setFillColor(234, 179, 8);
+				doc.rect(0, 0, pageW, 8, 'F');
+				y = 16;
+			}
+			doc.setFillColor(30, 30, 30);
+			doc.roundedRect(margin, y, pageW - margin * 2, sub ? 14 : 10, 1.5, 1.5, 'F');
+			doc.setFont('helvetica', 'bold');
+			doc.setFontSize(8);
+			doc.setTextColor(255, 255, 255);
+			doc.text(name, margin + 3, y + (sub ? 5 : 6.5));
+			if (sub) {
+				doc.setFont('helvetica', 'normal');
+				doc.setFontSize(7);
+				doc.setTextColor(180, 180, 180);
+				doc.text(`Colleges: ${sub}`, margin + 3, y + 11);
+			}
+			if (link) {
+				doc.setFont('helvetica', 'normal');
+				doc.setFontSize(7);
+				doc.setTextColor(96, 165, 250);
+				doc.textWithLink('Click here →', pageW - margin - 3, y + (sub ? 5 : 6.5), { url: link, align: 'right' });
+			}
+			y += (sub ? 17 : 13);
+		};
+
+		// DNS section
+		if (shippingResult.dns.length > 0) {
+			drawSectionHeader('DNS — Shipping Companies Eligible', [11, 27, 69]);
+			shippingResult.dns.forEach(comp => {
+				const collegeNames = comp.colleges.join(', ');
+				drawItem(comp.name, `https://www.google.com/search?q=${encodeURIComponent(comp.name + ' shipping company')}`, collegeNames);
+			});
+			y += 4;
+		}
+
+		// BSc section
+		if (shippingResult.bsc.length > 0) {
+			drawSectionHeader('BSc Nautical Science — Eligible Colleges', [26, 58, 127]);
+			shippingResult.bsc.forEach(col => {
+				const link = collegeLinks[col] || `https://www.google.com/search?q=${encodeURIComponent(col + ' maritime college admission')}`;
+				drawItem(col, link);
+			});
+			y += 4;
+		}
+
+		// BTech section
+		if (shippingResult.btech.length > 0) {
+			drawSectionHeader('BTech Marine Engineering — Eligible Colleges', [43, 86, 170]);
+			shippingResult.btech.forEach(col => {
+				const link = collegeLinks[col] || `https://www.google.com/search?q=${encodeURIComponent(col + ' maritime college admission')}`;
+				drawItem(col, link);
+			});
+			y += 4;
+		}
+
+		// Footer strip on every page
+		const totalPages = (doc.internal as any).getNumberOfPages();
+		for (let i = 1; i <= totalPages; i++) {
+			doc.setPage(i);
+			doc.setFillColor(234, 179, 8);
+			doc.rect(0, pageH - 10, pageW, 10, 'F');
+			doc.setFont('helvetica', 'normal');
+			doc.setFontSize(7);
+			doc.setTextColor(10, 10, 10);
+			doc.text('buddingmariners.com  |  Your Gateway to the Merchant Navy', pageW / 2, pageH - 3.5, { align: 'center' });
+		}
+
+		doc.save('BM_Merchant_Navy_Eligibility.pdf');
 	};
 
 	return (
@@ -1204,37 +1355,73 @@ const Calculators = () => {
 			</section>
 
 			{/* Calculator Cards */}
-			<section className="flex flex-wrap justify-center gap-6 mt-10 mb-10 px-2">
-				{calculators.map((calc) => (
-					<div
-						key={calc.id}
-						className={`bg-white/5 rounded-xl shadow-lg p-6 w-full max-w-xs min-w-[260px] flex flex-col items-center border border-white/10 transition-all ${
-							selected === calc.id ? 'ring-2 ring-yellow-400' : ''
-						}`}
-						style={{ cursor: 'pointer' }}
-						onClick={() => {
-							setSelected(calc.id);
-							setScrollOnSelect(true);
-						}}
-					>
-						<div className="mb-3">{calc.icon}</div>
-						<div className="font-bold text-lg mb-2 text-white">{calc.title}</div>
-						<div className="text-white/70 text-sm mb-4 text-center">
-							{calc.description}
-						</div>
-						<button
-							className={`px-4 py-2 rounded-full font-semibold text-sm transition ${
-								selected === calc.id
-									? 'bg-yellow-400 text-black'
-									: 'bg-white/10 text-yellow-400 hover:bg-yellow-400 hover:text-black'
+			<section className="mt-10 mb-10 px-2">
+				{/* Merchant Navy Eligibility Calculator — centred on its own row */}
+				<div className="flex justify-center mb-6">
+					{calculators.filter(c => c.id === 'shipping-eligibility').map((calc) => (
+						<div
+							key={calc.id}
+							className={`bg-white/5 rounded-xl shadow-lg p-6 w-full max-w-xs min-w-[260px] flex flex-col items-center border border-white/10 transition-all ${
+								selected === calc.id ? 'ring-2 ring-yellow-400' : ''
 							}`}
-							onClick={() => setSelected(calc.id)}
-							type="button"
+							style={{ cursor: 'pointer' }}
+							onClick={() => {
+								setSelected(calc.id);
+								setScrollOnSelect(true);
+							}}
 						>
-							Use Calculator
-						</button>
-					</div>
-				))}
+							<div className="mb-3">{calc.icon}</div>
+							<div className="font-bold text-lg mb-2 text-white">{calc.title}</div>
+							<div className="text-white/70 text-sm mb-4 text-center">
+								{calc.description}
+							</div>
+							<button
+								className={`px-4 py-2 rounded-full font-semibold text-sm transition ${
+									selected === calc.id
+										? 'bg-yellow-400 text-black'
+										: 'bg-white/10 text-yellow-400 hover:bg-yellow-400 hover:text-black'
+								}`}
+								onClick={() => setSelected(calc.id)}
+								type="button"
+							>
+								Use Calculator
+							</button>
+						</div>
+					))}
+				</div>
+				{/* All other calculators */}
+				<div className="flex flex-wrap justify-center gap-6">
+					{calculators.filter(c => c.id !== 'shipping-eligibility').map((calc) => (
+						<div
+							key={calc.id}
+							className={`bg-white/5 rounded-xl shadow-lg p-6 w-full max-w-xs min-w-[260px] flex flex-col items-center border border-white/10 transition-all ${
+								selected === calc.id ? 'ring-2 ring-yellow-400' : ''
+							}`}
+							style={{ cursor: 'pointer' }}
+							onClick={() => {
+								setSelected(calc.id);
+								setScrollOnSelect(true);
+							}}
+						>
+							<div className="mb-3">{calc.icon}</div>
+							<div className="font-bold text-lg mb-2 text-white">{calc.title}</div>
+							<div className="text-white/70 text-sm mb-4 text-center">
+								{calc.description}
+							</div>
+							<button
+								className={`px-4 py-2 rounded-full font-semibold text-sm transition ${
+									selected === calc.id
+										? 'bg-yellow-400 text-black'
+										: 'bg-white/10 text-yellow-400 hover:bg-yellow-400 hover:text-black'
+								}`}
+								onClick={() => setSelected(calc.id)}
+								type="button"
+							>
+								Use Calculator
+							</button>
+						</div>
+					))}
+				</div>
 			</section>
 
 			{/* Calculator Forms */}
@@ -1771,7 +1958,14 @@ const Calculators = () => {
 						{/* Results UI */}
 						{shippingResult && !isCalculatingShipping ? (
 							<div className="mt-8 w-full max-w-5xl">
-								<div className="flex justify-end mb-4">
+								<div className="flex justify-end gap-3 mb-4">
+									<button
+										type="button"
+										onClick={handleExportPdf}
+										className="flex items-center gap-2 px-4 py-2 bg-yellow-400 text-black rounded-lg hover:bg-yellow-500 active:bg-yellow-600 transition font-semibold text-sm"
+									>
+										<FileDown size={15} /> Export PDF
+									</button>
 									<button
 										type="button"
 										onClick={handleShippingReset}
@@ -1791,14 +1985,17 @@ const Calculators = () => {
 										<div className="bg-gray-100 p-3 rounded-b-lg flex flex-col gap-3 shadow-inner border order-t-0 border-gray-300">
 											{shippingResult.dns.length > 0 ? shippingResult.dns.map((comp, idx) => (
 												<div key={idx} className="bg-white rounded-md border border-gray-200 overflow-hidden shadow-sm transition-all hover:border-gray-300">
-													<button onClick={() => setExpandedCompany(expandedCompany === comp.name ? null : comp.name)} className={`w-full flex justify-between items-center p-3 text-sm font-bold text-black ${expandedCompany === comp.name ? 'bg-yellow-400/20' : 'hover:bg-gray-50'}`}>
-														<span>{comp.name}</span>
-														{expandedCompany === comp.name ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+													<button onClick={() => setExpandedCompany(expandedCompany === comp.name ? null : comp.name)} className={`w-full relative flex items-center justify-center p-3 text-sm font-bold text-black ${expandedCompany === comp.name ? 'bg-yellow-400/20' : 'hover:bg-gray-50'}`}>
+														<span className="text-center w-full">{comp.name}</span>
+														<span className="absolute right-3 top-1/2 -translate-y-1/2">{expandedCompany === comp.name ? <ChevronUp size={16} /> : <ChevronDown size={16} />}</span>
 													</button>
 													<AnimatePresence>
 														{expandedCompany === comp.name && (
 															<motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} className="overflow-hidden">
 																<div className="p-4 bg-[#111827] text-white text-xs leading-relaxed border-t border-gray-200">
+																	{comp.rankNote && (
+																		<p className="mb-2 font-semibold text-orange-400 flex items-center gap-1">⚠️ {comp.rankNote}</p>
+																	)}
 																	<p className="font-bold text-gray-300 mb-1">Colleges you can go to:</p>
 																	<p className="mb-3 font-semibold text-yellow-400">{comp.colleges.join(', ')}</p>
 																	<p className="font-bold text-gray-300 mb-1">Official Company Page:</p>
@@ -1818,9 +2015,9 @@ const Calculators = () => {
 										<div className="bg-gray-100 p-3 rounded-b-lg flex flex-col gap-3 shadow-inner border border-t-0 border-gray-300">
 											{shippingResult.bsc.length > 0 ? shippingResult.bsc.map((col, idx) => (
 												<div key={idx} className="bg-white rounded-md border border-gray-200 overflow-hidden shadow-sm transition-all hover:border-gray-300">
-													<button onClick={() => setExpandedCollegeBsc(expandedCollegeBsc === col ? null : col)} className={`w-full flex justify-between items-center p-3 text-sm font-bold text-black ${expandedCollegeBsc === col ? 'bg-yellow-400/20' : 'hover:bg-gray-50'}`}>
-														<span>{col}</span>
-														{expandedCollegeBsc === col ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+													<button onClick={() => setExpandedCollegeBsc(expandedCollegeBsc === col ? null : col)} className={`w-full relative flex items-center justify-center p-3 text-sm font-bold text-black ${expandedCollegeBsc === col ? 'bg-yellow-400/20' : 'hover:bg-gray-50'}`}>
+														<span className="text-center w-full">{col}</span>
+														<span className="absolute right-3 top-1/2 -translate-y-1/2">{expandedCollegeBsc === col ? <ChevronUp size={16} /> : <ChevronDown size={16} />}</span>
 													</button>
 													<AnimatePresence>
 														{expandedCollegeBsc === col && (
@@ -1843,9 +2040,9 @@ const Calculators = () => {
 										<div className="bg-gray-100 p-3 rounded-b-lg flex flex-col gap-3 shadow-inner border border-t-0 border-gray-300">
 											{shippingResult.btech.length > 0 ? shippingResult.btech.map((col, idx) => (
 												<div key={idx} className="bg-white rounded-md border border-gray-200 overflow-hidden shadow-sm transition-all hover:border-gray-300">
-													<button onClick={() => setExpandedCollegeBtech(expandedCollegeBtech === col ? null : col)} className={`w-full flex justify-between items-center p-3 text-sm font-bold text-black ${expandedCollegeBtech === col ? 'bg-yellow-400/20' : 'hover:bg-gray-50'}`}>
-														<span>{col}</span>
-														{expandedCollegeBtech === col ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+													<button onClick={() => setExpandedCollegeBtech(expandedCollegeBtech === col ? null : col)} className={`w-full relative flex items-center justify-center p-3 text-sm font-bold text-black ${expandedCollegeBtech === col ? 'bg-yellow-400/20' : 'hover:bg-gray-50'}`}>
+														<span className="text-center w-full">{col}</span>
+														<span className="absolute right-3 top-1/2 -translate-y-1/2">{expandedCollegeBtech === col ? <ChevronUp size={16} /> : <ChevronDown size={16} />}</span>
 													</button>
 													<AnimatePresence>
 														{expandedCollegeBtech === col && (
