@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { Calculator, DollarSign, CreditCard, BarChart2, Anchor, ExternalLink, ChevronDown, ChevronUp, FileDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -6,23 +6,62 @@ import { jsPDF } from 'jspdf';
 import shipAvif from '../../assets/ship.avif';
 import bmLogo from '../../assets/yellow on orange logomark.png';
 
-const collegeLinks: Record<string, string> = {
-	'AMET University': 'https://ametuniv.ac.in',
-	'Coimbatore Marine College': 'https://www.cmc.ac.in',
-	'HIMT College': 'https://himtmumbai.com',
-	'IMU, Navi Mumbai Campus': 'https://imu.edu.in',
-	'Indian Maritime University (Kochi)': 'https://imu.edu.in/kochi',
-	'Indian Maritime University, Chennai': 'https://imu.edu.in/chennai',
-	'Maharashtra Academy of Naval Education & Training': 'https://www.manet.edu.in',
-	'Seven Islands Maritime Training Institute': 'https://www.simti.ac.in',
-	'TS Rahaman': 'https://www.tsrahaman.com',
-	'The Neotia University': 'https://www.neotiauniversity.ac.in',
-	'Tolani Maritime Institute': 'https://tmi.tolani.edu',
-	'Ganpat University': 'https://www.ganpatuniversity.ac.in',
-	'IMU, Kolkata Campus': 'https://imu.edu.in/kolkata',
-	'Indian Maritime University – Mumbai Port Campus': 'https://imu.edu.in/mumbaiportcampus',
-	'International Maritime Institute': 'https://www.imindia.net',
-	'Samundra Institute of Maritime Studies': 'https://www.somsindia.com',
+const bscCollegeLinks: Record<string, string> = {
+	'AMET University': 'https://www.ametuniv.ac.in/faculty/maritime/department/nautical-sciences',
+	'Coimbatore Marine College': 'https://www.cmcmarine.in/bsc-nautical-science',
+	'HIMT College': 'https://www.himtcollege.com/himt_courses/bsc-nautical-science-3-years/',
+	'IMU, Navi Mumbai Campus': 'https://www.imu.edu.in/imunew/course-programs?course=8',
+	'Indian Maritime University (Kochi)': 'https://www.imu.edu.in/imunew/kochi-campus',
+	'Indian Maritime University, Chennai': 'https://www.imu.edu.in/imunew/course-programs?course=8',
+	'Maharashtra Academy of Naval Education & Training': 'https://manetpune.edu.in/admissions',
+	'Seven Islands Maritime Training Institute': 'https://simtinstitute.org/bscn/',
+	'TS Rahaman': 'https://tsr.aduacademy.in/',
+	'The Neotia University': 'https://www.tnu.in/course/b-sc-nautical-science-leads-to-be-the-captain-of-a-ship-nautical-science-colleges/',
+	'Tolani Maritime Institute': 'https://tmi.tolani.edu/academics/b-sc-nautical-science/',
+	'Ganpat University': 'https://www.ganpatuniversity.ac.in/programmes/after-12th-programs-undergraduate-programs/engineering-technology/bscnautical-science',
+};
+
+const btechCollegeLinks: Record<string, string> = {
+	'AMET University': 'https://www.ametuniv.ac.in/',
+	'Coimbatore Marine College': 'https://www.cmcmarine.in/btech-marine-engineering?gad_source=1&gad_campaignid=23421493428&gbraid=0AAAAA-g9X2VU-2_TYt5rrttPs0Z4eyWP7&gclid=CjwKCAjwhLPOBhBiEiwA8_wJHDvmvR52FOQT-YmigY1yQiHsYiJPPtdPv_BTnOBFg-5PlLRz4no5whoCYsYQAvD_BwE',
+	'HIMT College': 'https://www.himtcollege.com/himt_courses/btech-marine-engineering/',
+	'IMU, Kolkata Campus': 'https://www.imu.edu.in/imunew/course-programs?course=2',
+	'Indian Maritime University, Chennai': 'https://www.imu.edu.in/imunew/course-programs?course=2',
+	'Indian Maritime University – Mumbai Port Campus': 'https://www.imumumbaiport.ac.in/',
+	'International Maritime Institute': 'https://www.imu.edu.in/imunew/course-programs?course=2',
+	'Maharashtra Academy of Naval Education & Training': 'https://manetpune.edu.in/',
+	'Samundra Institute of Maritime Studies': 'https://www.samundra.com/',
+	'The Neotia University': 'https://www.tnu.in/course/b-sc-nautical-science-leads-to-be-the-captain-of-a-ship-nautical-science-colleges/',
+	'Tolani Maritime Institute': 'https://tmi.tolani.edu/academics/b-sc-nautical-science/',
+	'Ganpat University': 'https://www.ganpatuniversity.ac.in/programmes/after-12th-programs-undergraduate-programs/engineering-technology/bscnautical-science',
+};
+
+const companyLinks: Record<string, string> = {
+	'Anglo Eastern': 'https://www.aema.edu.in/',
+	'Scorpio': 'https://www.scorpiomarine.co.in/careers-onboard/',
+	'Great Eastern': 'https://www.geinstitute.com/course-overview/diploma-in-nautical-science',
+	'ESM-SIMS': 'https://www.samundra.com/html/Applications/CombinedDNSandGMEApplication/application_landing.html',
+	'SISL': 'https://simtinstitute.org/dns/',
+	'Fleet Management': 'https://forms.office.com/pages/responsepage.aspx?id=2wL9kds2SEOnyIFalzcBJsQGsRPAJ4xEoPCWEnNfCq5UMjlEOUNaRVZYOThIVEdDTVRTM1FPWUIzQi4u&route=shorturl',
+	'SCI': 'https://sci.marineims.com/applicationform/dns',
+	'Wallem': 'https://wallem.compas.cloud/CrewApplication/RegistrationForm.aspx',
+	'MSC': 'https://mscshipmanagement.com/crewing-services/msccs-india/msccs-india-cadet-career',
+	'Synergy': 'https://sm.synergyseastar.in/',
+	'Dockendale': 'https://www.dockendale.com/careers#careersonboard',
+	'Goodwood': 'https://www.goodwoodship.com.sg/careers.php#:~:text=Download%20and%20Complete%20the%20Online,Goodwood%20Ship%20Management',
+	'IMEC': 'https://www.himtcollege.com/imec-dns/',
+	'WSM': '',
+	'VShips': '',
+	'MAERSK': 'https://www.amet-ist.in/application-form.html#:~:text=Maersk%20Application%20Form%202026%20%2D&text=Maersk%20Application%20Form%202026%20%2D,2025%20AMET%20All%20Rights%20Reserved',
+	'BSM': 'https://www.himtcollege.com/bsm-dns/',
+	'TORM': 'https://www.torm.com/careers/working-at-torm/default.aspx',
+	"D'Amico": 'https://en.damicoship.com/damico-group/careers/applications/',
+	'PIL': 'https://www.pilship.com/careers/join-pil/',
+	'Seaspan': 'https://www.seaspancorp.com/careers-at-sea/',
+	'MMSI': 'https://www.mms-india.in/join-us.php',
+	'VRM': 'https://vmsshipping.in/dns-sponsorship/',
+	'T Erudite': 'https://terudite.com/career-at-sea',
+	'OSM THOME': 'https://osmthome.com/',
 };
 
 const calculators = [
@@ -1248,7 +1287,8 @@ const eligibleDns: { name: string; rankNote: string; colleges: string[] }[] = []
 			drawSectionHeader('DNS — Shipping Companies Eligible', [11, 27, 69]);
 			shippingResult.dns.forEach(comp => {
 				const collegeNames = comp.colleges.join(', ');
-				drawItem(comp.name, `https://www.google.com/search?q=${encodeURIComponent(comp.name + ' shipping company')}`, collegeNames);
+				const link = companyLinks[comp.name] || `https://www.google.com/search?q=${encodeURIComponent(comp.name + ' shipping company')}`;
+				drawItem(comp.name, link, collegeNames);
 			});
 			y += 4;
 		}
@@ -1257,7 +1297,7 @@ const eligibleDns: { name: string; rankNote: string; colleges: string[] }[] = []
 		if (shippingResult.bsc.length > 0) {
 			drawSectionHeader('BSc Nautical Science — Eligible Colleges', [26, 58, 127]);
 			shippingResult.bsc.forEach(col => {
-				const link = collegeLinks[col] || `https://www.google.com/search?q=${encodeURIComponent(col + ' maritime college admission')}`;
+				const link = bscCollegeLinks[col] || `https://www.google.com/search?q=${encodeURIComponent(col + ' maritime college admission')}`;
 				drawItem(col, link);
 			});
 			y += 4;
@@ -1267,7 +1307,7 @@ const eligibleDns: { name: string; rankNote: string; colleges: string[] }[] = []
 		if (shippingResult.btech.length > 0) {
 			drawSectionHeader('BTech Marine Engineering — Eligible Colleges', [43, 86, 170]);
 			shippingResult.btech.forEach(col => {
-				const link = collegeLinks[col] || `https://www.google.com/search?q=${encodeURIComponent(col + ' maritime college admission')}`;
+				const link = btechCollegeLinks[col] || `https://www.google.com/search?q=${encodeURIComponent(col + ' maritime college admission')}`;
 				drawItem(col, link);
 			});
 			y += 4;
@@ -1999,7 +2039,7 @@ const eligibleDns: { name: string; rankNote: string; colleges: string[] }[] = []
 																	<p className="font-bold text-gray-300 mb-1">Colleges you can go to:</p>
 																	<p className="mb-3 font-semibold text-yellow-400">{comp.colleges.join(', ')}</p>
 																	<p className="font-bold text-gray-300 mb-1">Official Company Page:</p>
-																	<a href="#" className="underline text-blue-300 cursor-pointer flex items-center gap-1 hover:text-blue-100"><ExternalLink size={12} /> Click here</a>
+																	<a href={companyLinks[comp.name] || `https://www.google.com/search?q=${encodeURIComponent(comp.name + ' shipping company')}`} target="_blank" rel="noopener noreferrer" className="underline text-blue-300 cursor-pointer flex items-center gap-1 hover:text-blue-100"><ExternalLink size={12} /> Click here</a>
 																</div>
 															</motion.div>
 														)}
@@ -2024,7 +2064,7 @@ const eligibleDns: { name: string; rankNote: string; colleges: string[] }[] = []
 															<motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} className="overflow-hidden">
 																<div className="p-4 bg-[#111827] text-white text-xs leading-relaxed border-t border-gray-200">
 																	<p className="font-bold text-gray-300 mb-1">Official College Page:</p>
-																	<a href="#" className="underline text-blue-300 cursor-pointer flex items-center gap-1 hover:text-blue-100"><ExternalLink size={12} /> Click here</a>
+																	<a href={bscCollegeLinks[col] || `https://www.google.com/search?q=${encodeURIComponent(col + ' maritime college admission')}`} target="_blank" rel="noopener noreferrer" className="underline text-blue-300 cursor-pointer flex items-center gap-1 hover:text-blue-100"><ExternalLink size={12} /> Click here</a>
 																</div>
 															</motion.div>
 														)}
@@ -2049,7 +2089,7 @@ const eligibleDns: { name: string; rankNote: string; colleges: string[] }[] = []
 															<motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} className="overflow-hidden">
 																<div className="p-4 bg-[#111827] text-white text-xs leading-relaxed border-t border-gray-200">
 																	<p className="font-bold text-gray-300 mb-1">Official College Page:</p>
-																	<a href="#" className="underline text-blue-300 cursor-pointer flex items-center gap-1 hover:text-blue-100"><ExternalLink size={12} /> Click here</a>
+																	<a href={btechCollegeLinks[col] || `https://www.google.com/search?q=${encodeURIComponent(col + ' maritime college admission')}`} target="_blank" rel="noopener noreferrer" className="underline text-blue-300 cursor-pointer flex items-center gap-1 hover:text-blue-100"><ExternalLink size={12} /> Click here</a>
 																</div>
 															</motion.div>
 														)}
