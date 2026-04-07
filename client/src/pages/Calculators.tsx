@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { Calculator, DollarSign, CreditCard, BarChart2, Anchor, ExternalLink, ChevronDown, ChevronUp, FileDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -1203,127 +1203,161 @@ const eligibleDns: { name: string; rankNote: string; colleges: string[] }[] = []
 		const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
 		const pageW = doc.internal.pageSize.getWidth();
 		const pageH = doc.internal.pageSize.getHeight();
-		const margin = 14;
+		const margin = 10;
+		const contentW = pageW - margin * 2;
+		const headerH = 22;
+		const footerH = 8;
 
-		// Dark background
+		// ── Background ──
 		doc.setFillColor(10, 10, 10);
 		doc.rect(0, 0, pageW, pageH, 'F');
 
-		// Header bar
+		// ── Header bar ──
 		doc.setFillColor(234, 179, 8);
-		doc.rect(0, 0, pageW, 28, 'F');
-
-		// Logo image
-		try {
-			doc.addImage(bmLogo, 'PNG', margin, 4, 18, 18);
-		} catch (_) { /* skip if image load fails */ }
-
-		// Brand name
+		doc.rect(0, 0, pageW, headerH, 'F');
+		try { doc.addImage(bmLogo, 'PNG', margin, 2, 16, 16); } catch { /* skip if image load fails */ }
 		doc.setFont('helvetica', 'bold');
-		doc.setFontSize(16);
+		doc.setFontSize(14);
 		doc.setTextColor(10, 10, 10);
-		doc.text('BUDDING MARINERS', margin + 22, 16);
-
-		// Report subtitle
-		doc.setFontSize(8);
-		doc.setFont('helvetica', 'normal');
-		doc.text('Merchant Navy Eligibility Report', margin + 22, 22);
-
-		// Date top-right
+		doc.text('BUDDING MARINERS', margin + 20, 12);
 		doc.setFontSize(7);
-		doc.text(new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' }), pageW - margin, 14, { align: 'right' });
+		doc.setFont('helvetica', 'normal');
+		doc.text('Merchant Navy Eligibility Report', margin + 20, 18);
+		doc.setFontSize(6);
+		doc.text(new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' }), pageW - margin, 12, { align: 'right' });
 
-		let y = 38;
+		// ── Footer ──
+		doc.setFillColor(234, 179, 8);
+		doc.rect(0, pageH - footerH, pageW, footerH, 'F');
+		doc.setFont('helvetica', 'normal');
+		doc.setFontSize(6);
+		doc.setTextColor(10, 10, 10);
+		doc.text('buddingmariners.com  |  Your Gateway to the Merchant Navy', pageW / 2, pageH - 2.5, { align: 'center' });
 
-		// Title
+		// ── Calculate dynamic row height to fit one page ──
+		const dnsCount = shippingResult.dns.length;
+		const bscCount = shippingResult.bsc.length;
+		const btechCount = shippingResult.btech.length;
+		const sectionCount = (dnsCount > 0 ? 1 : 0) + (bscCount > 0 ? 1 : 0) + (btechCount > 0 ? 1 : 0);
+		const sectionHeaderH = 7;
+		const sectionGap = 2;
+		const titleH = 7;
+		const fixedH = titleH + sectionCount * (sectionHeaderH + sectionGap);
+		const availableH = pageH - headerH - footerH - 4 - fixedH;
+		// BSc & BTech use 2 columns — halves their row count
+		const totalRows = dnsCount + Math.ceil(bscCount / 2) + Math.ceil(btechCount / 2);
+		const rowH = totalRows > 0 ? Math.min(7, Math.max(3.8, availableH / totalRows)) : 6;
+		const fontSize = rowH <= 4.5 ? 5.5 : rowH <= 5.5 ? 6 : 6.5;
+
+		let y = headerH + 3;
+
+		// ── Title ──
 		doc.setFont('helvetica', 'bold');
-		doc.setFontSize(13);
+		doc.setFontSize(10);
 		doc.setTextColor(234, 179, 8);
-		doc.text('Your Eligibility Results', margin, y);
-		y += 10;
+		doc.text('Your Eligibility Results', margin, y + 4);
+		y += titleH;
 
 		const drawSectionHeader = (title: string, color: [number, number, number]) => {
 			doc.setFillColor(...color);
-			doc.roundedRect(margin, y, pageW - margin * 2, 9, 2, 2, 'F');
+			doc.roundedRect(margin, y, contentW, sectionHeaderH, 1.5, 1.5, 'F');
 			doc.setFont('helvetica', 'bold');
-			doc.setFontSize(9);
+			doc.setFontSize(7);
 			doc.setTextColor(234, 179, 8);
-			doc.text(title, pageW / 2, y + 6, { align: 'center' });
-			y += 13;
+			doc.text(title, pageW / 2, y + 5, { align: 'center' });
+			y += sectionHeaderH + 1;
 		};
 
-		const drawItem = (name: string, link: string, sub?: string) => {
-			if (y > pageH - 20) {
-				doc.addPage();
-				doc.setFillColor(10, 10, 10);
-				doc.rect(0, 0, pageW, pageH, 'F');
-				doc.setFillColor(234, 179, 8);
-				doc.rect(0, 0, pageW, 8, 'F');
-				y = 16;
-			}
-			doc.setFillColor(30, 30, 30);
-			doc.roundedRect(margin, y, pageW - margin * 2, sub ? 14 : 10, 1.5, 1.5, 'F');
-			doc.setFont('helvetica', 'bold');
-			doc.setFontSize(8);
-			doc.setTextColor(255, 255, 255);
-			doc.text(name, margin + 3, y + (sub ? 5 : 6.5));
-			if (sub) {
-				doc.setFont('helvetica', 'normal');
-				doc.setFontSize(7);
-				doc.setTextColor(180, 180, 180);
-				doc.text(`Colleges: ${sub}`, margin + 3, y + 11);
-			}
-			if (link) {
-				doc.setFont('helvetica', 'normal');
-				doc.setFontSize(7);
-				doc.setTextColor(96, 165, 250);
-				doc.textWithLink('Click here →', pageW - margin - 3, y + (sub ? 5 : 6.5), { url: link, align: 'right' });
-			}
-			y += (sub ? 17 : 13);
-		};
-
-		// DNS section
-		if (shippingResult.dns.length > 0) {
+		// ── DNS section — single-column: Company | Colleges | Link ──
+		if (dnsCount > 0) {
 			drawSectionHeader('DNS — Shipping Companies Eligible', [11, 27, 69]);
 			shippingResult.dns.forEach(comp => {
-				const collegeNames = comp.colleges.join(', ');
-				const link = companyLinks[comp.name] || `https://www.google.com/search?q=${encodeURIComponent(comp.name + ' shipping company')}`;
-				drawItem(comp.name, link, collegeNames);
+				const link = companyLinks[comp.name] || '';
+				doc.setFillColor(30, 30, 30);
+				doc.roundedRect(margin, y, contentW, rowH - 0.8, 1, 1, 'F');
+				const textY = y + (rowH - 0.8) / 2 + 1;
+				// Reserve space for link on the right
+				doc.setFont('helvetica', 'normal');
+				doc.setFontSize(fontSize - 0.5);
+				const applyText = link ? 'Apply →' : '';
+				const applyW = link ? doc.getTextWidth(applyText) + 4 : 0;
+				const nameMaxW = 44;
+				const collegesMaxW = contentW - nameMaxW - applyW - 6;
+				// Company name (truncated)
+				doc.setFont('helvetica', 'bold');
+				doc.setFontSize(fontSize);
+				doc.setTextColor(255, 255, 255);
+				let compName = comp.name;
+				while (doc.getTextWidth(compName) > nameMaxW && compName.length > 1) compName = compName.slice(0, -1);
+				if (compName !== comp.name) compName += '..';
+				doc.text(compName, margin + 2, textY);
+				// Colleges (truncated)
+				doc.setFont('helvetica', 'normal');
+				doc.setFontSize(fontSize - 0.5);
+				doc.setTextColor(180, 180, 180);
+				let collegesStr = comp.colleges.join(', ');
+				while (doc.getTextWidth(collegesStr) > collegesMaxW && collegesStr.length > 1) collegesStr = collegesStr.slice(0, -1);
+				doc.text(collegesStr, margin + nameMaxW + 4, textY);
+				// Apply link
+				if (link) {
+					doc.setFontSize(fontSize - 0.5);
+					doc.setTextColor(96, 165, 250);
+					doc.textWithLink(applyText, margin + contentW - applyW, textY, { url: link });
+				}
+				y += rowH;
 			});
-			y += 4;
+			y += sectionGap;
 		}
 
-		// BSc section
-		if (shippingResult.bsc.length > 0) {
-			drawSectionHeader('BSc Nautical Science — Eligible Colleges', [26, 58, 127]);
-			shippingResult.bsc.forEach(col => {
-				const link = bscCollegeLinks[col] || `https://www.google.com/search?q=${encodeURIComponent(col + ' maritime college admission')}`;
-				drawItem(col, link);
-			});
-			y += 4;
-		}
+		// ── Helper: draw 2-column list ──
+		const drawTwoColSection = (
+			title: string,
+			color: [number, number, number],
+			items: string[],
+			linkMap: Record<string, string>,
+		) => {
+			if (items.length === 0) return;
+			drawSectionHeader(title, color);
+			const gap = 2;
+			const colW = (contentW - gap) / 2;
+			for (let i = 0; i < items.length; i += 2) {
+				const drawCell = (col: string, x: number) => {
+					const link = linkMap[col] || '';
+					doc.setFillColor(30, 30, 30);
+					doc.roundedRect(x, y, colW, rowH - 0.8, 1, 1, 'F');
+					const textY = y + (rowH - 0.8) / 2 + 1;
+					// Reserve space for link
+					doc.setFont('helvetica', 'normal');
+					doc.setFontSize(fontSize - 0.5);
+					const visitText = link ? 'Visit →' : '';
+					const visitW = link ? doc.getTextWidth(visitText) + 4 : 0;
+					const nameMaxW = colW - visitW - 4;
+					// College name (truncated if needed)
+					doc.setFont('helvetica', 'bold');
+					doc.setFontSize(fontSize);
+					doc.setTextColor(255, 255, 255);
+					let colName = col;
+					while (doc.getTextWidth(colName) > nameMaxW && colName.length > 1) colName = colName.slice(0, -1);
+					if (colName !== col) colName += '..';
+					doc.text(colName, x + 2, textY);
+					if (link) {
+						doc.setFontSize(fontSize - 0.5);
+						doc.setTextColor(96, 165, 250);
+						doc.textWithLink(visitText, x + colW - visitW, textY, { url: link });
+					}
+				};
+				drawCell(items[i], margin);
+				if (i + 1 < items.length) drawCell(items[i + 1], margin + colW + gap);
+				y += rowH;
+			}
+			y += sectionGap;
+		};
 
-		// BTech section
-		if (shippingResult.btech.length > 0) {
-			drawSectionHeader('BTech Marine Engineering — Eligible Colleges', [43, 86, 170]);
-			shippingResult.btech.forEach(col => {
-				const link = btechCollegeLinks[col] || `https://www.google.com/search?q=${encodeURIComponent(col + ' maritime college admission')}`;
-				drawItem(col, link);
-			});
-			y += 4;
-		}
+		// ── BSc section ──
+		drawTwoColSection('BSc Nautical Science — Eligible Colleges', [26, 58, 127], shippingResult.bsc, bscCollegeLinks, 'maritime college admission');
 
-		// Footer strip on every page
-		const totalPages = (doc.internal as any).getNumberOfPages();
-		for (let i = 1; i <= totalPages; i++) {
-			doc.setPage(i);
-			doc.setFillColor(234, 179, 8);
-			doc.rect(0, pageH - 10, pageW, 10, 'F');
-			doc.setFont('helvetica', 'normal');
-			doc.setFontSize(7);
-			doc.setTextColor(10, 10, 10);
-			doc.text('buddingmariners.com  |  Your Gateway to the Merchant Navy', pageW / 2, pageH - 3.5, { align: 'center' });
-		}
+		// ── BTech section ──
+		drawTwoColSection('BTech Marine Engineering — Eligible Colleges', [43, 86, 170], shippingResult.btech, btechCollegeLinks, 'maritime college admission');
 
 		doc.save('BM_Merchant_Navy_Eligibility.pdf');
 	};
