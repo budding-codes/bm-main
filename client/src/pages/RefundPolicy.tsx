@@ -27,7 +27,18 @@ const RefundPolicy = () => (
           <li>Bundled or promotional mentorship offers</li>
         </ul>
 
-        <h2>2. Service Expectations & User Responsibility</h2>
+        <h2>2. Caution Deposit</h2>
+        <p>
+          A caution deposit must be submitted at the time of admission for security purposes. Any damages caused during the stay will be deducted from this amount.
+        </p>
+        <p>
+          The caution deposit or any remaining balance will be refundable only if a one-month prior notice is given to the Hostel Administration.
+        </p>
+        <p>
+          No refund will be provided in case of suspension.
+        </p>
+
+        <h2>3. Service Expectations & User Responsibility</h2>
         <p>
           We do not guarantee sponsorships, placements, medical clearance, or selection outcomes. The User is responsible for:
         </p>
@@ -40,7 +51,7 @@ const RefundPolicy = () => (
           Failure to attend or late cancellations will not qualify for any refund or compensation.
         </p>
 
-        <h2>3. Dispute & Escalation</h2>
+        <h2>4. Dispute & Escalation</h2>
         <p>
           Although refunds are not provided, we are committed to resolving issues in a professional manner. For concerns,
           please contact:
@@ -51,13 +62,13 @@ const RefundPolicy = () => (
 
         <p>You also agree not to initiate chargebacks, payment disputes, or defamation without first using our internal redressal mechanism.</p>
 
-        <h2>4. Acknowledgment & Consent</h2>
+        <h2>5. Acknowledgment & Consent</h2>
         <p>
           By making a payment, you acknowledge that you have fully read, understood, and agreed to this Refund Policy,
           and accept that all payments are final.
         </p>
 
-        <h2>5. Amendments</h2>
+        <h2>6. Amendments</h2>
         <p>
           Budding Mariners reserves the right to revise or amend this Refund Policy at any time. Changes will be updated
           on this page along with the effective date.
