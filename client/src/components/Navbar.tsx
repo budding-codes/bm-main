@@ -32,6 +32,7 @@ const Navbar = () => {
     },
     { name: 'Courses', path: '/courses' },
     { name: 'About', path: '/about' },
+    { name: 'IMUCET Dhurandhar', path: '/imucet-dhurandhar' },
     { name: 'BM Store', external: true, url: 'https://storebybm.com/' },
     { name: 'Calculators', path: '/calculators' },
     { name: 'Free Materials', path: '/free-materials' },
