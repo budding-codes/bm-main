@@ -42,20 +42,6 @@ const selectionImages = [
   img11,
   img12,
   img13,
-  img14,
-  img15,
-  img16,
-  img17,
-  img18,
-  img19,
-  img20,
-  img21,
-  img22,
-  img23,
-  img24,
-  img25,
-  img26,
-  img27,
 ];
 
 const useCountdown = () => {
@@ -165,8 +151,8 @@ const StickyPromoFooter = () => {
 
   return (
     <div className="fixed inset-x-0 bottom-0 z-50 border-t border-red-500/30 bg-[#650808] text-white shadow-[0_-12px_32px_rgba(0,0,0,0.55)]">
-      <div className="mx-auto flex min-h-[76px] max-w-[1366px] items-center gap-2 px-2 py-2 sm:justify-between sm:gap-3 sm:px-6 lg:px-10">
-        <img src={skSir} alt="SK Sir" className="mt-[-10px] h-16 w-16 shrink-0 self-end rounded-md object-cover object-top sm:mt-[-18px] sm:h-[108px] sm:w-40 sm:rounded-none" />
+      <div className="relative mx-auto flex min-h-[76px] max-w-[1366px] items-center gap-2 pl-[72px] pr-2 py-2 sm:justify-between sm:gap-3 sm:pl-44 sm:pr-6 lg:pr-10">
+        <img src={skSir} alt="SK Sir" className="absolute bottom-0 left-0 h-full w-16 object-cover object-top sm:w-40" />
         <div className="hidden text-sm font-semibold text-white/85 md:block lg:text-base">Hurry Up!! Time is running out.</div>
         <div className="flex min-w-0 flex-1 items-center justify-center gap-1 overflow-hidden sm:flex-none sm:gap-2">
           <CountdownBox compact value={remaining.days} label="Days" />
