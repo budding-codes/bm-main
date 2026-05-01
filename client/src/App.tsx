@@ -42,8 +42,8 @@ function App() {
         {loading && <Loader key="loader" onComplete={handleLoaderComplete} />}
       </AnimatePresence>
       
-      <Navbar />
-      <main className="pt-[104px]">
+      {!isPromoPage && <Navbar />}
+      <main className={isPromoPage ? 'pt-0' : 'pt-[104px]'}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/courses" element={<Courses />} />
