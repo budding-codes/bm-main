@@ -14,20 +14,6 @@ import img10 from '../../assets/10.png';
 import img11 from '../../assets/11.png';
 import img12 from '../../assets/12.png';
 import img13 from '../../assets/13.png';
-import img14 from '../../assets/14.png';
-import img15 from '../../assets/15.png';
-import img16 from '../../assets/16.png';
-import img17 from '../../assets/17.png';
-import img18 from '../../assets/18.png';
-import img19 from '../../assets/19.png';
-import img20 from '../../assets/20.png';
-import img21 from '../../assets/21.png';
-import img22 from '../../assets/22.png';
-import img23 from '../../assets/23.png';
-import img24 from '../../assets/24.png';
-import img25 from '../../assets/25.png';
-import img26 from '../../assets/26.png';
-import img27 from '../../assets/27.png';
 
 
 const paymentUrl = 'https://pages.razorpay.com/pl_Sj1CI7qR9MejPw/view';

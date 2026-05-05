@@ -1,20 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ChevronRight, ChevronDown } from 'lucide-react';
+import { Menu, X, ChevronDown } from 'lucide-react';
 import logo from '../../assets/yellow on orange logomark.png';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
   const [academyDropdown, setAcademyDropdown] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    const closeDropdown = () => setAcademyDropdown(false);
+    window.addEventListener('scroll', closeDropdown);
+    return () => window.removeEventListener('scroll', closeDropdown);
   }, []);
 
   // Marquee content for the top bar
@@ -32,6 +29,7 @@ const Navbar = () => {
     },
     { name: 'Courses', path: '/courses' },
     { name: 'About', path: '/about' },
+    { name: 'Blog', path: '/blog' },
     { name: 'IMUCET Dhurandhar', path: '/imucet-dhurandhar' },
     { name: 'BM Store', external: true, url: 'https://storebybm.com/' },
     { name: 'Calculators', path: '/calculators' },

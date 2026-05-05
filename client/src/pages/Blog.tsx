@@ -1,73 +1,88 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { Calendar, User, Clock, Tag } from 'lucide-react';
-import hero from '../../assets/Main.png';
-import top10 from '../../assets/top 10.png';
-import money from '../../assets/money.png';
-import confused from '../../assets/confused.png';
-import dept from '../../assets/BM Thumbnail (63).png';
+import { ArrowUpRight, Clock3, PlayCircle, User } from 'lucide-react';
+import { apiUrl } from '../lib/api';
 
-const blogPosts = [
-	{
-		id: 1,
-		title: 'How to Join the Merchant Navy the RIGHT Way',
-		excerpt: 'Confused about how to join the Merchant Navy? This vlog explains the right process, answers common questions, and covers all essential details to start your career at sea. A must-read guide for every Merchant Navy aspirant!',
-		author: 'BM Editorial',
-		date: '2024-01-15',
-		readTime: '8 min read',
-		image: hero, // Placeholder for featured
-		featured: true,
-	},
-	{
-		id: 2,
-		title: '🎖 Merchant Navy Salary 2025 💰 | Full Breakdown from Cadet to Captain!',
-		excerpt: 'Ever wondered how much you can actually earn in the Merchant Navy? 🚢 In this video, we break down the full salary structure – from starting as a cadet 👨‍🎓 to becoming a captain 👨‍✈. Whether youre just starting out or planning your future at sea, this vlog gives you the real numbers 💸 and expectations. Dont miss it! 📊⚓',
-		author: 'BM Team',
-		date: '2024-01-10',
-		readTime: '5 min read',
-		image: money,
-	},
-	{
-		id: 3,
-		title: '🎓 Best Merchant Navy Colleges in India (With Fees, Placement, Sponsorship) ',
-		excerpt: 'Looking to join the Merchant Navy but confused about colleges? 🧭 This vlog covers the top institutes in India 🏫 with complete details on fees, placements, and sponsorships ⚓—everything you need to choose the right college in 2025!',
-		author: 'BM Team',
-		date: '2024-01-08',
-		readTime: '6 min read',
-		image: top10,
-	},
-	{
-		id: 4,
-		title: '🚢 Top 10 Shipping Companies in Merchant Navy – Salary, Sponsorship & Perks! ',
-		excerpt: 'Confused about which shipping company is the best? 🌍 In this vlog, we break down the top 10 shipping giants with details on salary packages 💰, sponsorship options 🎓, perks 🧳, and more! A must-read for every future seafarer in 2025! ⚓',
-		author: 'BM Editorial',
-		date: '2024-01-05',
-		readTime: '7 min read',
-		image: confused,
-	},
-	{
-		id: 5,
-		title: 'Departments in Merchant Navy Explained – Deck, Engine & More! ',
-		excerpt: '📌 Confused about the different departments in Merchant Navy? In this vlog, we break down all major departments like Deck, Engine, and Saloon — what they do, how to join, career growth, and which suits you best! 🚢👨‍✈ Let’s clear all your doubts in one go!',
-		author: 'BM Team',
-		date: '2024-01-03',
-		readTime: '4 min read',
-		image: dept,
-	}
-	// {
-	// 	id: 6,
-	// 	title: ' 🌊 Life at Sea – The Real Experience! ',
-	// 	excerpt: '⚓ Ever wondered what life is really like on a ship? From daily routines to breathtaking sunsets, food, work, and fun onboard – this vlog gives you a full glimpse into the real-life experience of seafarers 🌅🚢. Don’t miss the highs and challenges of life at sea!',
-	// 	author: 'BM Editorial',
-	// 	date: '2024-01-01',
-	// 	readTime: '5 min read',
-	// 	image: '',
-	// 	tags: ['education', 'admission'],
-	// },
-];
+type BlogPost = {
+	_id: string;
+	title: string;
+	description: string;
+	author: string;
+	thumbnailUrl?: string;
+	youtubeUrl?: string;
+	featured?: boolean;
+	createdAt: string;
+};
+
+const formatDate = (value: string) => new Date(value).toLocaleDateString('en-IN', {
+	day: '2-digit',
+	month: 'short',
+	year: 'numeric'
+});
+
+const getReadTime = (description: string) => {
+	const words = description.trim().split(/\s+/).filter(Boolean).length;
+	return `${Math.max(1, Math.ceil(words / 180))} min read`;
+};
+
+const ThumbnailFallback = ({ title }: { title: string }) => (
+	<div className="flex h-full min-h-[220px] w-full flex-col justify-between bg-[radial-gradient(circle_at_top_left,_rgba(250,204,21,0.22),_transparent_42%),linear-gradient(135deg,_#111827_0%,_#0f172a_52%,_#111111_100%)] p-6 text-left text-white">
+		<span className="w-fit rounded-full border border-yellow-400/30 bg-yellow-400/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-yellow-300">
+			Budding Mariners
+		</span>
+		<div>
+			<p className="mb-3 max-w-[14rem] text-lg font-bold leading-snug text-white line-clamp-3">{title}</p>
+			<p className="text-xs uppercase tracking-[0.28em] text-white/50">New maritime update</p>
+		</div>
+	</div>
+);
 
 const Blog = () => {
-	const featuredPost = blogPosts.find((post) => post.featured);
+	const [blogs, setBlogs] = useState<BlogPost[]>([]);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState('');
+
+	useEffect(() => {
+		let isMounted = true;
+
+		const fetchBlogs = async () => {
+			setLoading(true);
+			setError('');
+
+			try {
+				const response = await fetch(apiUrl('/api/blogs'), {
+					headers: { Accept: 'application/json' }
+				});
+
+				if (!response.ok) {
+					throw new Error('Failed to load blogs.');
+				}
+
+				const data = await response.json();
+				if (isMounted) {
+					setBlogs(data.blogs || []);
+				}
+			} catch (fetchError) {
+				if (isMounted) {
+					setError('Blogs are unavailable right now. Please try again shortly.');
+					setBlogs([]);
+				}
+			} finally {
+				if (isMounted) {
+					setLoading(false);
+				}
+			}
+		};
+
+		fetchBlogs();
+
+		return () => {
+			isMounted = false;
+		};
+	}, []);
+
+	const featuredPost = blogs.find((post) => post.featured) || blogs[0];
+	const gridPosts = featuredPost ? blogs.filter((post) => post._id !== featuredPost._id) : blogs;
 
 	return (
 		<div className="min-h-screen bg-black text-white flex flex-col">
@@ -82,96 +97,141 @@ const Blog = () => {
 				<meta property="og:image" content="/assets/yellow on orange logomark.png" />
 			</Helmet>
 
-			{/* Header */}
-			<section className="pt-28 pb-2 text-center">
-				<h1 className="text-3xl md:text-4xl font-extrabold mb-1 font-geist">Maritime Insights</h1>
-				<p className="text-yellow-400 text-sm mb-2 font-poppins">
-					Stay updated with the latest maritime trends, guides, and insights from the maritime industry
-				</p>
-			</section>
-
-			{/* Featured Article */}
-			{featuredPost && (
-				<section className="max-w-3xl mx-auto w-full mb-12">
-					<div className="bg-white rounded-xl flex flex-col md:flex-row overflow-hidden shadow-lg">
-						{/* Show image if present, else fallback */}
-						<div className="flex-1 bg-gray-300 flex items-center justify-center min-h-[220px] md:min-h-[260px]">
-							{featuredPost.image ? (
-								<img
-									src={featuredPost.image}
-									alt={featuredPost.title}
-									className="object-cover w-full h-full"
-								/>
-							) : (
-								<span className="text-gray-500 text-lg font-semibold">Featured Article</span>
-							)}
-						</div>
-						<div className="flex-1 p-6 flex flex-col justify-center">
-							<div className="flex items-center gap-2 mb-2">
-								<span className="bg-yellow-400 text-black px-2 py-1 rounded-full text-xs font-bold">Featured</span>
-								<span className="text-gray-400 text-xs">{new Date(featuredPost.date).toLocaleDateString()}</span>
-							</div>
-							<h2 className="text-lg md:text-xl font-bold text-black mb-2 capitalize">
-								{featuredPost.title.toLowerCase().replace(/\b\w/g, c => c.toUpperCase())}
-							</h2>
-							<div className="text-gray-700 text-sm mb-3">{featuredPost.excerpt}</div>
-							<div className="flex items-center gap-4 text-xs text-gray-500 mb-3">
-								<span className="flex items-center gap-1"><User className="w-3 h-3" />{featuredPost.author}</span>
-								<span className="flex items-center gap-1"><Clock className="w-3 h-3" />{featuredPost.readTime}</span>
-							</div>
-							{/* <button className="bg-black text-yellow-400 px-3 py-1 rounded font-semibold text-xs w-max mt-auto">Read More</button> */}
-						</div>
-					</div>
-				</section>
-			)}
-
-			{/* Blog Grid */}
-			<section className="max-w-6xl mx-auto w-full grid grid-cols-1 md:grid-cols-3 gap-8 px-4 mb-16">
-				{blogPosts
-					.filter((post) => !post.featured)
-					.map((post) => (
-						<div key={post.id} className="bg-white rounded-xl shadow flex flex-col overflow-hidden">
-							<div className="bg-gray-300 flex items-center justify-center min-h-[120px] w-full">
-								{post.image ? (
-									<img
-										src={post.image}
-										alt={post.title}
-										className="object-cover w-full h-full"
-									/>
-								) : (
-									<span className="text-gray-500 text-xs">Blog Image</span>
-								)}
-							</div>
-							<div className="p-4 flex flex-col flex-1">
-								<div className="flex items-center gap-2 mb-2">
-									<span className="text-gray-400 text-xs">{new Date(post.date).toLocaleDateString()}</span>
-								</div>
-								<h3 className="text-base font-bold text-black mb-1 capitalize">
-									{post.title.toLowerCase().replace(/\b\w/g, c => c.toUpperCase())}
-								</h3>
-								<div className="text-gray-700 text-xs mb-2 flex-1">{post.excerpt}</div>
-								<div className="flex items-center gap-2 text-xs text-gray-500 mb-2">
-									<span className="flex items-center gap-1"><User className="w-3 h-3" />{post.author}</span>
-									<span className="flex items-center gap-1"><Clock className="w-3 h-3" />{post.readTime}</span>
-								</div>
-								{/* <button className="bg-black text-yellow-400 px-3 py-1 rounded font-semibold text-xs w-max mt-auto">Read More</button> */}
-							</div>
-						</div>
-					))}
-			</section>
-
-			{/* Newsletter Signup */}
-			<section className="w-full bg-yellow-400 py-8 mt-auto">
-				<div className="max-w-xl mx-auto flex flex-col md:flex-row items-center justify-center gap-4 px-4">
-					<span className="font-semibold text-black text-center md:text-left text-base">Stay Updated</span>
-					<input
-						type="email"
-						placeholder="Enter your email"
-						className="flex-1 px-4 py-2 rounded bg-white border-none text-black text-sm"
-					/>
-					<button className="bg-black text-yellow-400 px-6 py-2 rounded font-semibold text-sm">Subscribe</button>
+			<section className="relative overflow-hidden border-b border-white/10 bg-[radial-gradient(circle_at_top_right,_rgba(250,204,21,0.17),_transparent_24%),radial-gradient(circle_at_bottom_left,_rgba(234,88,12,0.18),_transparent_22%),linear-gradient(180deg,_#050505_0%,_#0b0b0b_100%)] pt-28 pb-14 text-center">
+				<div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-yellow-400/40 to-transparent" />
+				<div className="mx-auto max-w-3xl px-4">
+					<p className="mb-4 text-xs font-semibold uppercase tracking-[0.38em] text-yellow-400/80">BM Blog</p>
+					<h1 className="font-geist text-4xl font-extrabold md:text-5xl">Maritime Insights</h1>
+					<p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-white/70 md:text-base">
+						Fresh guidance, career notes, and academy updates for students planning their path into the merchant navy.
+					</p>
 				</div>
 			</section>
+
+			<div className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 py-10 md:px-6 md:py-14">
+				{loading ? (
+					<div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
+						<div className="min-h-[420px] animate-pulse rounded-[28px] border border-white/10 bg-white/5" />
+						<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-1">
+							{Array.from({ length: 2 }).map((_, index) => (
+								<div key={index} className="min-h-[220px] animate-pulse rounded-[24px] border border-white/10 bg-white/5" />
+							))}
+						</div>
+					</div>
+				) : error ? (
+					<div className="rounded-[28px] border border-red-400/20 bg-red-500/10 px-6 py-10 text-center text-sm text-red-100">
+						{error}
+					</div>
+				) : blogs.length === 0 ? (
+					<div className="rounded-[28px] border border-white/10 bg-white/[0.03] px-6 py-16 text-center">
+						<p className="text-sm uppercase tracking-[0.3em] text-yellow-400/70">No blogs yet</p>
+						<h2 className="mt-4 font-geist text-3xl font-bold text-white">Fresh articles will appear here soon.</h2>
+						<p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-white/60">
+							The admin panel is connected now, so newly published posts will show up here automatically.
+						</p>
+					</div>
+				) : (
+					<>
+						{featuredPost && (
+							<section className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
+								<article className="overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.04] shadow-[0_20px_80px_rgba(0,0,0,0.35)]">
+									<div className="grid h-full md:grid-cols-[1.05fr_0.95fr]">
+										<div className="min-h-[280px] bg-neutral-900 md:min-h-full">
+											{featuredPost.thumbnailUrl ? (
+												<img src={featuredPost.thumbnailUrl} alt={featuredPost.title} className="h-full w-full object-cover" />
+											) : (
+												<ThumbnailFallback title={featuredPost.title} />
+											)}
+										</div>
+										<div className="flex flex-col justify-between p-6 md:p-8">
+											<div>
+												<div className="mb-4 flex flex-wrap items-center gap-3 text-xs uppercase tracking-[0.24em] text-white/45">
+													<span className="rounded-full bg-yellow-400 px-3 py-1 font-semibold tracking-[0.2em] text-black">Featured</span>
+													<span>{formatDate(featuredPost.createdAt)}</span>
+												</div>
+												<h2 className="font-geist text-3xl font-bold leading-tight text-white md:text-4xl">{featuredPost.title}</h2>
+												<p className="mt-4 text-sm leading-7 text-white/72 md:text-base">{featuredPost.description}</p>
+											</div>
+											<div className="mt-6 flex flex-wrap items-center gap-4 border-t border-white/10 pt-5 text-xs text-white/55">
+												<span className="flex items-center gap-2"><User className="h-4 w-4 text-yellow-400" />{featuredPost.author}</span>
+												<span className="flex items-center gap-2"><Clock3 className="h-4 w-4 text-yellow-400" />{getReadTime(featuredPost.description)}</span>
+												{featuredPost.youtubeUrl ? (
+													<a
+														href={featuredPost.youtubeUrl}
+														target="_blank"
+														rel="noreferrer"
+														className="ml-auto inline-flex items-center gap-2 rounded-full border border-yellow-400/40 bg-yellow-400/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-yellow-300 transition hover:bg-yellow-400 hover:text-black"
+													>
+														<PlayCircle className="h-4 w-4" />
+														Watch video
+														<ArrowUpRight className="h-4 w-4" />
+													</a>
+												) : null}
+											</div>
+										</div>
+									</div>
+								</article>
+								<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-1">
+									{gridPosts.slice(0, 2).map((post) => (
+										<article key={post._id} className="overflow-hidden rounded-[24px] border border-white/10 bg-white/[0.04]">
+											<div className="h-44 bg-neutral-900">
+												{post.thumbnailUrl ? (
+													<img src={post.thumbnailUrl} alt={post.title} className="h-full w-full object-cover" />
+												) : (
+													<ThumbnailFallback title={post.title} />
+												)}
+											</div>
+											<div className="p-5">
+												<p className="text-[11px] uppercase tracking-[0.26em] text-white/45">{formatDate(post.createdAt)}</p>
+												<h3 className="mt-3 line-clamp-2 font-geist text-xl font-bold text-white">{post.title}</h3>
+												<p className="mt-3 line-clamp-3 text-sm leading-6 text-white/65">{post.description}</p>
+											</div>
+										</article>
+									))}
+								</div>
+							</section>
+						)}
+
+						<section className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+							{gridPosts.slice(featuredPost ? 2 : 0).map((post) => (
+								<article key={post._id} className="group flex h-full flex-col overflow-hidden rounded-[24px] border border-white/10 bg-white/[0.04] transition hover:-translate-y-1 hover:border-yellow-400/30 hover:bg-white/[0.06]">
+									<div className="h-52 bg-neutral-900">
+										{post.thumbnailUrl ? (
+											<img src={post.thumbnailUrl} alt={post.title} className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]" />
+										) : (
+											<ThumbnailFallback title={post.title} />
+										)}
+									</div>
+									<div className="flex flex-1 flex-col p-5">
+										<div className="flex items-center justify-between gap-3 text-[11px] uppercase tracking-[0.24em] text-white/40">
+											<span>{formatDate(post.createdAt)}</span>
+											<span>{getReadTime(post.description)}</span>
+										</div>
+										<h3 className="mt-4 line-clamp-2 font-geist text-2xl font-bold leading-tight text-white">{post.title}</h3>
+										<p className="mt-4 line-clamp-4 flex-1 text-sm leading-7 text-white/68">{post.description}</p>
+										<div className="mt-6 flex items-center justify-between gap-3 border-t border-white/10 pt-4 text-sm text-white/55">
+											<span className="flex items-center gap-2"><User className="h-4 w-4 text-yellow-400" />{post.author}</span>
+											{post.youtubeUrl ? (
+												<a
+													href={post.youtubeUrl}
+													target="_blank"
+													rel="noreferrer"
+													className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] text-yellow-300 transition hover:text-yellow-200"
+												>
+													Watch
+													<ArrowUpRight className="h-4 w-4" />
+												</a>
+											) : (
+												<span className="text-[11px] uppercase tracking-[0.22em] text-white/35">Article</span>
+											)}
+										</div>
+									</div>
+								</article>
+							))}
+						</section>
+					</>
+				)}
+			</div>
 		</div>
 	);
 };
