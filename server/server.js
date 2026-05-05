@@ -19,7 +19,7 @@ const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || [
 	'http://127.0.0.1:5173'
 ].join(',')).split(',').map((origin) => origin.trim()).filter(Boolean);
 
-app.use(cors({
+const corsOptions = {
 	origin(origin, callback) {
 		if (!origin || ALLOWED_ORIGINS.includes(origin)) {
 			return callback(null, true);
@@ -30,19 +30,9 @@ app.use(cors({
 	methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
 	allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
 	optionsSuccessStatus: 204
-}));
-app.options('*', cors({
-	origin(origin, callback) {
-		if (!origin || ALLOWED_ORIGINS.includes(origin)) {
-			return callback(null, true);
-		}
+};
 
-		return callback(new Error(`CORS blocked for origin ${origin}`));
-	},
-	methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-	allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
-	optionsSuccessStatus: 204
-}));
+app.use(cors(corsOptions));
 app.use(express.json());
 
 if (!MONGO_URI) {
