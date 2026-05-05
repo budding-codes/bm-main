@@ -7,12 +7,42 @@ require('dotenv').config();
 const app = express();
 const PORT = Number(process.env.PORT) || 5000;
 const MONGO_URI = process.env.MONGO_URI;
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@bmpromo.com';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'bmpromoadmin$';
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || process.env.ADMIN_ID || 'admin@bmpromo.com';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || process.env.ADMIN_PASS || 'bmpromoadmin$';
 const ADMIN_TOKEN_SECRET = process.env.ADMIN_TOKEN_SECRET || 'bm-promo-admin-secret';
 const TOKEN_TTL_MS = 1000 * 60 * 60 * 12;
+const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || [
+	'https://www.buddingmariners.com',
+	'https://buddingmariners.com',
+	'https://bm-promo.vercel.app',
+	'http://localhost:5173',
+	'http://127.0.0.1:5173'
+].join(',')).split(',').map((origin) => origin.trim()).filter(Boolean);
 
-app.use(cors());
+app.use(cors({
+	origin(origin, callback) {
+		if (!origin || ALLOWED_ORIGINS.includes(origin)) {
+			return callback(null, true);
+		}
+
+		return callback(new Error(`CORS blocked for origin ${origin}`));
+	},
+	methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+	allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+	optionsSuccessStatus: 204
+}));
+app.options('*', cors({
+	origin(origin, callback) {
+		if (!origin || ALLOWED_ORIGINS.includes(origin)) {
+			return callback(null, true);
+		}
+
+		return callback(new Error(`CORS blocked for origin ${origin}`));
+	},
+	methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+	allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+	optionsSuccessStatus: 204
+}));
 app.use(express.json());
 
 if (!MONGO_URI) {
