@@ -17,7 +17,7 @@ import img13 from '../../assets/13.png';
 
 
 const paymentUrl = 'https://pages.razorpay.com/pl_Sj1CI7qR9MejPw/view';
-const targetDate = new Date('2026-05-07T23:59:59+05:30').getTime();
+const targetDate = new Date('2026-05-20T23:59:59+05:30').getTime();
 
 const selectionImages = [
   img6,
