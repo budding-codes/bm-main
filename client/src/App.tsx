@@ -18,7 +18,7 @@ import TermsOfUse from './pages/TermsOfUse';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import RefundPolicy from './pages/RefundPolicy';
 import FAQs from './pages/FAQs';
-import IMUCETDhurandhar from './pages/IMUCETDhurandhar';
+// import IMUCETDhurandhar from './pages/IMUCETDhurandhar';
 
 function App() {
   const location = useLocation();
@@ -59,7 +59,7 @@ function App() {
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/refund-policy" element={<RefundPolicy />} />
           <Route path="/faqs" element={<FAQs />} />
-          <Route path="/imucet-dhurandhar" element={<IMUCETDhurandhar />} />
+          {/* <Route path="/imucet-dhurandhar" element={<IMUCETDhurandhar />} /> */}
         </Routes>
       </main>
       {!isPromoPage && <Footer />}
