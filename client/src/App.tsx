@@ -9,9 +9,10 @@ import Courses from './pages/Courses';
 import About from './pages/About';
 import Calculators from './pages/Calculators';
 import Blog from './pages/Blog';
+import BlogPost from './pages/BlogPost';
 import CollegeForms from './pages/CollegeForms';
 import FreeMaterials from './pages/FreeMaterials';
-import Admin from './pages/Admin';
+import AdminApp from './admin/AdminApp';
 import BMOfflineAcademy from './pages/BMOfflineAcademy';
 import BMHostel from './pages/BMHostel';
 import TermsOfUse from './pages/TermsOfUse';
@@ -24,6 +25,8 @@ function App() {
   const location = useLocation();
   const [loading, setLoading] = useState(location.pathname === '/');
   const isPromoPage = location.pathname === '/imucet-dhurandhar';
+  const isAdminPage = location.pathname.startsWith('/admin');
+  const hideChrome = isPromoPage || isAdminPage;
 
   // Show loader only when visiting the home page
   useEffect(() => {
@@ -37,22 +40,23 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className={`min-h-screen ${isAdminPage ? 'bg-black' : 'bg-white'}`}>
       <AnimatePresence mode="wait">
         {loading && <Loader key="loader" onComplete={handleLoaderComplete} />}
       </AnimatePresence>
       
-      {!isPromoPage && <Navbar />}
-      <main className={isPromoPage ? 'pt-0' : 'pt-[104px]'}>
+      {!hideChrome && <Navbar />}
+      <main className={hideChrome ? 'pt-0' : 'pt-[104px]'}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/courses" element={<Courses />} />
           <Route path="/about" element={<About />} />
           <Route path="/calculators" element={<Calculators />} />
           <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:slug" element={<BlogPost />} />
           <Route path="/college-forms" element={<CollegeForms />} />
           <Route path="/free-materials" element={<FreeMaterials />} />
-          <Route path="/admin" element={<Admin />} />
+          <Route path="/admin/*" element={<AdminApp />} />
           <Route path="/bm-offline-academy" element={<BMOfflineAcademy />} />
           <Route path="/bm-hostel" element={<BMHostel />} />
           <Route path="/terms-of-use" element={<TermsOfUse />} />
@@ -62,7 +66,7 @@ function App() {
           {/* <Route path="/imucet-dhurandhar" element={<IMUCETDhurandhar />} /> */}
         </Routes>
       </main>
-      {!isPromoPage && <Footer />}
+      {!hideChrome && <Footer />}
     </div>
   );
 }

@@ -1,4 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
+import { Link } from 'react-router-dom';
+// @ts-expect-error react-helmet has no bundled types in this project
 import { Helmet } from 'react-helmet';
 import { ArrowUpRight, Clock3, PlayCircle, User } from 'lucide-react';
 import { apiUrl } from '../lib/api';
@@ -11,6 +13,8 @@ type BlogPost = {
 	thumbnailUrl?: string;
 	youtubeUrl?: string;
 	featured?: boolean;
+	slug?: string;
+	readingTimeMinutes?: number;
 	createdAt: string;
 };
 
@@ -20,9 +24,32 @@ const formatDate = (value: string) => new Date(value).toLocaleDateString('en-IN'
 	year: 'numeric'
 });
 
-const getReadTime = (description: string) => {
-	const words = description.trim().split(/\s+/).filter(Boolean).length;
+const getReadTime = (post: BlogPost) => {
+	if (post.readingTimeMinutes) {
+		return `${post.readingTimeMinutes} min read`;
+	}
+	const words = post.description.trim().split(/\s+/).filter(Boolean).length;
 	return `${Math.max(1, Math.ceil(words / 180))} min read`;
+};
+
+const PostLink = ({
+	post,
+	className,
+	children
+}: {
+	post: BlogPost;
+	className?: string;
+	children: ReactNode;
+}) => {
+	if (!post.slug) {
+		return <div className={className}>{children}</div>;
+	}
+
+	return (
+		<Link to={`/blog/${post.slug}`} className={className}>
+			{children}
+		</Link>
+	);
 };
 
 const ThumbnailFallback = ({ title }: { title: string }) => (
@@ -134,7 +161,11 @@ const Blog = () => {
 					<>
 						{featuredPost && (
 							<section className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
-								<article className="overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.04] shadow-[0_20px_80px_rgba(0,0,0,0.35)]">
+								<PostLink
+									post={featuredPost}
+									className="overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.04] shadow-[0_20px_80px_rgba(0,0,0,0.35)] transition hover:border-yellow-400/30"
+								>
+									<article className="h-full">
 									<div className="grid h-full md:grid-cols-[1.05fr_0.95fr]">
 										<div className="min-h-[280px] bg-neutral-900 md:min-h-full">
 											{featuredPost.thumbnailUrl ? (
@@ -154,26 +185,33 @@ const Blog = () => {
 											</div>
 											<div className="mt-6 flex flex-wrap items-center gap-4 border-t border-white/10 pt-5 text-xs text-white/55">
 												<span className="flex items-center gap-2"><User className="h-4 w-4 text-yellow-400" />{featuredPost.author}</span>
-												<span className="flex items-center gap-2"><Clock3 className="h-4 w-4 text-yellow-400" />{getReadTime(featuredPost.description)}</span>
+												<span className="flex items-center gap-2"><Clock3 className="h-4 w-4 text-yellow-400" />{getReadTime(featuredPost)}</span>
 												{featuredPost.youtubeUrl ? (
-													<a
-														href={featuredPost.youtubeUrl}
-														target="_blank"
-														rel="noreferrer"
+													<span
+														onClick={(event) => {
+															event.preventDefault();
+															window.open(featuredPost.youtubeUrl, '_blank', 'noreferrer');
+														}}
 														className="ml-auto inline-flex items-center gap-2 rounded-full border border-yellow-400/40 bg-yellow-400/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-yellow-300 transition hover:bg-yellow-400 hover:text-black"
 													>
 														<PlayCircle className="h-4 w-4" />
 														Watch video
 														<ArrowUpRight className="h-4 w-4" />
-													</a>
+													</span>
 												) : null}
 											</div>
 										</div>
 									</div>
-								</article>
+									</article>
+								</PostLink>
 								<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-1">
 									{gridPosts.slice(0, 2).map((post) => (
-										<article key={post._id} className="overflow-hidden rounded-[24px] border border-white/10 bg-white/[0.04]">
+										<PostLink
+											key={post._id}
+											post={post}
+											className="overflow-hidden rounded-[24px] border border-white/10 bg-white/[0.04] transition hover:border-yellow-400/30"
+										>
+										<article>
 											<div className="h-44 bg-neutral-900">
 												{post.thumbnailUrl ? (
 													<img src={post.thumbnailUrl} alt={post.title} className="h-full w-full object-cover" />
@@ -187,6 +225,7 @@ const Blog = () => {
 												<p className="mt-3 line-clamp-3 text-sm leading-6 text-white/65">{post.description}</p>
 											</div>
 										</article>
+										</PostLink>
 									))}
 								</div>
 							</section>
@@ -194,7 +233,12 @@ const Blog = () => {
 
 						<section className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
 							{gridPosts.slice(featuredPost ? 2 : 0).map((post) => (
-								<article key={post._id} className="group flex h-full flex-col overflow-hidden rounded-[24px] border border-white/10 bg-white/[0.04] transition hover:-translate-y-1 hover:border-yellow-400/30 hover:bg-white/[0.06]">
+								<PostLink
+									key={post._id}
+									post={post}
+									className="group flex h-full flex-col overflow-hidden rounded-[24px] border border-white/10 bg-white/[0.04] transition hover:-translate-y-1 hover:border-yellow-400/30 hover:bg-white/[0.06]"
+								>
+								<article className="flex h-full flex-col">
 									<div className="h-52 bg-neutral-900">
 										{post.thumbnailUrl ? (
 											<img src={post.thumbnailUrl} alt={post.title} className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]" />
@@ -205,28 +249,19 @@ const Blog = () => {
 									<div className="flex flex-1 flex-col p-5">
 										<div className="flex items-center justify-between gap-3 text-[11px] uppercase tracking-[0.24em] text-white/40">
 											<span>{formatDate(post.createdAt)}</span>
-											<span>{getReadTime(post.description)}</span>
+											<span>{getReadTime(post)}</span>
 										</div>
 										<h3 className="mt-4 line-clamp-2 font-geist text-2xl font-bold leading-tight text-white">{post.title}</h3>
 										<p className="mt-4 line-clamp-4 flex-1 text-sm leading-7 text-white/68">{post.description}</p>
 										<div className="mt-6 flex items-center justify-between gap-3 border-t border-white/10 pt-4 text-sm text-white/55">
 											<span className="flex items-center gap-2"><User className="h-4 w-4 text-yellow-400" />{post.author}</span>
-											{post.youtubeUrl ? (
-												<a
-													href={post.youtubeUrl}
-													target="_blank"
-													rel="noreferrer"
-													className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] text-yellow-300 transition hover:text-yellow-200"
-												>
-													Watch
-													<ArrowUpRight className="h-4 w-4" />
-												</a>
-											) : (
-												<span className="text-[11px] uppercase tracking-[0.22em] text-white/35">Article</span>
-											)}
+											<span className="text-[11px] uppercase tracking-[0.22em] text-white/35">
+												{post.slug ? 'Read article' : 'Article'}
+											</span>
 										</div>
 									</div>
 								</article>
+								</PostLink>
 							))}
 						</section>
 					</>
