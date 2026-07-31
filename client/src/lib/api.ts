@@ -1,7 +1,37 @@
+/**
+ * Where the API lives.
+ *
+ * `VITE_API_BASE_URL` is inlined at build time, so it must be set in the hosting
+ * provider's environment before the production build runs — changing it later has
+ * no effect until the frontend is rebuilt.
+ *
+ * Left empty in development: requests stay relative and Vite's dev server proxies
+ * `/api` to the local backend, which keeps development same-origin and free of
+ * CORS entirely.
+ */
 const rawApiBase = (import.meta.env.VITE_API_BASE_URL || '').trim();
 
-export const API_BASE = rawApiBase.replace(/\/$/, '');
+export const API_BASE = rawApiBase.replace(/\/+$/, '');
 export const ADMIN_TOKEN_KEY = 'bmPromoAdminToken';
+
+if (import.meta.env.PROD && !API_BASE) {
+  // Without a base URL the bundle calls its own origin, where the SPA rewrite
+  // answers every /api path with index.html and the failure looks like a CORS or
+  // JSON parsing error rather than missing configuration.
+  console.error(
+    '[api] VITE_API_BASE_URL is not set in this production build. API requests will ' +
+      'be sent to the site origin and will not reach the backend.'
+  );
+}
+
+if (API_BASE && !/^https?:\/\//i.test(API_BASE)) {
+  console.error(`[api] VITE_API_BASE_URL must be an absolute http(s) URL. Received: ${API_BASE}`);
+}
+
+if (import.meta.env.PROD && API_BASE.startsWith('http://')) {
+  // An https page cannot call an http API: the browser blocks it as mixed content.
+  console.error('[api] VITE_API_BASE_URL uses http:// in a production build. Use https://.');
+}
 
 export class ApiError extends Error {
   status: number;
@@ -84,11 +114,20 @@ export async function adminFetch<T = unknown>(path: string, options: AdminFetchO
     ...(extraHeaders as Record<string, string> | undefined)
   };
 
-  const response = await fetch(apiUrl(path), {
-    ...rest,
-    headers,
-    body: isPlainObject ? JSON.stringify(body) : (body as BodyInit | null | undefined)
-  });
+  let response: Response;
+
+  try {
+    response = await fetch(apiUrl(path), {
+      ...rest,
+      headers,
+      body: isPlainObject ? JSON.stringify(body) : (body as BodyInit | null | undefined)
+    });
+  } catch {
+    // fetch rejects without a status for DNS failures, a blocked CORS preflight and
+    // offline clients alike. The browser's bare "Failed to fetch" is not actionable,
+    // so it is replaced with something a user can report and a developer can trace.
+    throw new ApiError(0, 'Could not reach the server. Check your connection and try again.');
+  }
 
   const data = await response.json().catch(() => ({}));
 

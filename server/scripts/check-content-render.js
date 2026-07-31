@@ -1,0 +1,118 @@
+/**
+ * Golden-output test for the content pipeline.
+ *
+ * The expected HTML below was captured from the original renderer, so this pins
+ * the published markup across renderer, sanitiser and extension upgrades. A
+ * difference here changes every article on the site, so it must be reviewed
+ * deliberately rather than accepted silently.
+ *
+ *   npm run check:content
+ */
+const { renderContent } = require('../src/content/renderer');
+
+const DOCUMENT = {
+	type: 'doc',
+	content: [
+		{ type: 'heading', attrs: { level: 2, textAlign: 'center' }, content: [{ type: 'text', text: 'Admissions 2026' }] },
+		{
+			type: 'paragraph',
+			content: [
+				{ type: 'text', text: 'Plain ' },
+				{ type: 'text', marks: [{ type: 'bold' }], text: 'bold' },
+				{ type: 'text', text: ' ' },
+				{ type: 'text', marks: [{ type: 'italic' }], text: 'italic' },
+				{ type: 'text', text: ' ' },
+				{ type: 'text', marks: [{ type: 'strike' }], text: 'strike' },
+				{ type: 'text', text: ' ' },
+				{ type: 'text', marks: [{ type: 'code' }], text: 'code' },
+				{ type: 'text', text: ' ' },
+				{ type: 'text', marks: [{ type: 'highlight' }], text: 'highlight' },
+				{ type: 'text', text: ' ' },
+				{ type: 'text', marks: [{ type: 'subscript' }], text: 'sub' },
+				{ type: 'text', marks: [{ type: 'superscript' }], text: 'sup' },
+				{ type: 'text', text: ' ' },
+				{ type: 'text', marks: [{ type: 'link', attrs: { href: 'https://buddingmariners.com' } }], text: 'link' },
+				{ type: 'text', text: ' & <escaped> "quotes"' }
+			]
+		},
+		{ type: 'bulletList', content: [{ type: 'listItem', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Bullet' }] }] }] },
+		{ type: 'orderedList', attrs: { start: 3 }, content: [{ type: 'listItem', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Ordered' }] }] }] },
+		{ type: 'taskList', content: [{ type: 'taskItem', attrs: { checked: true }, content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Task' }] }] }] },
+		{ type: 'blockquote', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Quote' }] }] },
+		{ type: 'codeBlock', attrs: { language: 'js' }, content: [{ type: 'text', text: 'const a = 1;' }] },
+		{ type: 'horizontalRule' },
+		{ type: 'image', attrs: { src: 'https://res.cloudinary.com/demo/image/upload/bm-blog/images/a.jpg', alt: 'Ship' } },
+		{ type: 'youtube', attrs: { src: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' } },
+		{
+			type: 'table',
+			content: [
+				{
+					type: 'tableRow',
+					content: [
+						{ type: 'tableHeader', attrs: { colspan: 1, rowspan: 1, colwidth: [120] }, content: [{ type: 'paragraph', content: [{ type: 'text', text: 'H' }] }] },
+						{ type: 'tableCell', attrs: { colspan: 1, rowspan: 1, colwidth: null }, content: [{ type: 'paragraph', content: [{ type: 'text', text: 'C' }] }] }
+					]
+				}
+			]
+		},
+		{ type: 'callout', attrs: { variant: 'warning' }, content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Careful' }] }] },
+		{ type: 'paragraph', content: [{ type: 'hardBreak' }, { type: 'text', text: 'after break' }] }
+	]
+};
+
+const EXPECTED_HTML = '<h2 style="text-align:center">Admissions 2026</h2>'
+	+ '<p>Plain <strong>bold</strong> <em>italic</em> <s>strike</s> <code>code</code> <mark>highlight</mark> '
+	+ '<sub>sub</sub><sup>sup</sup> <a target="_blank" rel="noopener noreferrer nofollow" class="bm-content-link" '
+	+ 'href="https://buddingmariners.com">link</a> &amp; &lt;escaped&gt; "quotes"</p>'
+	+ '<ul><li><p>Bullet</p></li></ul><ol><li><p>Ordered</p></li></ol>'
+	+ '<ul class="bm-content-task-list" data-type="taskList"><li data-checked="true" data-type="taskItem">'
+	+ '<label><input type="checkbox" checked="checked" /><span></span></label><div><p>Task</p></div></li></ul>'
+	+ '<blockquote><p>Quote</p></blockquote>'
+	+ '<pre class="bm-content-code-block"><code class="language-js">const a = 1;</code></pre><hr />'
+	+ '<img class="bm-content-image" loading="lazy" decoding="async" '
+	+ 'src="https://res.cloudinary.com/demo/image/upload/bm-blog/images/a.jpg" alt="Ship" />'
+	+ '<div><iframe class="bm-content-embed" width="640" height="480" allowfullscreen="true" '
+	+ 'src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?rel=1" start="0"></iframe></div>'
+	+ '<table class="bm-content-table" style="min-width:145px"><colgroup><col style="width:120px" />'
+	+ '<col style="min-width:25px" /></colgroup><tbody><tr><th colspan="1" rowspan="1" colwidth="120"><p>H</p></th>'
+	+ '<td colspan="1" rowspan="1"><p>C</p></td></tr></tbody></table>'
+	+ '<div data-variant="warning" data-type="callout" class="bm-content-callout"><p>Careful</p></div>'
+	+ '<p><br />after break</p>';
+
+const result = renderContent(DOCUMENT);
+let failed = 0;
+
+function check(label, condition, detail = '') {
+	if (condition) {
+		console.log(`  PASS  ${label}`);
+		return;
+	}
+
+	failed += 1;
+	console.log(`  FAIL  ${label}${detail ? `\n        ${detail}` : ''}`);
+}
+
+check('rendered HTML matches the expected output', result.contentHtml === EXPECTED_HTML);
+
+if (result.contentHtml !== EXPECTED_HTML) {
+	for (let i = 0; i < Math.max(EXPECTED_HTML.length, result.contentHtml.length); i += 1) {
+		if (EXPECTED_HTML[i] !== result.contentHtml[i]) {
+			console.log(`\n        first difference at index ${i}`);
+			console.log(`        expected: ${JSON.stringify(EXPECTED_HTML.slice(Math.max(0, i - 60), i + 100))}`);
+			console.log(`        actual:   ${JSON.stringify(result.contentHtml.slice(Math.max(0, i - 60), i + 100))}`);
+			break;
+		}
+	}
+}
+
+check('script tags are stripped', !renderContent({
+	type: 'doc',
+	content: [{ type: 'paragraph', content: [{ type: 'text', text: '<script>alert(1)</script>' }] }]
+}).contentHtml.includes('<script'));
+
+check('plain text is derived', result.contentText.includes('Admissions 2026'));
+check('word count is populated', result.wordCount > 0);
+check('cloudinary ids are collected', result.mediaPublicIds.includes('bm-blog/images/a'));
+
+console.log(failed === 0 ? '\nContent rendering is unchanged.' : `\n${failed} check(s) failed.`);
+process.exit(failed === 0 ? 0 : 1);
