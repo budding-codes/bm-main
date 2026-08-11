@@ -2,7 +2,7 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 import ojas from '../../assets/ojas.png';
 import shahwanaz from '../../assets/shahnawaz.png';
-import ourstory from '../../assets/our story.jpg';
+import ourstory from '../../assets/optimized/our story-800w.webp';
 
 const founders = [
 	{

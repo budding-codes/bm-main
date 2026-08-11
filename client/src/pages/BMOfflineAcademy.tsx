@@ -65,18 +65,11 @@ const logoTiles = [
 // Faculty data for interactive section
 const facultyList = [
   {
-    name: 'Dr. Gourav Lalla',
-    title: 'MBBS, DNB - Ophthalmologist',
-    role: 'In-house Doctor (Ophthalmologist) at Budding Mariners.',
-    description: `Guides students for Medicals, Psychometric Tests, and maintaining physical & mental fitness for sea life.`,
-    img: gouravf1,
-  },
-  {
-    name: 'Ms. Vanshika Kumar',
-    title: 'Faculty – English, Communication & Personality Development',
+    name: 'Mr. Ojas Lalla',
+    title: 'Non-Technical Interview & Personal Growth',
     role: '',
-    description: `5+ years of experience in helping students speak fluently and present confidently.`,
-    img: vanshikaf2,
+    description: `Our founder mentors students in character building, mindset, and real-time interview strategies. He cracked a record-breaking 8 sponsorships of Torm, Scorpio, Synergy, Anglo Eastern, Fleet, Great Eastern, Wilhelmsen, and Goodwood during his DNS.`,
+    img: ojasf4,
   },
   {
     name: 'Mr. Md Rafi',
@@ -84,13 +77,6 @@ const facultyList = [
     role: '',
     description: `With over 13+ years of teaching experience, he is known for making tough concepts simple and exam-ready.`,
     img: rafif3,
-  },
-  {
-    name: 'Mr. Ojas Lalla',
-    title: 'Non-Technical Interview & Personal Growth',
-    role: '',
-    description: `Our founder mentors students in character building, mindset, and real-time interview strategies. He cracked a record-breaking 8 sponsorships of Torm, Scorpio, Synergy, Anglo Eastern, Fleet, Great Eastern, Wilhelmsen, and Goodwood during his DNS.`,
-    img: ojasf4,
   },
   {
     name: 'Mr. Gaurav Yadav',
@@ -105,6 +91,20 @@ const facultyList = [
     role: '',
     description: `With 7+ years of experience, he is known for making Chemistry interesting and scoring through smart tricks and core understanding.`,
     img: priyanshu,
+  },
+  {
+    name: 'Ms. Vanshika Kumar',
+    title: 'Faculty – English, Communication & Personality Development',
+    role: '',
+    description: `5+ years of experience in helping students speak fluently and present confidently.`,
+    img: vanshikaf2,
+  },
+  {
+    name: 'Dr. Gourav Lalla',
+    title: 'MBBS, DNB - Ophthalmologist',
+    role: 'In-house Doctor (Ophthalmologist) at Budding Mariners.',
+    description: `Guides students for Medicals, Psychometric Tests, and maintaining physical & mental fitness for sea life.`,
+    img: gouravf1,
   },
 ];
 

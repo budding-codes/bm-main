@@ -7,7 +7,7 @@ import image2 from '../../assets/course2.png';
 import image3 from '../../assets/DNS.png';
 import image4 from '../../assets/sctw.png';
 import image5 from '../../assets/Marine engg.png';
-import image6 from '../../assets/roadmap.png';
+import image6 from '../../assets/optimized/roadmap-800w.webp';
 
 const Courses = () => {
   const [activeTab, setActiveTab] = useState('all');

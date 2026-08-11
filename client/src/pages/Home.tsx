@@ -1,41 +1,42 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, lazy, Suspense } from 'react';
 import { Helmet } from 'react-helmet';
 import { motion, useMotionValue, useTransform, PanInfo } from 'framer-motion';
-import compass from '../../assets/compass.png';
-import bg from '../../assets/BG Header.png';
-import { ChevronLeft, ChevronRight, Play, Users, Building, Star, Laptop } from 'lucide-react';
-import cl1 from '../../assets/CL1.png';
-import cl2 from '../../assets/CL2.jpg';
-import cl3 from '../../assets/CL3.png';
-import cl4 from '../../assets/CL4.png';
-import cl5 from '../../assets/CL5.png';
-import cl6 from '../../assets/CL6.png';
-import cl7 from '../../assets/CL7.png';
-import cl10 from '../../assets/CL10.png';
-import cl11 from '../../assets/CL11.png';
-import cl12 from '../../assets/CL12.png';
-import cl13 from '../../assets/CL13.jpg';
-import b1 from '../../assets/highestselections.png';
-import b2 from '../../assets/Selection.png';
-import b3 from '../../assets/mocktest.png';
-import s1 from '../../assets/S1.jpg';
-import s2 from '../../assets/S2.jpg';
-import s3 from '../../assets/S3.jpg';
-import s4 from '../../assets/S4.png';
-import s5 from '../../assets/S5.png';
-import s6 from '../../assets/S6.png';
-import s7 from '../../assets/S7.png';
-import s8 from '../../assets/S8.png';
-import s9 from '../../assets/S9.png';
+import compass from '../../assets/optimized/compass-440w.webp';
+import bg640 from '../../assets/optimized/BG Header-640w.webp';
+import bg1024 from '../../assets/optimized/BG Header-1024w.webp';
+import bg1920 from '../../assets/optimized/BG Header-1920w.webp';
+import { Users, Building, Star, Laptop } from 'lucide-react';
+import cl1 from '../../assets/optimized/CL1.webp';
+import cl2 from '../../assets/optimized/CL2.webp';
+import cl3 from '../../assets/optimized/CL3.webp';
+import cl4 from '../../assets/optimized/CL4.webp';
+import cl5 from '../../assets/optimized/CL5.webp';
+import cl6 from '../../assets/optimized/CL6.webp';
+import cl7 from '../../assets/optimized/CL7.webp';
+import cl10 from '../../assets/optimized/CL10.webp';
+import cl11 from '../../assets/optimized/CL11.webp';
+import cl12 from '../../assets/optimized/CL12.webp';
+import cl13 from '../../assets/optimized/CL13.webp';
+import b1 from '../../assets/optimized/highestselections.webp';
+import b2 from '../../assets/optimized/Selection.webp';
+import b3 from '../../assets/optimized/mocktest.webp';
+import s1 from '../../assets/optimized/S1.webp';
+import s2 from '../../assets/optimized/S2.webp';
+import s3 from '../../assets/optimized/S3.webp';
+import s4 from '../../assets/optimized/S4.webp';
+import s5 from '../../assets/optimized/S5.webp';
+import s6 from '../../assets/optimized/S6.webp';
+import s7 from '../../assets/optimized/S7.webp';
+import s8 from '../../assets/optimized/S8.webp';
+import s9 from '../../assets/optimized/S9.webp';
+
+const YoutubeShortsSection = lazy(() => import('../components/YoutubeShortsSection'));
 
 
 const Home = () => {
   // Move image more to the left by adjusting transform range
   const compassRotation = useMotionValue(0);
   const backgroundX = useTransform(compassRotation, [-90, 90], ['-30%', '0%']);
-
-  const [centerIndex, setCenterIndex] = useState(0);
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const AnimatedStat = ({ value, label, suffix = '' }: { value: number; label: string; suffix?: string }) => {
     const [count, setCount] = useState(0);
@@ -76,118 +77,13 @@ const Home = () => {
     );
   };
 
-  // Only provide the link for each short
- const youtubeShorts = [
-  { id: 1, link: 'https://youtube.com/shorts/-1sAw0gCnlQ?si=kbIwdLJtxNgo1CBu' },
-  { id: 2, link: 'https://youtube.com/shorts/SjEg4VFtslo?si=Z4z6LqxKM9pdYOAY' },
-  { id: 3, link: 'https://youtube.com/shorts/Pwj0hWIKb3Y?si=TID0l86PCCdvYPJi' },
-  { id: 4, link: 'https://youtube.com/shorts/qcHX3DJQojk?si=ICGZT95cpbPd-pbm' },
-  { id: 5, link: 'https://youtube.com/shorts/csRrcGrp9LA?si=ZonsNM_JndY9vTuC' },
-  { id: 6, link: 'https://youtube.com/shorts/RRIwJO3N1Uk?si=jI4heQvMwzDGKLu2' },
-  { id: 7, link: 'https://youtube.com/shorts/4nXr_wOW_Z8?si=RbCoPEJV__D2IQkV' },
-  { id: 8, link: 'https://youtube.com/shorts/wecUMgjUD2c?si=qmqdcKmyWO2Ag6tc' },
-  { id: 9, link: 'https://youtube.com/shorts/I9Rdo9IS0LA?si=p_xeRomexUQWuCEr' },
-  { id: 10, link: 'https://youtube.com/shorts/mkc-7bMSdDg?si=9uN3RU3BrPTI5ccC' },
-  { id: 11, link: 'https://youtube.com/shorts/if9C5YPmOPk?si=Y4CekEcCxMXPaK_U' },
-  { id: 12, link: 'https://youtube.com/shorts/r4y3Wzd-Bhs?si=ZXxsJEV52HWd5V9C' },
-  { id: 13, link: 'https://youtube.com/shorts/toboVC9ij-8?si=avNbzeLYVkHomHY-' },
-  { id: 14, link: 'https://youtube.com/shorts/wjZcpjh5UpQ?si=NJ9c3FUqT9_-NZ0K' },
-  { id: 15, link: 'https://youtube.com/shorts/P3Xpo0_Qb8Y?si=q46pki8Lqi9qH5Cm' },
-  { id: 16, link: 'https://youtube.com/shorts/GdjSxMDRAlg?si=2qfQeOKD5u6LD246' },
-  { id: 17, link: 'https://youtube.com/shorts/MWFcY3hU2rQ?si=EUaUNeZT-nasDgnR' },
-  { id: 18, link: 'https://youtube.com/shorts/upL3QVUT-vI?si=eBxJZfAntXJ-WW0B' },
-  { id: 19, link: 'https://youtube.com/shorts/J9TSQMT06do?si=OTepfLL7A8_v6i7n' },
-  { id: 20, link: 'https://youtube.com/shorts/pXs9-gJQONQ?si=tUFrhwSZTW-bF6cQ' },
-  { id: 21, link: 'https://youtube.com/shorts/G9o9BCzFfDo?si=NFan0go6Bkg2FKJP' },
-  { id: 22, link: 'https://youtube.com/shorts/dR25NqMOGZM?si=fiobIAHpjqUaB_zK' },
-  { id: 23, link: 'https://youtube.com/shorts/OyGMW2tCNnc?si=iyn9BPyKiHuk1PfK' },
-  { id: 24, link: 'https://youtube.com/shorts/0UIMsxYiztM?si=erV6iBqVpV4mUL8N' },
-  { id: 25, link: 'https://youtube.com/shorts/MaQQ1q0s33g?si=ge6TLTXWbY97rDDO' },
-  { id: 26, link: 'https://youtube.com/shorts/0UIMsxYiztM?si=d-axFU3byAgDHVe-' },
-  { id: 27, link: 'https://youtube.com/shorts/ZSZoPd8bucU?si=mmeo_VwOKPollYxw' },
-  { id: 28, link: 'https://youtube.com/shorts/ZSZoPd8bucU?si=jbiNxCN8dkszimtl' },
-  { id: 29, link: 'https://youtube.com/shorts/fawbP9OLOLU?si=TNCSpUVd3Jeoyaa2' },
-  { id: 30, link: 'https://youtube.com/shorts/5wM0nkcbeJU?si=m0PBeAYPL5lzrm8p' },
-];
-
-  // Extract video ID from YouTube Shorts link
-  const getShortId = (url: string) => {
-    const match = url.match(/shorts\/([a-zA-Z0-9_-]{11})/);
-    return match ? match[1] : '';
-  };
-
-  // Get embed link for Shorts
-  const getEmbedLink = (url: string) => {
-    const id = getShortId(url);
-    return id ? `https://www.youtube.com/embed/${id}?autoplay=0` : '';
-  };
-
-  // Fetch video title using YouTube oEmbed API
-  const useYoutubeTitle = (url: string) => {
-    const [title, setTitle] = useState('Loading...');
-    useEffect(() => {
-      let cancelled = false;
-      fetch(`https://www.youtube.com/oembed?url=${encodeURIComponent(url)}&format=json`)
-        .then(res => res.ok ? res.json() : Promise.reject())
-        .then(data => {
-          if (!cancelled) setTitle(data.title || 'YouTube Short');
-        })
-        .catch(() => {
-          if (!cancelled) setTitle('YouTube Short');
-        });
-      return () => { cancelled = true; };
-    }, [url]);
-    return title;
-  };
-
-  const handleCompassDrag = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+  const handleCompassDrag = (_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
     const deltaX = info.delta.x;
     const currentRotation = compassRotation.get();
     const newRotation = currentRotation + deltaX * 0.2;
     compassRotation.set(Math.max(-90, Math.min(90, newRotation)));
   };
 
-  const handleShortsScroll = () => {
-    if (!scrollContainerRef.current) return;
-
-    const container = scrollContainerRef.current;
-    const containerCenter = container.scrollLeft + container.clientWidth / 2;
-    const cardWidth = 280;
-    const newCenterIndex = Math.round(containerCenter / cardWidth);
-
-    if (newCenterIndex !== centerIndex && newCenterIndex >= 0 && newCenterIndex < youtubeShorts.length) {
-      setCenterIndex(newCenterIndex);
-    }
-  };
-
-  // Helper to scroll to a given index and center it
-  const scrollToIndex = (index: number) => {
-    if (!scrollContainerRef.current) return;
-    const cardWidth = window.innerWidth < 768 ? 240 : 280;
-    const container = scrollContainerRef.current;
-    const scrollLeft =
-      index * cardWidth - container.clientWidth / 2 + cardWidth / 2;
-    container.scrollTo({
-      left: scrollLeft,
-      behavior: 'smooth',
-    });
-  };
-
-  // On mount, set center index to middle and scroll to it
-  useEffect(() => {
-    const middle = Math.floor(youtubeShorts.length / 2);
-    setCenterIndex(middle);
-    scrollToIndex(middle);
-    // eslint-disable-next-line
-  }, []);
-
-  // When centerIndex changes, scroll to it
-  useEffect(() => {
-    scrollToIndex(centerIndex);
-    // eslint-disable-next-line
-  }, [centerIndex]);
-
-  // Use the 14 imported logos for the moving banner
   const companyLogos = [
     { name: 'CL1', url: cl1 },
     { name: 'CL2', url: cl2 },
@@ -218,23 +114,28 @@ const Home = () => {
         <meta property="og:image" content="/assets/yellow on orange logomark.png" />
       </Helmet>
       
-      {/* Hero Section */}
+      {/* Hero Section — LCP image uses responsive WebP + fetchpriority */}
       <section className="relative h-[50vh] min-h-[400px] overflow-hidden bg-black">
-        <motion.div
-          className="absolute inset-0 w-[150%] h-full bg-cover bg-center"
-          style={{
-            backgroundImage: `url(${bg})`,
-            x: backgroundX
-          }}
-        />
+        <motion.div className="absolute inset-0 w-[150%] h-full" style={{ x: backgroundX }}>
+          <picture>
+            <source media="(max-width: 640px)" srcSet={bg640} type="image/webp" />
+            <source media="(max-width: 1024px)" srcSet={bg1024} type="image/webp" />
+            <img
+              src={bg1920}
+              alt=""
+              width={1920}
+              height={1080}
+              fetchPriority="high"
+              decoding="async"
+              className="h-full w-full object-cover object-center"
+            />
+          </picture>
+        </motion.div>
         <div className="absolute inset-0 bg-black/50" />
         <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-4">
           <div className="max-w-4xl mx-auto mb-4">
-            <motion.h1
+            <h1
               className="text-2xl md:text-4xl lg:text-5xl font-bold text-white mb-3 font-geist"
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1 }}
               style={{ fontFamily: 'Impact, Charcoal, sans-serif', letterSpacing: '0.039em' }}
             >
               Your Gateway to the
@@ -244,15 +145,10 @@ const Home = () => {
               >
                 Merchant Navy
               </span>
-            </motion.h1>
-            <motion.p
-              className="text-base md:text-lg lg:text-xl text-white/90 mb-4 font-poppins"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.5 }}
-            >
+            </h1>
+            <p className="text-base md:text-lg lg:text-xl text-white/90 mb-4 font-poppins">
               Navigate your career with India's premier maritime education platform
-            </motion.p>
+            </p>
           </div>
         </div>
 
@@ -276,6 +172,9 @@ const Home = () => {
             <img
               src={compass}
               alt="Compass"
+              width={220}
+              height={220}
+              decoding="async"
               className="h-full w-full object-contain"
               draggable={false}
             />
@@ -327,6 +226,10 @@ const Home = () => {
                 <img 
                   src={b1}
                   alt="Highest Selections in Top Companies"
+                  width={160}
+                  height={160}
+                  loading="lazy"
+                  decoding="async"
                   className="w-40 h-40 object-cover rounded-lg border-2 border-yellow-400"
                 />
               </div>
@@ -349,6 +252,10 @@ const Home = () => {
                 <img 
                   src={b2}
                   alt="Company-specific preparation by the company's ex-Sponsored Marines"
+                  width={160}
+                  height={160}
+                  loading="lazy"
+                  decoding="async"
                   className="w-40 h-40 object-cover rounded-lg border-2 border-yellow-400"
                 />
               </div>
@@ -371,6 +278,10 @@ const Home = () => {
                 <img 
                   src={b3}
                   alt="Unlimited Mock Tests and Interviews"
+                  width={160}
+                  height={160}
+                  loading="lazy"
+                  decoding="async"
                   className="w-40 h-40 object-cover rounded-lg border-2 border-yellow-400"
                 />
               </div>
@@ -498,6 +409,10 @@ const Home = () => {
                   <img
                     src={company.url}
                     alt={company.name}
+                    width={200}
+                    height={100}
+                    loading="lazy"
+                    decoding="async"
                     className="max-w-full max-h-full object-contain"
                   />
                 </div>
@@ -530,6 +445,10 @@ const Home = () => {
                 <img
                   src={img}
                   alt={`Past Selection ${idx + 1}`}
+                  width={300}
+                  height={200}
+                  loading="lazy"
+                  decoding="async"
                   className="max-w-full max-h-full object-contain rounded"
                   style={{ maxHeight: 200, maxWidth: 300 }}
                 />
@@ -545,135 +464,9 @@ const Home = () => {
         `}</style>
       </section>
 
-      {/* YouTube Shorts Section */}
-<section className="py-12 md:py-16 lg:py-20 bg-black relative">
-  <div className="max-w-7xl mx-auto px-4">
-    <motion.h2
-      className="text-2xl md:text-3xl lg:text-4xl font-bold text-center text-white mb-3"
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      viewport={{ once: true }}
-    >
-      Stories of Officers of <span className="text-primary-400">Budding Mariners</span>
-    </motion.h2>
-    <p className="text-center text-white/70 mb-8 md:mb-12">Success stories from our maritime community</p>
-
-    {/* Arrows */}
-    <div className="relative">
-      <button
-        onClick={() => setCenterIndex(prev => Math.max(0, prev - 1))}
-        className="absolute left-0 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white p-2 rounded-full z-10"
-        disabled={centerIndex === 0}
-      >
-        <ChevronLeft size={24} />
-      </button>
-
-      <button
-        onClick={() => setCenterIndex(prev => Math.min(youtubeShorts.length - 1, prev + 1))}
-        className="absolute right-0 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white p-2 rounded-full z-10"
-        disabled={centerIndex === youtubeShorts.length - 1}
-      >
-        <ChevronRight size={24} />
-      </button>
-
-      {/* Scrollable Cards */}
-      <div
-        ref={scrollContainerRef}
-        className="flex overflow-x-auto space-x-4 md:space-x-6 pb-6 scrollbar-hide snap-x snap-mandatory scroll-smooth px-8 mt-10"
-      >
-        {youtubeShorts.map((video, index) => {
-          const title = useYoutubeTitle(video.link);
-          const [isVisible, setIsVisible] = useState(false);
-          const videoRef = useRef(null);
-
-          useEffect(() => {
-            const observer = new IntersectionObserver(
-              ([entry]) => {
-                if (entry.isIntersecting) {
-                  setIsVisible(true);
-                  observer.disconnect();
-                }
-              },
-              { threshold: 0.25 }
-            );
-
-            if (videoRef.current) observer.observe(videoRef.current);
-            return () => observer.disconnect();
-          }, []);
-
-          return (
-            <motion.div
-              key={video.id}
-              ref={videoRef}
-              className={`flex-shrink-0 w-56 md:w-64 h-80 md:h-96 rounded-2xl overflow-hidden cursor-pointer transition-all duration-500 snap-center border-4 ${
-                index === centerIndex
-                  ? 'shadow-2xl ring-4 ring-primary-400 scale-105 border-yellow-400'
-                  : 'grayscale hover:grayscale-75 scale-95 border-gray-700'
-              }`}
-              style={{ background: '#18181b' }}
-            >
-              <div className="relative h-full bg-gray-900 flex flex-col">
-                {isVisible ? (
-                  <iframe
-                    src={getEmbedLink(video.link)}
-                    title={title}
-                    width="100%"
-                    height="100%"
-                    allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    style={{
-                      border: 0,
-                      borderRadius: '16px 16px 0 0',
-                      width: '100%',
-                      height: '75%',
-                      minHeight: '180px',
-                      background: '#000'
-                    }}
-                  />
-                ) : (
-                  <div
-                    style={{
-                      height: '75%',
-                      backgroundImage: `url(https://img.youtube.com/vi/${getShortId(video.link)}/hqdefault.jpg)`,
-                      backgroundSize: 'cover',
-                      backgroundPosition: 'center'
-                    }}
-                  />
-                )}
-
-                <div className="flex-1 flex flex-col justify-end">
-                  <div className="p-3 md:p-4">
-                    <h3 className="text-white font-bold text-base md:text-lg mb-1 line-clamp-1">{title}</h3>
-                    <div className="flex items-center justify-end">
-                      <div className="flex items-center space-x-1">
-                        <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-                        <span className="text-white/60 text-xs">SHORTS</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          );
-        })}
-      </div>
-    </div>
-
-    {/* Dot Indicators */}
-    <div className="flex justify-center mt-4 md:mt-6 space-x-2">
-      {youtubeShorts.map((_, index) => (
-        <button
-          key={index}
-          onClick={() => setCenterIndex(index)}
-          className={`w-2 h-2 md:w-3 md:h-3 rounded-full transition-all duration-300 ${
-            index === centerIndex ? 'bg-primary-400 scale-125' : 'bg-white/30 hover:bg-white/50'
-          }`}
-        />
-      ))}
-    </div>
-  </div>
-</section>
+      <Suspense fallback={<div className="py-12 bg-black min-h-[200px]" aria-hidden="true" />}>
+        <YoutubeShortsSection />
+      </Suspense>
 
       {/* CTA Section */}
       <section className="py-12 md:py-16 lg:py-20 bg-primary-400">

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, ChevronDown } from 'lucide-react';
-import logo from '../../assets/yellow on orange logomark.png';
+import logo from '../../assets/optimized/yellow on orange logomark-120w.webp';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -102,7 +102,7 @@ const Navbar = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-4">
             <div className="bg-black p-2 rounded-full flex items-center justify-center">
-              <img src={logo} alt="BM Logo" className="h-12 w-12 object" />
+              <img src={logo} alt="BM Logo" width={48} height={48} className="h-12 w-12 object" />
             </div>
             <span className="text-yellow-400 font-bold text-xl tracking-wide">BUDDING MARINERS</span>
           </Link>

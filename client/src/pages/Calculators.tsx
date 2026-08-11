@@ -2,7 +2,6 @@
 import { Helmet } from 'react-helmet';
 import { Calculator, DollarSign, CreditCard, BarChart2, Anchor, ExternalLink, ChevronDown, ChevronUp, FileDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { jsPDF } from 'jspdf';
 import shipAvif from '../../assets/ship.avif';
 import bmLogo from '../../assets/yellow on orange logomark.png';
 
@@ -1198,8 +1197,9 @@ const eligibleDns: { name: string; rankNote: string; colleges: string[] }[] = []
 		}, 3000);
 	};
 
-	const handleExportPdf = () => {
+	const handleExportPdf = async () => {
 		if (!shippingResult) return;
+		const { jsPDF } = await import('jspdf');
 		const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
 		const pageW = doc.internal.pageSize.getWidth();
 		const pageH = doc.internal.pageSize.getHeight();

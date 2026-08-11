@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Anchor } from 'lucide-react';
-import logo from '../../assets/yellow on orange logomark.png';
+import logo from '../../assets/optimized/yellow on orange logomark-120w.webp';
 
 const Footer = () => {
   return (
