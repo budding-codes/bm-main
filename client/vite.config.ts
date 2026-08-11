@@ -12,6 +12,17 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) {
+            // React-bound packages must share the vendor-react chunk to avoid a
+            // circular dependency with vendor-editor (e.g. use-sync-external-store
+            // calling useState before vendor-react has finished initializing).
+            if (
+              id.includes('react-dom') ||
+              id.includes('react-router') ||
+              id.includes('/react/') ||
+              id.includes('use-sync-external-store')
+            ) {
+              return 'vendor-react';
+            }
             if (id.includes('@tiptap') || id.includes('prosemirror')) {
               return 'vendor-editor';
             }
@@ -20,9 +31,6 @@ export default defineConfig({
             }
             if (id.includes('jspdf') || id.includes('html2canvas')) {
               return 'vendor-pdf';
-            }
-            if (id.includes('react-dom') || id.includes('react-router') || id.includes('/react/')) {
-              return 'vendor-react';
             }
           }
         },
