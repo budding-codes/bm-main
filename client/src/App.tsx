@@ -1,5 +1,6 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect, useRef } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
+import { trackPageView } from './lib/gtag';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
@@ -29,6 +30,19 @@ function RouteFallback() {
 
 function App() {
   const location = useLocation();
+  const isInitialPageView = useRef(true);
+
+  useEffect(() => {
+    const pagePath = `${location.pathname}${location.search}`;
+
+    if (isInitialPageView.current) {
+      isInitialPageView.current = false;
+      return;
+    }
+
+    trackPageView(pagePath);
+  }, [location]);
+
   const isPromoPage = location.pathname === '/imucet-dhurandhar';
   const isAdminPage = location.pathname.startsWith('/admin');
   const hideChrome = isPromoPage || isAdminPage;

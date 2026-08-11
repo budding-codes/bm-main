@@ -1,5 +1,10 @@
 /// <reference types="vite/client" />
 
+interface Window {
+  dataLayer: unknown[];
+  gtag: (...args: unknown[]) => void;
+}
+
 interface ImportMetaEnv {
   /**
    * Absolute base URL of the API, without a trailing slash.
