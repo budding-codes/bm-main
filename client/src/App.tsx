@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
-import { AnimatePresence } from 'framer-motion';
+// import { useState, useEffect } from 'react';
+// import { AnimatePresence } from 'framer-motion';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import Loader from './components/Loader';
+// import Loader from './components/Loader';
 import Home from './pages/Home';
 import Courses from './pages/Courses';
 import About from './pages/About';
@@ -23,28 +23,29 @@ import FAQs from './pages/FAQs';
 
 function App() {
   const location = useLocation();
-  const [loading, setLoading] = useState(location.pathname === '/');
+  // Intro loader disabled — uncomment block below to restore Discipline → Commit → Advance animation
+  // const [loading, setLoading] = useState(location.pathname === '/');
   const isPromoPage = location.pathname === '/imucet-dhurandhar';
   const isAdminPage = location.pathname.startsWith('/admin');
   const hideChrome = isPromoPage || isAdminPage;
 
   // Show loader only when visiting the home page
-  useEffect(() => {
-    if (location.pathname === '/') {
-      setLoading(true);
-    }
-  }, [location.pathname]);
+  // useEffect(() => {
+  //   if (location.pathname === '/') {
+  //     setLoading(true);
+  //   }
+  // }, [location.pathname]);
 
-  const handleLoaderComplete = () => {
-    setLoading(false);
-  };
+  // const handleLoaderComplete = () => {
+  //   setLoading(false);
+  // };
 
   return (
     <div className={`min-h-screen ${isAdminPage ? 'bg-black' : 'bg-white'}`}>
-      <AnimatePresence mode="wait">
+      {/* <AnimatePresence mode="wait">
         {loading && <Loader key="loader" onComplete={handleLoaderComplete} />}
-      </AnimatePresence>
-      
+      </AnimatePresence> */}
+
       {!hideChrome && <Navbar />}
       <main className={hideChrome ? 'pt-0' : 'pt-[104px]'}>
         <Routes>
