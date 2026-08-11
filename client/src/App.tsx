@@ -3,6 +3,7 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import { trackPageView } from './lib/gtag';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import WhatsAppFloatingButton from './components/WhatsAppFloatingButton';
 import Home from './pages/Home';
 
 const Courses = lazy(() => import('./pages/Courses'));
@@ -72,6 +73,7 @@ function App() {
         </Suspense>
       </main>
       {!hideChrome && <Footer />}
+      {!hideChrome && <WhatsAppFloatingButton />}
     </div>
   );
 }
