@@ -5,6 +5,7 @@ import { ArrowLeft, Clock3, Copy, Share2 } from 'lucide-react';
 import { Helmet } from 'react-helmet';
 import { apiUrl } from '../lib/api';
 import { formatDate } from '../lib/format';
+import { canonicalUrl } from '../lib/site';
 import type { Blog } from '../types/blog';
 import '../styles/bm-content.css';
 
@@ -97,6 +98,8 @@ export default function BlogPost() {
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')}</p>`;
 
+  const pageCanonical = blog.seo?.canonicalUrl?.trim() || canonicalUrl(`/blog/${blog.slug}`);
+
   return (
     <div className="min-h-screen bg-black text-white">
       <Helmet>
@@ -106,11 +109,13 @@ export default function BlogPost() {
           content={blog.seo?.metaDescription || blog.description}
         />
         {blog.seo?.noIndex ? <meta name="robots" content="noindex" /> : null}
+        <link rel="canonical" href={pageCanonical} />
         <meta property="og:title" content={blog.seo?.metaTitle || blog.title} />
         <meta
           property="og:description"
           content={blog.seo?.metaDescription || blog.description}
         />
+        <meta property="og:url" content={pageCanonical} />
         {(blog.seo?.ogImageUrl || blog.thumbnailUrl) ? (
           <meta property="og:image" content={blog.seo?.ogImageUrl || blog.thumbnailUrl} />
         ) : null}

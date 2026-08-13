@@ -191,6 +191,17 @@ async function main() {
 	const unknown = await call('/api/does-not-exist');
 	check('an unknown API path returns a JSON 404', unknown.status === 404 && Boolean(unknown.body.error), `status ${unknown.status}`);
 
+	console.log('\nSitemap');
+	const sitemap = await fetch(`${BASE}/sitemap.xml`);
+	const sitemapXml = await sitemap.text();
+	const sitemapType = sitemap.headers.get('content-type') || '';
+	check('GET /sitemap.xml returns XML', sitemap.status === 200 && sitemapType.includes('xml'), `status ${sitemap.status}, type ${sitemapType}`);
+	check('sitemap lists the canonical origin', sitemapXml.includes('https://www.buddingmariners.com/'), `body starts ${sitemapXml.slice(0, 80)}`);
+	check('sitemap does not list localhost or admin', !sitemapXml.includes('localhost') && !sitemapXml.includes('/admin'));
+
+	const sitemapViaApi = await fetch(`${BASE}/api/sitemap.xml`);
+	check('GET /api/sitemap.xml is the same generator', sitemapViaApi.status === 200 && (await sitemapViaApi.text()).includes('<urlset'), `status ${sitemapViaApi.status}`);
+
 	console.log(`\n${passed} passed, ${failed} failed`);
 	process.exit(failed === 0 ? 0 : 1);
 }

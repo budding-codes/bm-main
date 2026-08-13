@@ -1,4 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 import { AdminAuthProvider, useAdminAuth } from './AdminAuthContext';
 import AdminLayout from './AdminLayout';
 import AdminLogin from './AdminLogin';
@@ -40,6 +41,9 @@ function AdminRoutes() {
 export default function AdminApp() {
   return (
     <AdminAuthProvider>
+      <Helmet>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
       <AdminRoutes />
     </AdminAuthProvider>
   );

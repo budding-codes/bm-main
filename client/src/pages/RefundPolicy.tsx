@@ -1,7 +1,13 @@
 import React from 'react';
+import { Helmet } from 'react-helmet';
+import { canonicalUrl } from '../lib/site';
 
 const RefundPolicy = () => (
   <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+    <Helmet>
+      <title>Refund Policy | Budding Mariners</title>
+      <link rel="canonical" href={canonicalUrl('/refund-policy')} />
+    </Helmet>
     <h1 className="text-3xl font-bold text-center mb-6">Refund Policy</h1>
 
     <div className="bg-white rounded-xl shadow-md border border-gray-200 p-8">

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
+import { canonicalUrl } from '../lib/site';
 
 // Import hostel-specific images
 // import hostelMain from '../../assets/hostel-main.jpg';
@@ -67,7 +68,8 @@ const BMHostel = () => {
         <meta property="og:title" content="BM's Hostel | Best Hostel for Merchant Navy Aspirants" />
         <meta property="og:description" content="BM's Hostel: Safe, hygienic, and supportive environment for Merchant Navy aspirants." />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://buddingmariners.com/bm-hostel" />
+        <link rel="canonical" href={canonicalUrl('/bm-hostel')} />
+        <meta property="og:url" content={canonicalUrl('/bm-hostel')} />
         <meta property="og:image" content="/assets/yellow on orange logomark.png" />
       </Helmet>
 

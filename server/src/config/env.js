@@ -101,6 +101,10 @@ const env = {
 
 	logLevel: process.env.LOG_LEVEL || (isProduction ? 'info' : 'debug'),
 
+	// Canonical public origin used in sitemap.xml. Invalid values (http, localhost,
+	// Vercel preview hosts) are rejected at sitemap generation time.
+	siteUrl: (process.env.SITE_URL || process.env.PUBLIC_SITE_URL || '').trim(),
+
 	cloudinary: {
 		cloudName: process.env.CLOUDINARY_CLOUD_NAME || '',
 		apiKey: process.env.CLOUDINARY_API_KEY || '',

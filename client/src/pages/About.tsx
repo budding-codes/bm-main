@@ -1,5 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
+import { canonicalUrl } from '../lib/site';
 import ojas from '../../assets/ojas.png';
 import shahwanaz from '../../assets/shahnawaz.png';
 import ourstory from '../../assets/optimized/our story-800w.webp';
@@ -32,7 +33,8 @@ const About = () => (
 			<meta property="og:title" content="About Budding Mariners | India's Trusted Maritime Academy" />
 			<meta property="og:description" content="Discover the story, mission, and vision behind Budding Mariners, India's leading marine education platform." />
 			<meta property="og:type" content="website" />
-			<meta property="og:url" content="https://buddingmariners.com/about" />
+			<link rel="canonical" href={canonicalUrl('/about')} />
+			<meta property="og:url" content={canonicalUrl('/about')} />
 			<meta property="og:image" content="/assets/yellow on orange logomark.png" />
 		</Helmet>
 

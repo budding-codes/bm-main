@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { GraduationCap, FileText, CheckCircle } from 'lucide-react';
+import { canonicalUrl } from '../lib/site';
 
 const courseCards = [
 	{
@@ -103,7 +104,8 @@ const CollegeForms = () => {
 				<meta property="og:title" content="Apply for Merchant Navy Courses & Sponsorships | Budding Mariners" />
 				<meta property="og:description" content="Apply for maritime courses and company sponsorships with Budding Mariners. Fast, transparent, and expert-guided process." />
 				<meta property="og:type" content="website" />
-				<meta property="og:url" content="https://buddingmariners.com/college-forms" />
+				<link rel="canonical" href={canonicalUrl('/college-forms')} />
+				<meta property="og:url" content={canonicalUrl('/college-forms')} />
 				<meta property="og:image" content="/assets/yellow on orange logomark.png" />
 			</Helmet>
 

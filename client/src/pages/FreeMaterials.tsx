@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { Download, FileText } from 'lucide-react';
+import { canonicalUrl } from '../lib/site';
 
 const materials = [
 	{
@@ -163,7 +164,8 @@ const FreeMaterials = () => {
 				<meta property="og:title" content="Free Maritime Study Materials & PDFs | Budding Mariners" />
 				<meta property="og:description" content="Download free study materials and PDFs for Merchant Navy and marine education from Budding Mariners." />
 				<meta property="og:type" content="website" />
-				<meta property="og:url" content="https://buddingmariners.com/free-materials" />
+				<link rel="canonical" href={canonicalUrl('/free-materials')} />
+				<meta property="og:url" content={canonicalUrl('/free-materials')} />
 				<meta property="og:image" content="/assets/yellow on orange logomark.png" />
 			</Helmet>
 

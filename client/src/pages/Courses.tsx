@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
+import { canonicalUrl } from '../lib/site';
 import { motion } from 'framer-motion';
 import { Clock, Users, Star, BookOpen, CheckCircle, User, Award } from 'lucide-react';
 import image1 from '../../assets/course1.png';
@@ -134,7 +135,8 @@ const Courses = () => {
         <meta property="og:title" content="Merchant Navy Courses | Best Maritime Training in India | Budding Mariners" />
         <meta property="og:description" content="Join Budding Mariners for top-rated Merchant Navy courses, mentorship, and placement support. India's best marine education platform." />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://buddingmariners.com/courses" />
+        <link rel="canonical" href={canonicalUrl('/courses')} />
+        <meta property="og:url" content={canonicalUrl('/courses')} />
         <meta property="og:image" content="/assets/yellow on orange logomark.png" />
       </Helmet>
       {/* Header */}

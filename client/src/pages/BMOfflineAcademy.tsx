@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
+import { canonicalUrl } from '../lib/site';
 // Comment out or remove image imports for images you don't have yet
 // import bmBanner from '../../assets/bm-banner.jpg'; // Placeholder for banner
 // import bmBuilding from '../../assets/bm-building.jpg'; // Placeholder for building
@@ -148,7 +149,8 @@ const BMOfflineAcademy = () => {
         <meta property="og:title" content="BM Offline Academy | India's #1 Academy for Merchant Navy Aspirants" />
         <meta property="og:description" content="BM Offline Academy: India's best for IMU-CET & Sponsorship. 42% of all India Merchant Navy cadets are from BM." />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://buddingmariners.com/bm-offline-academy" />
+        <link rel="canonical" href={canonicalUrl('/bm-offline-academy')} />
+        <meta property="og:url" content={canonicalUrl('/bm-offline-academy')} />
         <meta property="og:image" content="/assets/yellow on orange logomark.png" />
       </Helmet>
 

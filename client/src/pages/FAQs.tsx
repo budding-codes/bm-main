@@ -1,7 +1,12 @@
 import React from 'react';
+import { Helmet } from 'react-helmet';
 
 const FAQs = () => (
   <div className="max-w-3xl mx-auto p-6">
+    <Helmet>
+      <title>FAQs | Budding Mariners</title>
+      <meta name="robots" content="noindex, nofollow" />
+    </Helmet>
     <h1 className="text-2xl font-bold mb-4">FAQs</h1>
     <div className="prose prose-sm">
       <h2>How do I register?</h2>

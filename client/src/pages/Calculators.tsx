@@ -1,6 +1,7 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { Calculator, DollarSign, CreditCard, BarChart2, Anchor, ExternalLink, ChevronDown, ChevronUp, FileDown } from 'lucide-react';
+import { canonicalUrl } from '../lib/site';
 import { motion, AnimatePresence } from 'framer-motion';
 import shipAvif from '../../assets/ship.avif';
 import bmLogo from '../../assets/yellow on orange logomark.png';
@@ -1371,7 +1372,8 @@ const eligibleDns: { name: string; rankNote: string; colleges: string[] }[] = []
 				<meta property="og:title" content="Maritime Calculators | IMU CET Rank, College Predictor, Eligibility | Budding Mariners" />
 				<meta property="og:description" content="Free tools for Merchant Navy aspirants: IMU CET rank calculator, college predictor, and eligibility checker by Budding Mariners." />
 				<meta property="og:type" content="website" />
-				<meta property="og:url" content="https://buddingmariners.com/calculators" />
+				<link rel="canonical" href={canonicalUrl('/calculators')} />
+				<meta property="og:url" content={canonicalUrl('/calculators')} />
 				<meta property="og:image" content="/assets/yellow on orange logomark.png" />
 			</Helmet>
 

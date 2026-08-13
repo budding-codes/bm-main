@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { ArrowUpRight, Clock3, PlayCircle, User } from 'lucide-react';
 import { apiUrl } from '../lib/api';
+import { canonicalUrl } from '../lib/site';
 
 type BlogPost = {
 	_id: string;
@@ -120,7 +121,8 @@ const Blog = () => {
 				<meta property="og:title" content="Maritime Blog & Insights | Latest Merchant Navy News | Budding Mariners" />
 				<meta property="og:description" content="Stay updated with the latest maritime trends, guides, and insights from Budding Mariners." />
 				<meta property="og:type" content="website" />
-				<meta property="og:url" content="https://buddingmariners.com/blog" />
+				<link rel="canonical" href={canonicalUrl('/blog')} />
+				<meta property="og:url" content={canonicalUrl('/blog')} />
 				<meta property="og:image" content="/assets/yellow on orange logomark.png" />
 			</Helmet>
 

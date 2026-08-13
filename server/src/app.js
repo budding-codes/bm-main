@@ -6,6 +6,8 @@ const { connectDatabase, describeDatabase } = require('./config/database');
 const apiRoutes = require('./routes');
 const { requestContext, requestLogger } = require('./middleware/requestLogger');
 const { notFoundHandler, errorHandler } = require('./middleware/errorHandler');
+const seoController = require('./controllers/seoController');
+const { asyncHandler } = require('./utils/asyncHandler');
 const logger = require('./utils/logger');
 
 function reportConfigIssues() {
@@ -77,6 +79,14 @@ function createApp() {
 			requestId: req.id
 		});
 	});
+
+	// Registered before `/api` so `/api/sitemap.xml` is not captured by the API
+	// router's 404 handler. Both paths share one generator: the frontend proxies
+	// `/sitemap.xml` here in production, and the Vite `/api` proxy covers local use.
+	app.get(
+		['/sitemap.xml', '/api/sitemap.xml'],
+		asyncHandler(seoController.getSitemap, 'Failed to generate sitemap.')
+	);
 
 	app.use('/api', apiRoutes);
 

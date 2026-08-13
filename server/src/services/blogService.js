@@ -346,6 +346,18 @@ function listPublishedBlogs() {
 	return Blog.find(publicVisibilityFilter()).select(PUBLIC_LIST_FIELDS).sort(LIST_SORT);
 }
 
+const SITEMAP_FIELDS = 'slug updatedAt publishedAt createdAt seo.canonicalUrl seo.noIndex';
+
+function listSitemapBlogs() {
+	return Blog.find({
+		...publicVisibilityFilter(),
+		slug: { $exists: true, $nin: [null, ''] },
+		'seo.noIndex': { $ne: true }
+	})
+		.select(SITEMAP_FIELDS)
+		.lean();
+}
+
 function listAllBlogs() {
 	return Blog.find().select(ADMIN_LIST_FIELDS).sort(LIST_SORT);
 }
@@ -516,6 +528,7 @@ async function deleteBlog(id) {
 module.exports = {
 	publicVisibilityFilter,
 	listPublishedBlogs,
+	listSitemapBlogs,
 	listAllBlogs,
 	getBlogById,
 	getPublishedBlogBySlug,

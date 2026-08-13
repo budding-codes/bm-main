@@ -1,0 +1,9 @@
+# https://www.buddingmariners.com is the canonical production origin
+# (apex buddingmariners.com redirects here). Do not list localhost or preview hosts.
+User-agent: *
+Allow: /
+
+# Admin UI is authenticated and must not appear in search results.
+Disallow: /admin
+
+Sitemap: https://www.buddingmariners.com/sitemap.xml

@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, lazy, Suspense } from 'react';
 import { Helmet } from 'react-helmet';
+import { canonicalUrl } from '../lib/site';
 import { motion, useMotionValue, useTransform, PanInfo } from 'framer-motion';
 import compass from '../../assets/optimized/compass-440w.webp';
 import bg640 from '../../assets/optimized/BG Header-640w.webp';
@@ -110,7 +111,8 @@ const Home = () => {
         <meta property="og:title" content="Budding Mariners | India's Best Maritime Education Platform" />
         <meta property="og:description" content="Join Budding Mariners for the best Merchant Navy courses, mentorship, and placement support. India's most trusted marine education platform." />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://buddingmariners.com/" />
+        <link rel="canonical" href={canonicalUrl('/')} />
+        <meta property="og:url" content={canonicalUrl('/')} />
         <meta property="og:image" content="/assets/yellow on orange logomark.png" />
       </Helmet>
       
