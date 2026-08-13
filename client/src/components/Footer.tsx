@@ -1,7 +1,28 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Anchor } from 'lucide-react';
+import { Instagram, Linkedin, Youtube } from 'lucide-react';
 import logo from '../../assets/optimized/yellow on orange logomark-120w.webp';
+
+const SOCIAL_LINKS = [
+  {
+    name: 'LinkedIn',
+    href: 'https://www.linkedin.com/company/buddingmariners/posts/?feedView=all',
+    icon: Linkedin,
+    label: 'Follow Budding Mariners on LinkedIn',
+  },
+  {
+    name: 'Instagram',
+    href: 'https://www.instagram.com/bmofflineacademy/?hl=en',
+    icon: Instagram,
+    label: 'Follow Budding Mariners on Instagram',
+  },
+  {
+    name: 'YouTube',
+    href: 'https://www.youtube.com/c/MarineRSK',
+    icon: Youtube,
+    label: 'Subscribe to Budding Mariners on YouTube',
+  },
+] as const;
 
 const Footer = () => {
   return (
@@ -19,6 +40,21 @@ const Footer = () => {
             <div className="text-sm text-black/90 mb-4 font-poppins">
               Leading academy for aspiring merchant navy professionals with over <span className="font-bebas text-xl">5+</span> years of experience and <span className="font-bebas text-xl">3000+</span> successful students.
             </div>
+            <nav aria-label="Social media links" className="flex items-center gap-2">
+              {SOCIAL_LINKS.map(({ name, href, icon: Icon, label }) => (
+                <a
+                  key={name}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  title={label}
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-full text-black transition-colors duration-200 hover:bg-black/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/50 focus-visible:ring-offset-2 focus-visible:ring-offset-yellow-400"
+                >
+                  <Icon size={20} strokeWidth={1.75} aria-hidden="true" />
+                </a>
+              ))}
+            </nav>
           </div>
           {/* Quick Links */}
           <div>
