@@ -53,6 +53,9 @@ const wantToKnowMoreEmbeds = [
   'https://www.youtube.com/embed/DmERLSYhIOM?si=pWckWtf83rpj3kM3',
 ];
 
+const BM_ACADEMY_GOOGLE_MAPS_URL =
+  'https://www.google.com/maps/place/Budding+Mariners/@26.8968342,75.6863141,739m/data=!3m2!1e3!4b1!4m6!3m5!1s0x396c4d65203e9ac3:0xf8f6759cc7fc4a79!8m2!3d26.8968294!4d75.688889!16s%2Fg%2F11x14bwnd4?hl=en&entry=ttu&g_ep=EgoyMDI2MDcyOS4wIKXMDSoASAFQAw%3D%3D';
+
 // Helper to get YouTube thumbnail from link
 const getYoutubeThumbnail = (url: string) => {
   const match = url.match(/v=([a-zA-Z0-9_-]{11})/);
@@ -493,16 +496,25 @@ const BMOfflineAcademy = () => {
             </div>
           </div>
           <div className="flex-1 flex justify-center">
-            <div className="bg-gray-800 rounded-xl border-4 border-yellow-400 w-full max-w-xs h-40 flex items-center justify-center text-yellow-400 text-lg font-bold">
+            <div className="relative bg-gray-800 rounded-xl border-4 border-yellow-400 w-full max-w-xs h-40 flex items-center justify-center text-yellow-400 text-lg font-bold">
               <iframe
                 title="BM Academy Location"
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3559.9999999999995!2d75.78999999999999!3d26.912999999999997!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjbCsDU0JzQ2LjgiTiA3NcKwNDcnMjMuOSJF!5e0!3m2!1sen!2sin!4v1680000000000!5m2!1sen!2sin"
                 width="100%"
                 height="100%"
                 style={{ border: 0, borderRadius: 12, minHeight: 120 }}
+                className="pointer-events-none"
+                tabIndex={-1}
                 allowFullScreen={false}
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
+              />
+              <a
+                href={BM_ACADEMY_GOOGLE_MAPS_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="View Budding Mariners on Google Maps"
+                className="absolute inset-0 z-10 rounded-xl"
               />
             </div>
           </div>
