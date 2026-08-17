@@ -55,9 +55,9 @@ const YoutubeShortCard = memo(function YoutubeShortCard({
   centerIndex: number;
 }) {
   const [isVisible, setIsVisible] = useState(false);
-  const [title, setTitle] = useState('Budding Mariners Short');
   const videoRef = useRef<HTMLDivElement>(null);
   const isCenter = index === centerIndex;
+  const accessibleTitle = `Budding Mariners short video ${index + 1}`;
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -74,22 +74,6 @@ const YoutubeShortCard = memo(function YoutubeShortCard({
     return () => observer.disconnect();
   }, []);
 
-  useEffect(() => {
-    if (!isCenter || !isVisible) return;
-
-    let cancelled = false;
-    fetch(`https://www.youtube.com/oembed?url=${encodeURIComponent(video.link)}&format=json`)
-      .then((res) => (res.ok ? res.json() : Promise.reject()))
-      .then((data) => {
-        if (!cancelled && data.title) setTitle(data.title);
-      })
-      .catch(() => {});
-
-    return () => {
-      cancelled = true;
-    };
-  }, [isCenter, isVisible, video.link]);
-
   const shortId = getShortId(video.link);
 
   return (
@@ -103,46 +87,35 @@ const YoutubeShortCard = memo(function YoutubeShortCard({
       style={{ background: '#18181b' }}
     >
       <div className="relative h-full bg-gray-900 flex flex-col">
-        {isVisible && isCenter ? (
-          <iframe
-            src={getEmbedLink(video.link)}
-            title={title}
-            width="100%"
-            height="100%"
-            loading="lazy"
-            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-            style={{
-              border: 0,
-              borderRadius: '16px 16px 0 0',
-              width: '100%',
-              height: '75%',
-              minHeight: '180px',
-              background: '#000',
-            }}
-          />
-        ) : (
-          <img
-            src={`https://img.youtube.com/vi/${shortId}/hqdefault.jpg`}
-            alt={title}
-            loading="lazy"
-            decoding="async"
-            width={480}
-            height={360}
-            className="w-full object-cover"
-            style={{ height: '75%', minHeight: '180px' }}
-          />
-        )}
+        <div className="flex-1 min-h-0">
+          {isVisible && isCenter ? (
+            <iframe
+              src={getEmbedLink(video.link)}
+              title={accessibleTitle}
+              width="100%"
+              height="100%"
+              loading="lazy"
+              allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="w-full h-full min-h-[180px] bg-black rounded-t-2xl border-0"
+            />
+          ) : (
+            <img
+              src={`https://img.youtube.com/vi/${shortId}/hqdefault.jpg`}
+              alt={accessibleTitle}
+              loading="lazy"
+              decoding="async"
+              width={480}
+              height={360}
+              className="w-full h-full min-h-[180px] object-cover"
+            />
+          )}
+        </div>
 
-        <div className="flex-1 flex flex-col justify-end">
-          <div className="p-3 md:p-4">
-            <h3 className="text-white font-bold text-base md:text-lg mb-1 line-clamp-1">{title}</h3>
-            <div className="flex items-center justify-end">
-              <div className="flex items-center space-x-1">
-                <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-                <span className="text-white/60 text-xs">SHORTS</span>
-              </div>
-            </div>
+        <div className="px-3 py-2 md:px-4 md:py-2 flex items-center justify-end shrink-0">
+          <div className="flex items-center space-x-1">
+            <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+            <span className="text-white/60 text-xs">SHORTS</span>
           </div>
         </div>
       </div>
