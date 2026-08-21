@@ -142,15 +142,15 @@ export default function YoutubeShortsSection() {
   return (
     <section className="py-12 md:py-16 lg:py-20 bg-black relative">
       <div className="max-w-7xl mx-auto px-4">
-        <motion.h2
-          className="text-2xl md:text-3xl lg:text-4xl font-bold text-center text-white mb-3"
+        <motion.span
+          className="block text-2xl md:text-3xl lg:text-4xl font-bold text-center text-white mb-3"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
           Stories of Officers of <span className="text-primary-400">Budding Mariners</span>
-        </motion.h2>
+        </motion.span>
         <p className="text-center text-white/70 mb-8 md:mb-12">Success stories from our maritime community</p>
 
         <div className="relative">
