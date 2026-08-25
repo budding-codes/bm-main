@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import { canonicalUrl } from '../lib/site';
 import { motion } from 'framer-motion';
 import { Clock, Users, Star, BookOpen, CheckCircle, User, Award } from 'lucide-react';

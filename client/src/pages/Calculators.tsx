@@ -1,5 +1,5 @@
-﻿import React, { useState, useEffect } from 'react';
-import { Helmet } from 'react-helmet';
+import React, { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Calculator, DollarSign, CreditCard, BarChart2, Anchor, ExternalLink, ChevronDown, ChevronUp, FileDown } from 'lucide-react';
 import { canonicalUrl } from '../lib/site';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -27,7 +27,7 @@ const btechCollegeLinks: Record<string, string> = {
 	'HIMT College': 'https://www.himtcollege.com/himt_courses/btech-marine-engineering/',
 	'IMU, Kolkata Campus': 'https://www.imu.edu.in/imunew/course-programs?course=2',
 	'Indian Maritime University, Chennai': 'https://www.imu.edu.in/imunew/course-programs?course=2',
-	'Indian Maritime University – Mumbai Port Campus': 'https://www.imumumbaiport.ac.in/',
+	'Indian Maritime University � Mumbai Port Campus': 'https://www.imumumbaiport.ac.in/',
 	'International Maritime Institute': 'https://www.imu.edu.in/imunew/course-programs?course=2',
 	'Maharashtra Academy of Naval Education & Training': 'https://manetpune.edu.in/',
 	'Samundra Institute of Maritime Studies': 'https://www.samundra.com/',
@@ -410,7 +410,7 @@ const Calculators = () => {
 					categoryRank = Math.floor(generalRank * 0.75);
 				}
 				setImuRankResult({
-					general: `🎯 Estimated IMU CET Rank: ${generalRank}`,
+					general: `?? Estimated IMU CET Rank: ${generalRank}`,
 					category: `Category Rank: ${categoryRank}`,
 				});
 				found = true;
@@ -460,25 +460,25 @@ const Calculators = () => {
 		if (f.highestQualification === '10') {
 			if (age <= 25 && hasMin(f.tenthEnglish, 40) && hasMin(f.tenthOverall, 40)) {
 				gpEligible = true;
-				results.push('✅ GP Rating');
+				results.push('? GP Rating');
 			} else {
-				notEligible.push('❌ GP Rating (Age > 25 or English/Overall < 40%)');
+				notEligible.push('? GP Rating (Age > 25 or English/Overall < 40%)');
 			}
 		}
 		if (f.highestQualification === '12') {
 			if (age <= 25 && (hasMin(f.twelfthEnglish, 40) || hasMin(f.tenthEnglish, 40))) {
 				gpEligible = true;
-				results.push('✅ GP Rating');
+				results.push('? GP Rating');
 			} else {
-				notEligible.push('❌ GP Rating (Age > 25 or English < 40%)');
+				notEligible.push('? GP Rating (Age > 25 or English < 40%)');
 			}
 		}
 		if (f.highestQualification === 'diploma' || f.highestQualification === 'graduation') {
 			if (age <= 25 && (hasMin(f.tenthEnglish, 40) || hasMin(f.twelfthEnglish, 40))) {
 				gpEligible = true;
-				results.push('✅ GP Rating');
+				results.push('? GP Rating');
 			} else {
-				notEligible.push('❌ GP Rating (Age > 25 or English < 40%)');
+				notEligible.push('? GP Rating (Age > 25 or English < 40%)');
 			}
 		}
 
@@ -486,7 +486,7 @@ const Calculators = () => {
 		let dnsEligible = false;
 		if (f.highestQualification === '12') {
 			if (f.class12Status === 'Appearing') {
-				results.push('✅ DNS (Conditionally eligible if PCM ≥ 60% and English ≥ 50% in final results)');
+				results.push('? DNS (Conditionally eligible if PCM = 60% and English = 50% in final results)');
 			} else if (f.class12Status === 'Passed') {
 				if (
 					hasMin(f.twelfthPCM, 60) &&
@@ -495,9 +495,9 @@ const Calculators = () => {
 					age <= 25
 				) {
 					dnsEligible = true;
-					results.push('✅ DNS');
+					results.push('? DNS');
 				} else {
-					notEligible.push('❌ DNS (PCM < 60%, English < 50%, NIOS/Open board, or Age > 25)');
+					notEligible.push('? DNS (PCM < 60%, English < 50%, NIOS/Open board, or Age > 25)');
 				}
 			}
 		}
@@ -507,16 +507,16 @@ const Calculators = () => {
 				(hasMin(f.graduationEnglish, 50) || hasMin(f.tenthEnglish, 50) || hasMin(f.twelfthEnglish, 50)) &&
 				age <= 25
 			) {
-				results.push('✅ DNS (as Graduate)');
+				results.push('? DNS (as Graduate)');
 			} else {
-				notEligible.push('❌ DNS (Graduation PCM/English < 60/50 or Age > 25)');
+				notEligible.push('? DNS (Graduation PCM/English < 60/50 or Age > 25)');
 			}
 		}
 
 		// B.Sc Nautical Science
 		if (f.highestQualification === '12') {
 			if (f.class12Status === 'Appearing') {
-				results.push('✅ B.Sc Nautical Science (Conditionally eligible if PCM ≥ 60% and English ≥ 50% in final results)');
+				results.push('? B.Sc Nautical Science (Conditionally eligible if PCM = 60% and English = 50% in final results)');
 			} else if (f.class12Status === 'Passed') {
 				if (
 					hasMin(f.twelfthPCM, 60) &&
@@ -524,9 +524,9 @@ const Calculators = () => {
 					isRegularBoard &&
 					age <= 25
 				) {
-					results.push('✅ B.Sc Nautical Science');
+					results.push('? B.Sc Nautical Science');
 				} else {
-					notEligible.push('❌ B.Sc Nautical Science (PCM < 60%, English < 50%, NIOS/Open board, or Age > 25)');
+					notEligible.push('? B.Sc Nautical Science (PCM < 60%, English < 50%, NIOS/Open board, or Age > 25)');
 				}
 			}
 		}
@@ -534,7 +534,7 @@ const Calculators = () => {
 		// B.Tech Marine Engineering
 		if (f.highestQualification === '12') {
 			if (f.class12Status === 'Appearing') {
-				results.push('✅ B.Tech Marine Engg (Conditionally eligible if PCM ≥ 60% and English ≥ 50% in final results)');
+				results.push('? B.Tech Marine Engg (Conditionally eligible if PCM = 60% and English = 50% in final results)');
 			} else if (f.class12Status === 'Passed') {
 				if (
 					hasMin(f.twelfthPCM, 60) &&
@@ -542,9 +542,9 @@ const Calculators = () => {
 					isRegularBoard &&
 					age <= 25
 				) {
-					results.push('✅ B.Tech Marine Engg');
+					results.push('? B.Tech Marine Engg');
 				} else {
-					notEligible.push('❌ B.Tech Marine Engg (PCM < 60%, English < 50%, NIOS/Open board, or Age > 25)');
+					notEligible.push('? B.Tech Marine Engg (PCM < 60%, English < 50%, NIOS/Open board, or Age > 25)');
 				}
 			}
 		}
@@ -552,20 +552,20 @@ const Calculators = () => {
 		// Diploma
 		if (f.highestQualification === 'diploma') {
 			if (age <= 25 && hasMin(f.diplomaPCM, 60) && (hasMin(f.diplomaEnglish, 50) || hasMin(f.tenthEnglish, 50))) {
-				results.push('✅ GP Rating');
+				results.push('? GP Rating');
 			} else {
-				notEligible.push('❌ GP Rating (Diploma PCM/English < 60/50 or Age > 25)');
+				notEligible.push('? GP Rating (Diploma PCM/English < 60/50 or Age > 25)');
 			}
-			results.push('❌ DNS / B.Sc / B.Tech (Diploma not eligible)');
+			results.push('? DNS / B.Sc / B.Tech (Diploma not eligible)');
 		}
 
 		// Graduation
 		if (f.highestQualification === 'graduation') {
 			const gradStream = f.graduationStream;
 			if (age <= 25 && (hasMin(f.graduationEnglish, 40) || hasMin(f.tenthEnglish, 40) || hasMin(f.twelfthEnglish, 40))) {
-				results.push('✅ GP Rating');
+				results.push('? GP Rating');
 			} else {
-				notEligible.push('❌ GP Rating (Graduation English < 40% or Age > 25)');
+				notEligible.push('? GP Rating (Graduation English < 40% or Age > 25)');
 			}
 			if (
 				(gradStream === 'Engineering' || gradStream === 'Nautical Science') &&
@@ -573,9 +573,9 @@ const Calculators = () => {
 				age <= 28 &&
 				f.colorBlind === 'NO'
 			) {
-				results.push('✅ GME');
+				results.push('? GME');
 			} else {
-				notEligible.push('❌ GME (Stream not Engineering/Nautical Science, PCM < 50%, Age > 28, or Color blind)');
+				notEligible.push('? GME (Stream not Engineering/Nautical Science, PCM < 50%, Age > 28, or Color blind)');
 			}
 			if (
 				(gradStream === 'Engineering') &&
@@ -584,15 +584,15 @@ const Calculators = () => {
 				age <= 28 &&
 				f.colorBlind === 'NO'
 			) {
-				results.push('✅ ETO');
+				results.push('? ETO');
 			} else {
-				notEligible.push('❌ ETO (Stream not Engineering, PCM/English < 50%, Age > 28, or Color blind)');
+				notEligible.push('? ETO (Stream not Engineering, PCM/English < 50%, Age > 28, or Color blind)');
 			}
 		}
 
 		// Output
 		setCourseEligibility(
-			`🎯 Based on your details:\n${results.join('\n')}${notEligible.length ? '\n' + notEligible.join('\n') : ''}`
+			`?? Based on your details:\n${results.join('\n')}${notEligible.length ? '\n' + notEligible.join('\n') : ''}`
 		);
 	};
 
@@ -656,25 +656,25 @@ const Calculators = () => {
 		let selfRange = '';
 		let bmRange = '';
 		if (score >= 45) {
-			selfRange = '1 – 500';
-			bmRange = '1 – 250';
+			selfRange = '1 � 500';
+			bmRange = '1 � 250';
 		} else if (score >= 40) {
-			selfRange = '500 – 1500';
-			bmRange = '250 – 750';
+			selfRange = '500 � 1500';
+			bmRange = '250 � 750';
 		} else if (score >= 35) {
-			selfRange = '1500 – 3000';
-			bmRange = '750 – 1500';
+			selfRange = '1500 � 3000';
+			bmRange = '750 � 1500';
 		} else if (score >= 30) {
-			selfRange = '3000 – 6000';
-			bmRange = '1500 – 3000';
+			selfRange = '3000 � 6000';
+			bmRange = '1500 � 3000';
 		} else {
 			selfRange = '6000+';
-			bmRange = '3000 – 5000';
+			bmRange = '3000 � 5000';
 		}
 
 		setImuBmResult({
 			self: `Estimated Rank (Self-preparation): ${selfRange}`,
-			bm: `Estimated Rank with Budding Mariners’ Coaching: ${bmRange}`,
+			bm: `Estimated Rank with Budding Mariners� Coaching: ${bmRange}`,
 		});
 	};
 
@@ -1016,7 +1016,7 @@ const Calculators = () => {
 	  { name: 'HIMT College',                                       pcm: 60, eng10: 50, eng12: 50, ageMin: 17, ageMax: 25, dropper: 'Yes', nios: 'Yes', improvement: 'Yes' },
 	  { name: 'IMU, Kolkata Campus',                                pcm: 60, eng10: 50, eng12: 50, ageMin: 17, ageMax: 25, dropper: 'Yes', nios: 'Yes', improvement: 'Yes' },
 	  { name: 'Indian Maritime University, Chennai',                 pcm: 60, eng10: 50, eng12: 50, ageMin: 17, ageMax: 25, dropper: 'Yes', nios: 'Yes', improvement: 'Yes' },
-	  { name: 'Indian Maritime University – Mumbai Port Campus',     pcm: 60, eng10: 50, eng12: 50, ageMin: 17, ageMax: 25, dropper: 'Yes', nios: 'Yes', improvement: 'Yes' },
+	  { name: 'Indian Maritime University � Mumbai Port Campus',     pcm: 60, eng10: 50, eng12: 50, ageMin: 17, ageMax: 25, dropper: 'Yes', nios: 'Yes', improvement: 'Yes' },
 	  { name: 'International Maritime Institute',                    pcm: 60, eng10: 50, eng12: 50, ageMin: 17, ageMax: 25, dropper: 'Yes', nios: 'Yes', improvement: 'Yes' },
 	  { name: 'Maharashtra Academy of Naval Education & Training',   pcm: 60, eng10: 50, eng12: 50, ageMin: 17, ageMax: 25, dropper: 'Yes', nios: 'Yes', improvement: 'Yes' },
 	  { name: 'Samundra Institute of Maritime Studies',              pcm: 60, eng10: 50, eng12: 50, ageMin: 17, ageMax: 25, dropper: 'Yes', nios: 'Yes', improvement: 'Yes' },
@@ -1098,7 +1098,7 @@ const Calculators = () => {
 
 		setTimeout(() => {
 
-			// ── DNS eligibility ──────────────────────────────────────
+			// -- DNS eligibility --------------------------------------
 const eligibleDns: { name: string; rankNote: string; colleges: string[] }[] = [];
 
 			shippingDB.forEach(company => {
@@ -1144,12 +1144,12 @@ const eligibleDns: { name: string; rankNote: string; colleges: string[] }[] = []
 				// imuRank: 4000 = student's rank must be <= 4000 (we don't collect rank in this form, so SKIP this check
 				//   and instead display a note in the result for SISL and VShips)
 				// imuRank: 'top40percent' = show a note for Anglo Eastern
-				// Since the form doesn't collect IMU CET rank, do NOT disqualify on rank — but flag it in the output.
+				// Since the form doesn't collect IMU CET rank, do NOT disqualify on rank � but flag it in the output.
 
 				if (ok) {
 					let rankNote = '';
 					if (company.imuRank === 'top40percent') rankNote = 'IMU CET rank must be in top 40%';
-					if (typeof company.imuRank === 'number') rankNote = `IMU CET rank must be ≤ ${company.imuRank}`;
+					if (typeof company.imuRank === 'number') rankNote = `IMU CET rank must be = ${company.imuRank}`;
 					eligibleDns.push({
 						name: company.name,
 						rankNote,
@@ -1158,7 +1158,7 @@ const eligibleDns: { name: string; rankNote: string; colleges: string[] }[] = []
 				}
 			});
 
-			// ── BSc Nautical eligibility ──────────────────────────────
+			// -- BSc Nautical eligibility ------------------------------
 			const eligibleBsc: string[] = [];
 			bscCollegeDB.forEach(college => {
 				let ok = true;
@@ -1173,7 +1173,7 @@ const eligibleDns: { name: string; rankNote: string; colleges: string[] }[] = []
 				if (ok) eligibleBsc.push(college.name);
 			});
 
-			// ── BTech Marine eligibility ──────────────────────────────
+			// -- BTech Marine eligibility ------------------------------
 			const eligibleBtech: string[] = [];
 			btechCollegeDB.forEach(college => {
 				let ok = true;
@@ -1209,11 +1209,11 @@ const eligibleDns: { name: string; rankNote: string; colleges: string[] }[] = []
 		const headerH = 22;
 		const footerH = 8;
 
-		// ── Background ──
+		// -- Background --
 		doc.setFillColor(10, 10, 10);
 		doc.rect(0, 0, pageW, pageH, 'F');
 
-		// ── Header bar ──
+		// -- Header bar --
 		doc.setFillColor(234, 179, 8);
 		doc.rect(0, 0, pageW, headerH, 'F');
 		try { doc.addImage(bmLogo, 'PNG', margin, 2, 16, 16); } catch { /* skip if image load fails */ }
@@ -1227,7 +1227,7 @@ const eligibleDns: { name: string; rankNote: string; colleges: string[] }[] = []
 		doc.setFontSize(6);
 		doc.text(new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' }), pageW - margin, 12, { align: 'right' });
 
-		// ── Footer ──
+		// -- Footer --
 		doc.setFillColor(234, 179, 8);
 		doc.rect(0, pageH - footerH, pageW, footerH, 'F');
 		doc.setFont('helvetica', 'normal');
@@ -1235,7 +1235,7 @@ const eligibleDns: { name: string; rankNote: string; colleges: string[] }[] = []
 		doc.setTextColor(10, 10, 10);
 		doc.text('buddingmariners.com  |  Your Gateway to the Merchant Navy', pageW / 2, pageH - 2.5, { align: 'center' });
 
-		// ── Calculate dynamic row height to fit one page ──
+		// -- Calculate dynamic row height to fit one page --
 		const dnsCount = shippingResult.dns.length;
 		const bscCount = shippingResult.bsc.length;
 		const btechCount = shippingResult.btech.length;
@@ -1245,14 +1245,14 @@ const eligibleDns: { name: string; rankNote: string; colleges: string[] }[] = []
 		const titleH = 7;
 		const fixedH = titleH + sectionCount * (sectionHeaderH + sectionGap);
 		const availableH = pageH - headerH - footerH - 4 - fixedH;
-		// BSc & BTech use 2 columns — halves their row count
+		// BSc & BTech use 2 columns � halves their row count
 		const totalRows = dnsCount + Math.ceil(bscCount / 2) + Math.ceil(btechCount / 2);
 		const rowH = totalRows > 0 ? Math.min(7, Math.max(3.8, availableH / totalRows)) : 6;
 		const fontSize = rowH <= 4.5 ? 5.5 : rowH <= 5.5 ? 6 : 6.5;
 
 		let y = headerH + 3;
 
-		// ── Title ──
+		// -- Title --
 		doc.setFont('helvetica', 'bold');
 		doc.setFontSize(10);
 		doc.setTextColor(234, 179, 8);
@@ -1269,9 +1269,9 @@ const eligibleDns: { name: string; rankNote: string; colleges: string[] }[] = []
 			y += sectionHeaderH + 1;
 		};
 
-		// ── DNS section — single-column: Company | Colleges | Link ──
+		// -- DNS section � single-column: Company | Colleges | Link --
 		if (dnsCount > 0) {
-			drawSectionHeader('DNS — Shipping Companies Eligible', [11, 27, 69]);
+			drawSectionHeader('DNS � Shipping Companies Eligible', [11, 27, 69]);
 			shippingResult.dns.forEach(comp => {
 				const link = companyLinks[comp.name] || '';
 				doc.setFillColor(30, 30, 30);
@@ -1280,7 +1280,7 @@ const eligibleDns: { name: string; rankNote: string; colleges: string[] }[] = []
 				// Reserve space for link on the right
 				doc.setFont('helvetica', 'normal');
 				doc.setFontSize(fontSize - 0.5);
-				const applyText = link ? 'Apply →' : '';
+				const applyText = link ? 'Apply ?' : '';
 				const applyW = link ? doc.getTextWidth(applyText) + 4 : 0;
 				const nameMaxW = 44;
 				const collegesMaxW = contentW - nameMaxW - applyW - 6;
@@ -1310,7 +1310,7 @@ const eligibleDns: { name: string; rankNote: string; colleges: string[] }[] = []
 			y += sectionGap;
 		}
 
-		// ── Helper: draw 2-column list ──
+		// -- Helper: draw 2-column list --
 		const drawTwoColSection = (
 			title: string,
 			color: [number, number, number],
@@ -1330,7 +1330,7 @@ const eligibleDns: { name: string; rankNote: string; colleges: string[] }[] = []
 					// Reserve space for link
 					doc.setFont('helvetica', 'normal');
 					doc.setFontSize(fontSize - 0.5);
-					const visitText = link ? 'Visit →' : '';
+					const visitText = link ? 'Visit ?' : '';
 					const visitW = link ? doc.getTextWidth(visitText) + 4 : 0;
 					const nameMaxW = colW - visitW - 4;
 					// College name (truncated if needed)
@@ -1354,11 +1354,11 @@ const eligibleDns: { name: string; rankNote: string; colleges: string[] }[] = []
 			y += sectionGap;
 		};
 
-		// ── BSc section ──
-		drawTwoColSection('BSc Nautical Science — Eligible Colleges', [26, 58, 127], shippingResult.bsc, bscCollegeLinks, 'maritime college admission');
+		// -- BSc section --
+		drawTwoColSection('BSc Nautical Science � Eligible Colleges', [26, 58, 127], shippingResult.bsc, bscCollegeLinks, 'maritime college admission');
 
-		// ── BTech section ──
-		drawTwoColSection('BTech Marine Engineering — Eligible Colleges', [43, 86, 170], shippingResult.btech, btechCollegeLinks, 'maritime college admission');
+		// -- BTech section --
+		drawTwoColSection('BTech Marine Engineering � Eligible Colleges', [43, 86, 170], shippingResult.btech, btechCollegeLinks, 'maritime college admission');
 
 		doc.save('BM_Merchant_Navy_Eligibility.pdf');
 	};
@@ -1432,7 +1432,7 @@ const eligibleDns: { name: string; rankNote: string; colleges: string[] }[] = []
 
 			{/* Calculator Cards */}
 			<section className="mt-10 mb-10 px-2">
-				{/* Merchant Navy Eligibility Calculator — centred on its own row */}
+				{/* Merchant Navy Eligibility Calculator � centred on its own row */}
 				<div className="flex justify-center mb-6">
 					{calculators.filter(c => c.id === 'shipping-eligibility').map((calc) => (
 						<div
@@ -1562,7 +1562,7 @@ const eligibleDns: { name: string; rankNote: string; colleges: string[] }[] = []
 									<div className="font-bold text-md text-yellow-600">{imuRankResult.category}</div>
 								)}
 								<div className="text-xs text-gray-500 mt-2">
-									📌 Based on 2024 trends. Final rank may vary depending on cut-off and competition.
+									?? Based on 2024 trends. Final rank may vary depending on cut-off and competition.
 								</div>
 							</div>
 						)}
@@ -1632,7 +1632,7 @@ const eligibleDns: { name: string; rankNote: string; colleges: string[] }[] = []
 									))}
 								</ul>
 								<div className="text-xs text-gray-500 mt-2">
-									📌 Based on 2024,2025 trends. Final results may vary depending on cut-off and competition.
+									?? Based on 2024,2025 trends. Final results may vary depending on cut-off and competition.
 								</div>
 							</div>
 						)}
@@ -1862,7 +1862,7 @@ const eligibleDns: { name: string; rankNote: string; colleges: string[] }[] = []
 								<div className="font-bold text-lg text-black">{imuBmResult.self}</div>
 								<div className="font-bold text-md text-yellow-600">{imuBmResult.bm}</div>
 								<div className="text-xs text-red-600 mt-2">
-									🔥 Want to improve your chances? <a href="https://docs.google.com/forms/d/e/1FAIpQLSfplFAt9uFYYr9r5LDg4-0sP6IpfgZ0bjjOogXFtpODXRTVQw/viewform" target="_blank" rel="noopener noreferrer" className="underline">Book a free consultation now!</a>
+									?? Want to improve your chances? <a href="https://docs.google.com/forms/d/e/1FAIpQLSfplFAt9uFYYr9r5LDg4-0sP6IpfgZ0bjjOogXFtpODXRTVQw/viewform" target="_blank" rel="noopener noreferrer" className="underline">Book a free consultation now!</a>
 								</div>
 							</div>
 						)}
@@ -2052,7 +2052,7 @@ const eligibleDns: { name: string; rankNote: string; colleges: string[] }[] = []
 								</div>
 								<h3 className="text-3xl font-bold text-center text-black font-geist mb-8">
 									This could be your future!<br />
-									<span className="text-yellow-600 text-2xl">You are <span className="underline decoration-4 decoration-yellow-400 mr-2">eligible</span>🔥 Now let's look at your options!</span>
+									<span className="text-yellow-600 text-2xl">You are <span className="underline decoration-4 decoration-yellow-400 mr-2">eligible</span>?? Now let's look at your options!</span>
 								</h3>
 								<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 									{/* DNS */}
@@ -2070,7 +2070,7 @@ const eligibleDns: { name: string; rankNote: string; colleges: string[] }[] = []
 															<motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} className="overflow-hidden">
 																<div className="p-4 bg-[#111827] text-white text-xs leading-relaxed border-t border-gray-200">
 																	{comp.rankNote && (
-																		<p className="mb-2 font-semibold text-orange-400 flex items-center gap-1">⚠️ {comp.rankNote}</p>
+																		<p className="mb-2 font-semibold text-orange-400 flex items-center gap-1">?? {comp.rankNote}</p>
 																	)}
 																	<p className="font-bold text-gray-300 mb-1">Colleges you can go to:</p>
 																	<p className="mb-3 font-semibold text-yellow-400">{comp.colleges.join(', ')}</p>

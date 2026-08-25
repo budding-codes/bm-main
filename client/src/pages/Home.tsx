@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, lazy, Suspense } from 'react';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import { canonicalUrl } from '../lib/site';
 import { motion, useMotionValue, useTransform, PanInfo } from 'framer-motion';
 import compass from '../../assets/optimized/compass-440w.webp';
@@ -127,7 +127,7 @@ const Home = () => {
               alt=""
               width={1920}
               height={1080}
-              fetchPriority="high"
+              fetchpriority="high"
               decoding="async"
               className="h-full w-full object-cover object-center"
             />
@@ -136,7 +136,7 @@ const Home = () => {
         <div className="absolute inset-0 bg-black/50" />
         <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-4">
           <div className="max-w-4xl mx-auto mb-4">
-            <span
+            <h1
               className="block text-2xl md:text-4xl lg:text-5xl font-bold text-white mb-3 font-geist"
               style={{ fontFamily: 'Impact, Charcoal, sans-serif', letterSpacing: '0.039em' }}
             >
@@ -147,7 +147,7 @@ const Home = () => {
               >
                 Merchant Navy
               </span>
-            </span>
+            </h1>
             <p className="text-base md:text-lg lg:text-xl text-white/90 mb-4 font-poppins">
               Navigate your career with India's premier maritime education platform
             </p>
@@ -206,7 +206,7 @@ const Home = () => {
       {/* Why Budding Mariners Section */}
       <section className="py-12 md:py-16 lg:py-20 bg-black border-t border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4">
-          <motion.span
+          <motion.h2
             className="block text-2xl md:text-3xl lg:text-4xl font-bold text-center text-white mb-12 font-geist"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -214,7 +214,7 @@ const Home = () => {
             viewport={{ once: true }}
           >
             Why is <span className="text-primary-400 font-geist">Budding Mariners</span> The Best for you?
-          </motion.span>
+          </motion.h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
             {/* Feature 1 */}
             <motion.div
@@ -235,9 +235,9 @@ const Home = () => {
                   className="w-40 h-40 object-cover rounded-lg border-2 border-yellow-400"
                 />
               </div>
-              <span className="block text-lg md:text-xl font-bold text-yellow-400 mb-3 font-geist">
+              <h3 className="block text-lg md:text-xl font-bold text-yellow-400 mb-3 font-geist">
                 Highest Selections in Top Companies
-              </span>
+              </h3>
               <p className="text-white/80 text-sm md:text-base font-poppins">
                 Our proven track record speaks for itself with maximum placements in leading maritime companies
               </p>
@@ -261,9 +261,9 @@ const Home = () => {
                   className="w-40 h-40 object-cover rounded-lg border-2 border-yellow-400"
                 />
               </div>
-              <span className="block text-lg md:text-xl font-bold text-yellow-400 mb-3 font-geist">
+              <h3 className="block text-lg md:text-xl font-bold text-yellow-400 mb-3 font-geist">
                 Company-specific preparation by the company's ex-Sponsored Marines
-              </span>
+              </h3>
               <p className="text-white/80 text-sm md:text-base font-poppins">
                 Learn from industry experts who have sailed with the companies you aspire to join
               </p>
@@ -287,9 +287,9 @@ const Home = () => {
                   className="w-40 h-40 object-cover rounded-lg border-2 border-yellow-400"
                 />
               </div>
-              <span className="block text-lg md:text-xl font-bold text-yellow-400 mb-3 font-geist">
+              <h3 className="block text-lg md:text-xl font-bold text-yellow-400 mb-3 font-geist">
                 Unlimited Mock Tests and Interviews
-              </span>
+              </h3>
               <p className="text-white/80 text-sm md:text-base font-poppins">
                 Practice makes perfect - unlimited access to mock tests and interview sessions
               </p>
@@ -301,7 +301,7 @@ const Home = () => {
       {/* Students and Parents Love Us Section */}
       <section className="py-12 md:py-16 lg:py-20 bg-black border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4">
-          <motion.span
+          <motion.h2
             className="block text-2xl md:text-3xl lg:text-4xl font-bold text-center text-white mb-12 font-geist"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -309,7 +309,7 @@ const Home = () => {
             viewport={{ once: true }}
           >
             Our students and parents <span className="text-primary-400">love us</span>
-          </motion.span>
+          </motion.h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
             {/* Stat 1 */}
             <motion.div
@@ -377,7 +377,7 @@ const Home = () => {
       {/* Students Selected In Section */}
       <section className="py-12 md:py-16 lg:py-20 bg-black border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4">
-          <motion.span
+          <motion.h2
             className="block text-2xl md:text-3xl lg:text-4xl font-bold text-center text-white mb-12 font-geist"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -385,7 +385,7 @@ const Home = () => {
             viewport={{ once: true }}
           >
             Our students have been <span className="text-primary-400">selected in...</span>
-          </motion.span>
+          </motion.h2>
           {/* Moving Logo Banner */}
           <div className="relative overflow-hidden">
             <motion.div
@@ -427,9 +427,9 @@ const Home = () => {
 
       {/* Past Selections Section */}
       <section className="bg-black py-8 border-b border-white/10">
-        <span className="block text-xl font-bold text-center text-yellow-400 mb-6 uppercase tracking-wide">
+        <h2 className="block text-xl font-bold text-center text-yellow-400 mb-6 uppercase tracking-wide">
           Our Past Selections...
-        </span>
+        </h2>
         <div className="relative overflow-hidden">
           <div
             className="flex items-center gap-8 md:gap-12"
@@ -473,7 +473,7 @@ const Home = () => {
       {/* CTA Section */}
       <section className="py-12 md:py-16 lg:py-20 bg-primary-400">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-          <motion.span
+          <motion.h2
             className="block text-2xl md:text-3xl lg:text-4xl font-bold text-black mb-4 md:mb-6"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -481,7 +481,7 @@ const Home = () => {
             viewport={{ once: true }}
           >
             Ready to Start Your Maritime Journey?
-          </motion.span>
+          </motion.h2>
           <motion.p
             className="text-lg md:text-xl text-black/80 mb-6 md:mb-8"
             initial={{ opacity: 0, y: 20 }}

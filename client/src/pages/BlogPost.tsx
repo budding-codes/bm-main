@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, Clock3, Copy, Share2 } from 'lucide-react';
-// @ts-expect-error react-helmet has no bundled types in this project
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import { apiUrl } from '../lib/api';
 import { formatDate } from '../lib/format';
 import { canonicalUrl } from '../lib/site';

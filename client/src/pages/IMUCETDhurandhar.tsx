@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import imageOne from '../../assets/1.png';
 import imageTwo from '../../assets/2.png';
 import imageThree from '../../assets/3.png';

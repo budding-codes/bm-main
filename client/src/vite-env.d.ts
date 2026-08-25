@@ -1,5 +1,15 @@
 /// <reference types="vite/client" />
 
+import 'react';
+
+declare module 'react' {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  interface ImgHTMLAttributes<T> {
+    /** Lowercase HTML attribute; React 18 passes this through without a DOM prop warning. */
+    fetchpriority?: 'high' | 'low' | 'auto';
+  }
+}
+
 interface Window {
   dataLayer: unknown[];
   gtag: (...args: unknown[]) => void;

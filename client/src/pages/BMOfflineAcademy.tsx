@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import { canonicalUrl } from '../lib/site';
 // Comment out or remove image imports for images you don't have yet
 // import bmBanner from '../../assets/bm-banner.jpg'; // Placeholder for banner
@@ -219,7 +219,7 @@ const BMOfflineAcademy = () => {
             ))}
           </div>
         </div>
-        <style jsx>{`
+        <style>{`
           @keyframes scroll {
             0% { transform: translateX(0); }
             100% { transform: translateX(-50%); }
@@ -292,7 +292,7 @@ const BMOfflineAcademy = () => {
             </React.Fragment>
           ))}
         </div>
-        <style jsx>{`
+        <style>{`
           @keyframes marqueeRed {
             0% { transform: translateX(0); }
             100% { transform: translateX(-50%); }
@@ -331,7 +331,7 @@ const BMOfflineAcademy = () => {
             ))}
           </div>
         </div>
-        <style jsx>{`
+        <style>{`
           @keyframes marqueePastSelections {
             0% { transform: translateX(0); }
             100% { transform: translateX(-50%); }
@@ -424,7 +424,7 @@ const BMOfflineAcademy = () => {
             </React.Fragment>
           ))}
         </div>
-        <style jsx>{`
+        <style>{`
           @keyframes marqueeAdmissions {
             0% { transform: translateX(0); }
             100% { transform: translateX(-50%); }
@@ -552,7 +552,7 @@ const BMOfflineAcademy = () => {
                 src={yt}
                 title={`YouTube video ${idx + 1}`}
                 frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 referrerPolicy="strict-origin-when-cross-origin"
                 allowFullScreen
                 style={{ borderRadius: '8px 8px 0 0', background: '#000' }}

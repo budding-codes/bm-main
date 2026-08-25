@@ -1,7 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-// @ts-expect-error react-helmet has no bundled types in this project
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import { ArrowUpRight, Clock3, PlayCircle, User } from 'lucide-react';
 import { apiUrl } from '../lib/api';
 import { canonicalUrl } from '../lib/site';
