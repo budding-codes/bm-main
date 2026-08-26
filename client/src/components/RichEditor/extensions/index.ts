@@ -9,6 +9,7 @@ import CharacterCount from '@tiptap/extension-character-count';
 import { Table, TableRow, TableHeader, TableCell } from '@tiptap/extension-table';
 import { TaskList, TaskItem } from '@tiptap/extension-list';
 import { Callout } from './callout';
+import { BmFontFamily } from './bmFontFamily';
 import { BmImage } from './bmImage';
 import { BmTypography } from './bmTypography';
 
@@ -52,6 +53,7 @@ export function createEditorExtensions(placeholder?: string) {
       HTMLAttributes: { class: 'bm-content-embed' }
     }),
     Highlight.configure({ multicolor: false }),
+    BmFontFamily,
     TextAlign.configure({
       types: ['heading', 'paragraph', 'listItem'],
       alignments: ['left', 'center', 'right', 'justify'],

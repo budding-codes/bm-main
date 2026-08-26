@@ -217,5 +217,86 @@ check(
 	justifiedParagraphResult.contentHtml === '<p style="text-align:justify">Justified body copy.</p>'
 );
 
+const fontFamilyResult = renderContent({
+	type: 'doc',
+	content: [
+		{
+			type: 'paragraph',
+			content: [
+				{ type: 'text', text: 'Default text ' },
+				{
+					type: 'text',
+					marks: [{ type: 'fontFamily', attrs: { fontId: 'georgia' } }],
+					text: 'Georgia'
+				},
+				{ type: 'text', text: ' and ' },
+				{
+					type: 'text',
+					marks: [
+						{ type: 'bold' },
+						{ type: 'fontFamily', attrs: { fontId: 'inter' } }
+					],
+					text: 'bold Inter'
+				}
+			]
+		}
+	]
+});
+
+check(
+	'font family mark renders controlled span',
+	fontFamilyResult.contentHtml.includes('<span data-font="georgia" class="bm-font-georgia">Georgia</span>')
+		|| fontFamilyResult.contentHtml.includes('<span class="bm-font-georgia" data-font="georgia">Georgia</span>')
+);
+check(
+	'font family preserves other marks',
+	fontFamilyResult.contentHtml.includes('<span data-font="inter" class="bm-font-inter"><strong>bold Inter</strong></span>')
+		|| fontFamilyResult.contentHtml.includes('<span class="bm-font-inter" data-font="inter"><strong>bold Inter</strong></span>')
+);
+check(
+	'invalid font ids are stripped during render',
+	renderContent({
+		type: 'doc',
+		content: [
+			{
+				type: 'paragraph',
+				content: [
+					{
+						type: 'text',
+						marks: [{ type: 'fontFamily', attrs: { fontId: 'evil-font; url(javascript:alert(1))' } }],
+						text: 'unsafe'
+					}
+				]
+			}
+		]
+	}).contentHtml === '<p>unsafe</p>'
+);
+check(
+	'malicious font-family inline style is not emitted',
+	!fontFamilyResult.contentHtml.includes('font-family:')
+);
+
+const maliciousHtml = renderContent({
+	type: 'doc',
+	content: [
+		{
+			type: 'paragraph',
+			content: [{ type: 'text', text: 'safe' }]
+		}
+	]
+}).contentHtml.replace(
+	'<p>safe</p>',
+	'<p><span style="font-family: Comic Sans MS" data-font="evil">nope</span></p>'
+);
+
+const sanitizeHtml = require('sanitize-html');
+const { SANITIZE_OPTIONS } = require('../src/content/sanitizeOptions');
+const sanitizedMalicious = sanitizeHtml(maliciousHtml, SANITIZE_OPTIONS);
+
+check(
+	'sanitizer strips unsupported font data attributes',
+	!sanitizedMalicious.includes('data-font="evil"')
+);
+
 console.log(failed === 0 ? '\nContent rendering is unchanged.' : `\n${failed} check(s) failed.`);
 process.exit(failed === 0 ? 0 : 1);

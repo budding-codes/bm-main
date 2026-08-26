@@ -1,4 +1,6 @@
 /* Public article styles — mirrors editor canvas typography. */
+@import './bm-content-fonts.css';
+
 .bm-blog-content {
   color: #f8f8f8;
   font-family: Georgia, 'Times New Roman', serif;

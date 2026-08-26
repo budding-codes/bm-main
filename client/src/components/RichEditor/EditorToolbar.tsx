@@ -24,6 +24,7 @@ import { useRef, useState } from 'react';
 import { adminFetch } from '../../lib/api';
 import type { MediaAsset } from '../../types/media';
 import { TableInsertPopover } from './TableInsertPopover';
+import { FontFamilySelector } from './FontFamilySelector';
 import {
   TEXT_ALIGNS,
   TEXT_ALIGN_ICONS,
@@ -128,6 +129,12 @@ export function EditorToolbar({ editor, token, onUnauthorized, onRequestMediaLib
         >
           <Heading3 size={15} />
         </button>
+      </div>
+
+      <div className="bm-editor-toolbar-divider" />
+
+      <div className="bm-editor-toolbar-group">
+        <FontFamilySelector editor={editor} />
       </div>
 
       <div className="bm-editor-toolbar-divider" />

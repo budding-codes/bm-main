@@ -1,0 +1,95 @@
+/**
+ * Blog content font classes — must stay in sync with shared/content/fontRegistry.js
+ *
+ * Classes are unscoped (namespaced via bm-font-*) so they apply in:
+ * - editor canvas (.bm-editor-canvas)
+ * - public/preview content (.bm-blog-content)
+ * - font family selector toolbar (.bm-font-selector)
+ */
+.bm-font-inter {
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+
+.bm-font-roboto {
+  font-family: 'Roboto', ui-sans-serif, system-ui, sans-serif;
+}
+
+.bm-font-open-sans {
+  font-family: 'Open Sans', ui-sans-serif, system-ui, sans-serif;
+}
+
+.bm-font-lato {
+  font-family: 'Lato', ui-sans-serif, system-ui, sans-serif;
+}
+
+.bm-font-merriweather {
+  font-family: 'Merriweather', Georgia, 'Times New Roman', serif;
+}
+
+.bm-font-georgia {
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+.bm-font-montserrat {
+  font-family: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
+}
+
+.bm-font-poppins {
+  font-family: 'Poppins', ui-sans-serif, system-ui, sans-serif;
+}
+
+.bm-font-nunito {
+  font-family: 'Nunito', ui-sans-serif, system-ui, sans-serif;
+}
+
+.bm-font-source-sans-3 {
+  font-family: 'Source Sans 3', ui-sans-serif, system-ui, sans-serif;
+}
+
+.bm-font-work-sans {
+  font-family: 'Work Sans', ui-sans-serif, system-ui, sans-serif;
+}
+
+.bm-font-ibm-plex-sans {
+  font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+}
+
+.bm-font-playfair-display {
+  font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+}
+
+.bm-font-lora {
+  font-family: 'Lora', Georgia, 'Times New Roman', serif;
+}
+
+.bm-font-libre-baskerville {
+  font-family: 'Libre Baskerville', Georgia, 'Times New Roman', serif;
+}
+
+.bm-font-source-serif-4 {
+  font-family: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+}
+
+.bm-font-times-new-roman {
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.bm-font-arial {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.bm-font-helvetica {
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+.bm-font-verdana {
+  font-family: Verdana, Geneva, sans-serif;
+}
+
+.bm-font-tahoma {
+  font-family: Tahoma, Geneva, sans-serif;
+}
+
+.bm-font-trebuchet-ms {
+  font-family: 'Trebuchet MS', Helvetica, sans-serif;
+}

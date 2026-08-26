@@ -1,3 +1,5 @@
+@import '../../styles/bm-content-fonts.css';
+
 .bm-rich-editor {
   display: flex;
   flex-direction: column;
@@ -1030,4 +1032,93 @@
 .bm-slash-item-desc {
   font-size: 11px;
   color: rgba(255, 255, 255, 0.4);
+}
+
+.bm-font-selector {
+  min-width: 0;
+}
+
+.bm-font-selector-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 132px;
+  max-width: 180px;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.bm-font-selector-trigger:hover,
+.bm-font-selector-trigger.is-open {
+  border-color: rgba(250, 204, 21, 0.45);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.bm-font-selector-trigger span {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.bm-font-selector-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 30;
+  width: min(260px, calc(100vw - 24px));
+  max-height: min(360px, 60vh);
+  overflow-y: auto;
+  padding: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  background: #1f1f23;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+}
+
+.bm-font-selector-section {
+  padding: 8px 10px 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.bm-font-option {
+  display: block;
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.bm-font-option:hover,
+.bm-font-option.is-selected {
+  background: rgba(250, 204, 21, 0.14);
+}
+
+.bm-font-option.is-selected {
+  color: #facc15;
+}
+
+@media (max-width: 768px) {
+  .bm-font-selector-trigger {
+    min-width: 108px;
+    max-width: 140px;
+  }
 }

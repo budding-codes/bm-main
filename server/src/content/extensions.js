@@ -7,6 +7,7 @@ const { Superscript } = require('@tiptap/extension-superscript');
 const { Table, TableRow, TableHeader, TableCell } = require('@tiptap/extension-table');
 const { TaskList, TaskItem } = require('@tiptap/extension-list');
 const { Callout } = require('./calloutExtension');
+const { BmFontFamily } = require('./bmFontFamilyExtension');
 const { BmImage } = require('./bmImageExtension');
 
 /**
@@ -39,6 +40,7 @@ const contentExtensions = [
 		HTMLAttributes: { class: 'bm-content-embed' }
 	}),
 	Highlight.configure({ multicolor: false }),
+	BmFontFamily,
 	TextAlign.configure({
 		types: ['heading', 'paragraph', 'listItem'],
 		alignments: ['left', 'center', 'right', 'justify'],

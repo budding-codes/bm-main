@@ -1,4 +1,46 @@
 const sanitizeHtml = require('sanitize-html');
+const { isValidFontId, getFontCssClass } = require('../../../shared/content/fontRegistry');
+
+function sanitizeFontSpanAttribs(attribs) {
+	const next = { ...attribs };
+	const fontId = next['data-font'];
+
+	if (fontId && !isValidFontId(fontId)) {
+		delete next['data-font'];
+	}
+
+	if (typeof next.class === 'string') {
+		const classes = next.class.split(/\s+/).filter(Boolean).filter((className) => {
+			if (!className.startsWith('bm-font-')) {
+				return true;
+			}
+
+			const id = className.slice('bm-font-'.length);
+			return isValidFontId(id);
+		});
+
+		if (classes.length > 0) {
+			next.class = classes.join(' ');
+		} else {
+			delete next.class;
+		}
+	}
+
+	const resolvedFontId = isValidFontId(next['data-font']) ? next['data-font'] : null;
+	if (resolvedFontId) {
+		next['data-font'] = resolvedFontId;
+		const fontClass = getFontCssClass(resolvedFontId);
+		const classSet = new Set((next.class || '').split(/\s+/).filter(Boolean));
+		if (fontClass) {
+			classSet.add(fontClass);
+		}
+		next.class = [...classSet].join(' ');
+	} else {
+		delete next['data-font'];
+	}
+
+	return next;
+}
 
 /**
  * The sanitiser runs on server-generated HTML, so this list only needs to cover
@@ -25,7 +67,7 @@ const SANITIZE_OPTIONS = {
 		th: ['colspan', 'rowspan', 'colwidth', 'style', 'class'],
 		td: ['colspan', 'rowspan', 'colwidth', 'style', 'class'],
 		col: ['style', 'width'],
-		'*': ['class', 'data-type', 'data-variant', 'data-checked', 'data-align', 'data-layout', 'data-spacing', 'style']
+		'*': ['class', 'data-type', 'data-variant', 'data-checked', 'data-align', 'data-layout', 'data-spacing', 'data-font', 'style']
 	},
 	// Stated explicitly rather than inherited: the library's default list has varied
 	// between releases, and `col` in particular decides whether tables serialise as
@@ -47,7 +89,11 @@ const SANITIZE_OPTIONS = {
 		}
 	},
 	transformTags: {
-		a: sanitizeHtml.simpleTransform('a', { rel: 'noopener noreferrer nofollow' }, true)
+		a: sanitizeHtml.simpleTransform('a', { rel: 'noopener noreferrer nofollow' }, true),
+		span: (tagName, attribs) => ({
+			tagName,
+			attribs: sanitizeFontSpanAttribs(attribs)
+		})
 	}
 };
 

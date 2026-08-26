@@ -8,7 +8,7 @@ import { adminFetch } from '../../lib/api';
 import { analyzeAccessibility, analyzeSeo } from '../../lib/contentChecks';
 import { formatDate } from '../../lib/format';
 import { generateSlug } from '../../lib/slug';
-import { renderBlogContentHtml } from '../../lib/renderBlogContent';
+import { renderBlogContentHtml, prepareContentBlocksForSave } from '../../lib/renderBlogContent';
 import { BlogContent } from '../../components/BlogContent';
 import type { Blog, BlogStatus } from '../../types/blog';
 import type { MediaAsset } from '../../types/media';
@@ -90,6 +90,8 @@ export default function BlogEditorPage() {
   const [contentVersion, setContentVersion] = useState(0);
   const contentReady = useRef(false);
   const editorRef = useRef<RichEditorHandle>(null);
+  const contentRef = useRef(content);
+  contentRef.current = content;
 
   const loadRevisions = useCallback(async (blogId: string) => {
     try {
@@ -172,12 +174,13 @@ export default function BlogEditorPage() {
   // Local + server autosave.
   useEffect(() => {
     if (!contentReady.current) return;
-    if (!title && !content.html) return;
+    if (!title && !contentRef.current.html) return;
 
     const timer = window.setInterval(() => {
       setAutoSaveStatus('saving');
       editorRef.current?.flushPendingChanges();
-      const latestContent = editorRef.current?.getContent() || content;
+      const latestContent = editorRef.current?.getContent() || contentRef.current;
+      const contentBlocks = prepareContentBlocksForSave(latestContent.json);
       try {
         localStorage.setItem(
           DRAFT_STORAGE_KEY,
@@ -193,11 +196,11 @@ export default function BlogEditorPage() {
         // Ignore quota errors.
       }
 
-      if (id) {
+      if (id && contentBlocks) {
         void adminFetch(`/api/admin/blogs/${id}/draft`, {
           method: 'PUT',
           token,
-          body: { title, contentBlocks: latestContent.json },
+          body: { title, contentBlocks },
           onUnauthorized: handleUnauthorized
         })
           .then(() => {
@@ -212,7 +215,7 @@ export default function BlogEditorPage() {
     }, 30000);
 
     return () => window.clearInterval(timer);
-  }, [title, settings, content, id, token, handleUnauthorized]);
+  }, [title, settings, id, token, handleUnauthorized]);
 
   const a11yIssues = useMemo(
     () => analyzeAccessibility(content.json),
@@ -247,8 +250,8 @@ export default function BlogEditorPage() {
   );
 
   const previewHtml = useMemo(
-    () => renderBlogContentHtml(content.json),
-    [content.json]
+    () => (preview ? renderBlogContentHtml(content.json) : ''),
+    [preview, content.json]
   );
 
   const save = async (statusOverride?: BlogStatus) => {
@@ -266,6 +269,7 @@ export default function BlogEditorPage() {
     setContent(latestContent);
 
     const status = statusOverride || settings.status;
+    const contentBlocks = prepareContentBlocksForSave(latestContent.json);
     const payload = {
       title: title.trim(),
       author: settings.author.trim() || 'BM Team',
@@ -279,7 +283,7 @@ export default function BlogEditorPage() {
       metaDescription: settings.metaDescription.trim(),
       scheduledFor: settings.scheduledFor ? new Date(settings.scheduledFor).toISOString() : null,
       expiresAt: settings.expiresAt ? new Date(settings.expiresAt).toISOString() : null,
-      contentBlocks: latestContent.json
+      contentBlocks
     };
 
     try {

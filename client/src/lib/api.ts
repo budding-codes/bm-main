@@ -137,7 +137,15 @@ export async function adminFetch<T = unknown>(path: string, options: AdminFetchO
   }
 
   if (!response.ok) {
-    throw new ApiError(response.status, (data as { error?: string }).error || 'Request failed.');
+    const payload = data as { error?: string; code?: string };
+    if (payload.code === 'BACKEND_UNAVAILABLE' || response.status === 503) {
+      throw new ApiError(
+        503,
+        payload.error || 'API server is not running. Start it from the server folder: npm run dev'
+      );
+    }
+
+    throw new ApiError(response.status, payload.error || 'Request failed.');
   }
 
   return data as T;

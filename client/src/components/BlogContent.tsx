@@ -1,3 +1,5 @@
+import { BlogFontLoader } from './BlogFontLoader';
+
 type BlogContentProps = {
   html: string;
   className?: string;
@@ -10,10 +12,13 @@ type BlogContentProps = {
  */
 export function BlogContent({ html, className }: BlogContentProps) {
   return (
-    <div
-      lang="en"
-      className={['bm-blog-content', className].filter(Boolean).join(' ')}
-      dangerouslySetInnerHTML={{ __html: html }}
-    />
+    <>
+      <BlogFontLoader html={html} />
+      <div
+        lang="en"
+        className={['bm-blog-content', className].filter(Boolean).join(' ')}
+        dangerouslySetInnerHTML={{ __html: html }}
+      />
+    </>
   );
 }

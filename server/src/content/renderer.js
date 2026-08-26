@@ -13,6 +13,7 @@ const { getSchema } = require('@tiptap/core');
 const sanitizeHtml = require('sanitize-html');
 const { contentExtensions } = require('./extensions');
 const { SANITIZE_OPTIONS } = require('./sanitizeOptions');
+const { normalizeDocumentFonts } = require('../../../shared/content/fontRegistry');
 const { htmlToText, countWords, estimateReadingTime } = require('../utils/text');
 const { badRequest } = require('../utils/httpError');
 
@@ -118,18 +119,20 @@ function renderContent(contentBlocks) {
 
 	assertRenderable(doc);
 
-	const rawHtml = renderToHTMLString({ extensions: contentExtensions, content: doc });
+	const normalizedDoc = normalizeDocumentFonts(doc);
+
+	const rawHtml = renderToHTMLString({ extensions: contentExtensions, content: normalizedDoc });
 	const contentHtml = sanitizeHtml(rawHtml, SANITIZE_OPTIONS);
 	const contentText = htmlToText(contentHtml);
 	const wordCount = countWords(contentText);
 
 	return {
-		contentBlocks: doc,
+		contentBlocks: normalizedDoc,
 		contentHtml,
 		contentText,
 		wordCount,
 		readingTimeMinutes: estimateReadingTime(wordCount),
-		mediaPublicIds: [...collectMediaPublicIds(doc)]
+		mediaPublicIds: [...collectMediaPublicIds(normalizedDoc)]
 	};
 }
 

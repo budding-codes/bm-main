@@ -238,6 +238,33 @@ async function main() {
 	check('the draft is stored separately', afterDraft.body.blog?.draft?.title === 'Work in progress');
 	check('the live content is untouched by autosave', afterDraft.body.blog?.contentText?.includes('Merchant navy officers'), `text ${afterDraft.body.blog?.contentText}`);
 
+	const fontDraft = await put(`/api/admin/blogs/${blogId}/draft`, {
+		title: 'Font draft',
+		contentBlocks: {
+			type: 'doc',
+			content: [
+				{
+					type: 'paragraph',
+					content: [
+						{
+							type: 'text',
+							marks: [{ type: 'fontFamily', attrs: { fontId: 'inter' } }],
+							text: 'Inter body copy'
+						}
+					]
+				}
+			]
+		}
+	});
+	check('a draft with fontFamily marks autosaves', fontDraft.status === 200, `status ${fontDraft.status}`);
+
+	const afterFontDraft = await call(`/api/admin/blogs/${blogId}`, { headers: authHeaders });
+	check(
+		'font draft is stored in draft.contentBlocks',
+		afterFontDraft.body.blog?.draft?.contentBlocks?.content?.[0]?.content?.[0]?.marks?.[0]?.type === 'fontFamily',
+		`draft ${JSON.stringify(afterFontDraft.body.blog?.draft?.contentBlocks)}`
+	);
+
 	const discarded = await call(`/api/admin/blogs/${blogId}/draft`, { method: 'DELETE', headers: authHeaders });
 	check('a draft can be discarded', discarded.status === 200 && !discarded.body.draft?.savedAt);
 

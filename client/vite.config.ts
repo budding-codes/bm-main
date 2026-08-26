@@ -1,9 +1,15 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import path from 'node:path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  resolve: {
+    alias: {
+      '@shared': path.resolve(__dirname, '../shared'),
+    },
+  },
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
@@ -45,6 +51,20 @@ export default defineConfig({
         target: 'http://localhost:5000',
         changeOrigin: true,
         secure: false,
+        configure: (proxy) => {
+          proxy.on('error', (_err, _req, res) => {
+            if (res && 'writeHead' in res && !res.headersSent) {
+              res.writeHead(503, { 'Content-Type': 'application/json' });
+              res.end(
+                JSON.stringify({
+                  error:
+                    'API server is not running. Start it from the server folder: npm run dev',
+                  code: 'BACKEND_UNAVAILABLE'
+                })
+              );
+            }
+          });
+        }
       },
       '/sitemap.xml': {
         target: 'http://localhost:5000',

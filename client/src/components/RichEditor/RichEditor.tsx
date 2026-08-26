@@ -6,6 +6,7 @@ import { BubbleToolbar } from './BubbleToolbar';
 import { ImageBubbleToolbar, type ImageBubbleToolbarHandle } from './ImageBubbleToolbar';
 import { createEditorExtensions } from './extensions';
 import { SlashCommandExtension } from './extensions/slashCommand';
+import { ensureEditorPreviewFontsLoaded } from './fontFamilyUtils';
 import type { MediaAsset } from '../../types/media';
 import 'tippy.js/dist/tippy.css';
 import './editor.css';
@@ -147,6 +148,10 @@ export const RichEditor = forwardRef<RichEditorHandle, RichEditorProps>(function
 
     onPendingImageConsumed?.();
   }, [editor, pendingImage, onPendingImageConsumed]);
+
+  useEffect(() => {
+    ensureEditorPreviewFontsLoaded();
+  }, []);
 
   useEffect(() => {
     return () => {

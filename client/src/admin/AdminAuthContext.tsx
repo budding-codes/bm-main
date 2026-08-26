@@ -48,6 +48,12 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
         const response = await fetch(apiUrl('/api/admin/session'), {
           headers: buildAdminHeaders(storedToken)
         });
+        if (response.status === 503) {
+          // Backend is down — keep the stored token so login is not cleared spuriously.
+          setToken(storedToken);
+          setIsAuthenticated(true);
+          return;
+        }
         if (!response.ok) {
           throw new Error('Session invalid');
         }
