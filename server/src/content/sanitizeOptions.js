@@ -18,12 +18,14 @@ const SANITIZE_OPTIONS = {
 	allowedAttributes: {
 		a: ['href', 'title', 'target', 'rel', 'class'],
 		img: ['src', 'alt', 'title', 'width', 'height', 'class', 'loading', 'decoding', 'data-align'],
+		figure: ['class', 'data-layout', 'data-align', 'data-spacing'],
+		figcaption: ['class'],
 		iframe: ['src', 'width', 'height', 'allow', 'allowfullscreen', 'frameborder', 'title', 'class', 'start'],
 		input: ['type', 'checked', 'disabled'],
 		th: ['colspan', 'rowspan', 'colwidth', 'style', 'class'],
 		td: ['colspan', 'rowspan', 'colwidth', 'style', 'class'],
 		col: ['style', 'width'],
-		'*': ['class', 'data-type', 'data-variant', 'data-checked', 'data-align', 'style']
+		'*': ['class', 'data-type', 'data-variant', 'data-checked', 'data-align', 'data-layout', 'data-spacing', 'style']
 	},
 	// Stated explicitly rather than inherited: the library's default list has varied
 	// between releases, and `col` in particular decides whether tables serialise as

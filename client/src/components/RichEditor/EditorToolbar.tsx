@@ -1,9 +1,6 @@
 import type { Editor } from '@tiptap/react';
+import { useEditorState } from '@tiptap/react';
 import {
-  AlignCenter,
-  AlignJustify,
-  AlignLeft,
-  AlignRight,
   Bold,
   Code,
   Heading1,
@@ -27,6 +24,14 @@ import { useRef, useState } from 'react';
 import { adminFetch } from '../../lib/api';
 import type { MediaAsset } from '../../types/media';
 import { TableInsertPopover } from './TableInsertPopover';
+import {
+  TEXT_ALIGNS,
+  TEXT_ALIGN_ICONS,
+  alignButtonLabel,
+  alignButtonTitle,
+  applyTextAlign,
+  getAlignToolbarState
+} from './textAlignUtils';
 
 type EditorToolbarProps = {
   editor: Editor;
@@ -40,6 +45,11 @@ export function EditorToolbar({ editor, token, onUnauthorized, onRequestMediaLib
   const tableButtonRef = useRef<HTMLDivElement>(null);
   const [uploading, setUploading] = useState(false);
   const [tablePickerOpen, setTablePickerOpen] = useState(false);
+
+  const alignState = useEditorState({
+    editor,
+    selector: ({ editor: current }) => getAlignToolbarState(current)
+  });
 
   const setLink = () => {
     const previous = editor.getAttributes('link').href as string | undefined;
@@ -145,19 +155,44 @@ export function EditorToolbar({ editor, token, onUnauthorized, onRequestMediaLib
 
       <div className="bm-editor-toolbar-divider" />
 
-      <div className="bm-editor-toolbar-group">
-        <button type="button" className={`bm-editor-btn ${editor.isActive({ textAlign: 'left' }) ? 'is-active' : ''}`} onClick={() => editor.chain().focus().setTextAlign('left').run()}>
-          <AlignLeft size={15} />
-        </button>
-        <button type="button" className={`bm-editor-btn ${editor.isActive({ textAlign: 'center' }) ? 'is-active' : ''}`} onClick={() => editor.chain().focus().setTextAlign('center').run()}>
-          <AlignCenter size={15} />
-        </button>
-        <button type="button" className={`bm-editor-btn ${editor.isActive({ textAlign: 'right' }) ? 'is-active' : ''}`} onClick={() => editor.chain().focus().setTextAlign('right').run()}>
-          <AlignRight size={15} />
-        </button>
-        <button type="button" className={`bm-editor-btn ${editor.isActive({ textAlign: 'justify' }) ? 'is-active' : ''}`} onClick={() => editor.chain().focus().setTextAlign('justify').run()}>
-          <AlignJustify size={15} />
-        </button>
+      <div className="bm-editor-toolbar-group" role="group" aria-label="Text alignment">
+        {TEXT_ALIGNS.map((value) => {
+          const Icon = TEXT_ALIGN_ICONS[value];
+          const canApply =
+            value === 'left'
+              ? alignState.canLeft
+              : value === 'center'
+                ? alignState.canCenter
+                : value === 'right'
+                  ? alignState.canRight
+                  : alignState.canJustify;
+          const disabled =
+            alignState.selectionAlign === null ||
+            !canApply ||
+            (value === 'justify' && alignState.isHeading);
+          const isActive = alignState.selectionAlign === value;
+          const disabledReason =
+            value === 'justify' && alignState.isHeading
+              ? 'Justify is for body text'
+              : alignState.selectionAlign === null
+                ? 'Alignment is not available here'
+                : undefined;
+
+          return (
+            <button
+              key={value}
+              type="button"
+              className={`bm-editor-btn${isActive ? ' is-active' : ''}`}
+              title={alignButtonTitle(value, { disabledReason })}
+              aria-label={alignButtonLabel(value)}
+              aria-pressed={isActive}
+              disabled={disabled}
+              onClick={() => applyTextAlign(editor, value)}
+            >
+              <Icon size={15} />
+            </button>
+          );
+        })}
       </div>
 
       <div className="bm-editor-toolbar-divider" />

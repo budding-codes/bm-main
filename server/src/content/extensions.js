@@ -39,7 +39,11 @@ const contentExtensions = [
 		HTMLAttributes: { class: 'bm-content-embed' }
 	}),
 	Highlight.configure({ multicolor: false }),
-	TextAlign.configure({ types: ['heading', 'paragraph'] }),
+	TextAlign.configure({
+		types: ['heading', 'paragraph', 'listItem'],
+		alignments: ['left', 'center', 'right', 'justify'],
+		defaultAlignment: null
+	}),
 	Subscript,
 	Superscript,
 	Table.configure({

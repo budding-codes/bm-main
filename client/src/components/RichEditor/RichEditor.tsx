@@ -1,9 +1,9 @@
 import { useEditor, EditorContent } from '@tiptap/react';
 import { BubbleMenu } from '@tiptap/react/menus';
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { EditorToolbar } from './EditorToolbar';
 import { BubbleToolbar } from './BubbleToolbar';
-import { ImageBubbleToolbar } from './ImageBubbleToolbar';
+import { ImageBubbleToolbar, type ImageBubbleToolbarHandle } from './ImageBubbleToolbar';
 import { createEditorExtensions } from './extensions';
 import { SlashCommandExtension } from './extensions/slashCommand';
 import type { MediaAsset } from '../../types/media';
@@ -19,7 +19,16 @@ export type RichEditorUpdate = {
 
 export type PendingImageAction = {
   asset: MediaAsset;
-  mode: 'insert' | 'replace';
+  mode: 'insert';
+} | {
+  asset: MediaAsset;
+  mode: 'replace';
+  preserveConfig?: boolean;
+};
+
+export type RichEditorHandle = {
+  getContent: () => RichEditorUpdate | null;
+  flushPendingChanges: () => void;
 };
 
 type RichEditorProps = {
@@ -44,20 +53,33 @@ function resolvePendingImage(pending?: PendingImageAction | MediaAsset | null): 
   return { asset: pending, mode: 'insert' };
 }
 
-export function RichEditor({
-  initialContent,
-  onUpdate,
-  token,
-  onUnauthorized,
-  onRequestMediaLibrary,
-  onRequestImageReplace,
-  pendingImage,
-  onPendingImageConsumed,
-  placeholder
-}: RichEditorProps) {
+function buildEditorUpdate(editor: NonNullable<ReturnType<typeof useEditor>>): RichEditorUpdate {
+  return {
+    html: editor.getHTML(),
+    json: editor.getJSON() as Record<string, unknown>,
+    wordCount: editor.storage.characterCount?.words?.() || 0,
+    characterCount: editor.storage.characterCount?.characters?.() || 0
+  };
+}
+
+export const RichEditor = forwardRef<RichEditorHandle, RichEditorProps>(function RichEditor(
+  {
+    initialContent,
+    onUpdate,
+    token,
+    onUnauthorized,
+    onRequestMediaLibrary,
+    onRequestImageReplace,
+    pendingImage,
+    onPendingImageConsumed,
+    placeholder
+  },
+  ref
+) {
   const onUpdateRef = useRef(onUpdate);
   onUpdateRef.current = onUpdate;
   const contentWrapperRef = useRef<HTMLDivElement>(null);
+  const imageToolbarRef = useRef<ImageBubbleToolbarHandle | null>(null);
   const [editorScrollTarget, setEditorScrollTarget] = useState<HTMLElement | Window>(() =>
     typeof window !== 'undefined' ? window : (null as unknown as Window)
   );
@@ -71,19 +93,29 @@ export function RichEditor({
     editorProps: {
       attributes: {
         class: 'bm-editor-canvas',
-        spellcheck: 'true'
+        spellcheck: 'true',
+        lang: 'en'
       }
     },
     onUpdate: ({ editor: current }) => {
-      onUpdateRef.current({
-        html: current.getHTML(),
-        json: current.getJSON() as Record<string, unknown>,
-        wordCount: current.storage.characterCount?.words?.() || 0,
-        characterCount: current.storage.characterCount?.characters?.() || 0
-      });
+      onUpdateRef.current(buildEditorUpdate(current));
     },
     autofocus: false
   });
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      getContent: () => (editor ? buildEditorUpdate(editor) : null),
+      flushPendingChanges: () => {
+        imageToolbarRef.current?.flushPendingChanges();
+        if (editor) {
+          onUpdateRef.current(buildEditorUpdate(editor));
+        }
+      }
+    }),
+    [editor]
+  );
 
   useEffect(() => {
     const action = resolvePendingImage(pendingImage);
@@ -98,7 +130,8 @@ export function RichEditor({
         .focus()
         .replaceImage({
           src: action.asset.url,
-          alt
+          alt,
+          preserveConfig: action.preserveConfig !== false
         })
         .run();
     } else {
@@ -160,6 +193,7 @@ export function RichEditor({
       >
         <ImageBubbleToolbar
           editor={editor}
+          toolbarRef={imageToolbarRef}
           onRequestReplace={() => onRequestImageReplace?.()}
         />
       </BubbleMenu>
@@ -185,4 +219,4 @@ export function RichEditor({
       </div>
     </div>
   );
-}
+});

@@ -6,8 +6,9 @@ import {
   IMAGE_RESIZE_CURSORS,
   IMAGE_RESIZE_DIRECTIONS,
   isImageAlignment,
+  isImageLayout,
+  normalizeImageAttrs,
   resolveImageAspectRatio,
-  type ImageAlignment,
   type ImageResizeDirection
 } from './imageUtils';
 
@@ -21,13 +22,15 @@ export function ImageNodeView({ node, updateAttributes, selected, editor }: Node
   const imgRef = useRef<HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const naturalRatioRef = useRef<number | null>(null);
-  const [displayWidth, setDisplayWidth] = useState<number | null>(node.attrs.width as number | null);
-  const [displayHeight, setDisplayHeight] = useState<number | null>(node.attrs.height as number | null);
+  const normalized = normalizeImageAttrs(node.attrs as Record<string, unknown>);
+  const [displayWidth, setDisplayWidth] = useState<number | null>(normalized.width);
+  const [displayHeight, setDisplayHeight] = useState<number | null>(normalized.height);
   const [isResizing, setIsResizing] = useState(false);
 
-  const align = isImageAlignment(node.attrs.align) ? (node.attrs.align as ImageAlignment) : null;
-  const src = String(node.attrs.src || '');
-  const alt = String(node.attrs.alt || '');
+  const align = isImageAlignment(normalized.align) ? normalized.align : null;
+  const layout = isImageLayout(normalized.layout) ? normalized.layout : 'inline';
+  const isFullWidth = layout === 'full-width';
+  const lockRatio = normalized.lockAspectRatio;
 
   const getMaxWidth = useCallback(() => {
     const container = containerRef.current;
@@ -38,10 +41,10 @@ export function ImageNodeView({ node, updateAttributes, selected, editor }: Node
   }, []);
 
   const commitSize = useCallback(
-    (width: number, height: number) => {
+    (width: number | null, height: number | null) => {
       updateAttributes({
-        width: Math.round(width),
-        height: Math.round(height)
+        width,
+        height
       });
     },
     [updateAttributes]
@@ -54,26 +57,41 @@ export function ImageNodeView({ node, updateAttributes, selected, editor }: Node
     }
     naturalRatioRef.current = img.naturalWidth / img.naturalHeight;
 
-    if (!node.attrs.width && !node.attrs.height) {
+    if (isFullWidth) {
+      setDisplayWidth(null);
+      setDisplayHeight(null);
+      return;
+    }
+
+    if (!normalized.width && !normalized.height) {
       const initialWidth = Math.min(img.naturalWidth, getMaxWidth());
       const initialHeight = Math.round(initialWidth / naturalRatioRef.current);
       setDisplayWidth(initialWidth);
       setDisplayHeight(initialHeight);
       commitSize(initialWidth, initialHeight);
     }
-  }, [commitSize, getMaxWidth, node.attrs.height, node.attrs.width]);
+  }, [commitSize, getMaxWidth, isFullWidth, normalized.height, normalized.width]);
 
   useEffect(() => {
-    setDisplayWidth((node.attrs.width as number | null) || null);
-    setDisplayHeight((node.attrs.height as number | null) || null);
-  }, [node.attrs.width, node.attrs.height, src]);
+    if (isFullWidth) {
+      setDisplayWidth(null);
+      setDisplayHeight(null);
+      return;
+    }
+    setDisplayWidth(normalized.width);
+    setDisplayHeight(normalized.height);
+  }, [isFullWidth, normalized.width, normalized.height, normalized.src]);
 
   useEffect(() => {
     naturalRatioRef.current = null;
-  }, [src]);
+  }, [normalized.src]);
 
   const startResize = useCallback(
     (event: React.MouseEvent, direction: ImageResizeDirection) => {
+      if (isFullWidth) {
+        return;
+      }
+
       event.preventDefault();
       event.stopPropagation();
 
@@ -93,7 +111,6 @@ export function ImageNodeView({ node, updateAttributes, selected, editor }: Node
       const startWidth = rect.width;
       const startHeight = rect.height || startWidth / (naturalRatioRef.current || 1);
       const maxWidth = getMaxWidth();
-      const lockRatio = editor.storage.image?.lockRatio !== false;
       const ratio = resolveImageAspectRatio(startWidth, startHeight, naturalRatioRef.current);
 
       setIsResizing(true);
@@ -153,30 +170,37 @@ export function ImageNodeView({ node, updateAttributes, selected, editor }: Node
       window.addEventListener('mousemove', onMove);
       window.addEventListener('mouseup', onUp);
     },
-    [commitSize, editor.storage.image, getMaxWidth]
+    [commitSize, getMaxWidth, isFullWidth, lockRatio]
   );
 
-  const resolvedWidth = displayWidth || undefined;
-  const resolvedHeight = displayHeight || undefined;
+  const resolvedWidth = isFullWidth ? undefined : displayWidth || undefined;
+  const resolvedHeight = isFullWidth ? undefined : displayHeight || undefined;
+
+  const wrapperClasses = [
+    'bm-image-node-view',
+    `bm-image-node-view--layout-${layout}`,
+    align ? `bm-image-node-view--${align}` : '',
+    normalized.spacing !== 'medium' ? `bm-image-node-view--spacing-${normalized.spacing}` : '',
+    selected ? 'is-selected' : '',
+    isResizing ? 'is-resizing' : ''
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   return (
-    <NodeViewWrapper
-      as="div"
-      className={`bm-image-node-view${align ? ` bm-image-node-view--${align}` : ''}${selected ? ' is-selected' : ''}${isResizing ? ' is-resizing' : ''}`}
-      data-drag-handle
-    >
+    <NodeViewWrapper as="figure" className={wrapperClasses} data-drag-handle data-layout={layout}>
       <div
         ref={containerRef}
-        className="bm-image-resize-container"
+        className={`bm-image-resize-container${isFullWidth ? ' bm-image-resize-container--full-width' : ''}`}
         style={{
-          width: resolvedWidth ? `${resolvedWidth}px` : '100%',
+          width: isFullWidth ? '100%' : resolvedWidth ? `${resolvedWidth}px` : '100%',
           maxWidth: '100%'
         }}
       >
         <img
           ref={imgRef}
-          src={src}
-          alt={alt}
+          src={normalized.src}
+          alt={normalized.alt}
           className="bm-content-image"
           draggable={false}
           loading="lazy"
@@ -188,12 +212,12 @@ export function ImageNodeView({ node, updateAttributes, selected, editor }: Node
             editor.commands.focus();
           }}
           style={{
-            width: resolvedWidth ? `${resolvedWidth}px` : '100%',
-            height: resolvedHeight ? `${resolvedHeight}px` : 'auto',
+            width: isFullWidth ? '100%' : resolvedWidth ? `${resolvedWidth}px` : '100%',
+            height: isFullWidth ? 'auto' : resolvedHeight ? `${resolvedHeight}px` : 'auto',
             maxWidth: '100%'
           }}
         />
-        {selected
+        {selected && !isFullWidth
           ? IMAGE_RESIZE_DIRECTIONS.map((direction) => (
               <span
                 key={direction}
@@ -205,6 +229,9 @@ export function ImageNodeView({ node, updateAttributes, selected, editor }: Node
             ))
           : null}
       </div>
+      {normalized.caption ? (
+        <figcaption className="bm-content-image-caption">{normalized.caption}</figcaption>
+      ) : null}
     </NodeViewWrapper>
   );
 }

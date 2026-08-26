@@ -6,6 +6,7 @@ import { apiUrl } from '../lib/api';
 import { formatDate } from '../lib/format';
 import { canonicalUrl } from '../lib/site';
 import type { Blog } from '../types/blog';
+import { BlogContent } from '../components/BlogContent';
 import '../styles/bm-content.css';
 
 export default function BlogPost() {
@@ -174,10 +175,7 @@ export default function BlogPost() {
           </div>
         ) : null}
 
-        <div
-          className="bm-blog-content mt-10"
-          dangerouslySetInnerHTML={{ __html: bodyHtml }}
-        />
+        <BlogContent html={bodyHtml} className="mt-10" />
 
         <div className="mt-12 flex flex-wrap gap-3 border-t border-white/10 pt-6">
           <button

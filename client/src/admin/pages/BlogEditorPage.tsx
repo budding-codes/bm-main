@@ -3,11 +3,13 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Eye, History, Images, RotateCcw, Save } from 'lucide-react';
 import { useAdminAuth } from '../AdminAuthContext';
 import MediaPicker from '../components/MediaPicker';
-import { RichEditor, type RichEditorUpdate } from '../../components/RichEditor';
+import { RichEditor, type RichEditorHandle, type RichEditorUpdate } from '../../components/RichEditor';
 import { adminFetch } from '../../lib/api';
 import { analyzeAccessibility, analyzeSeo } from '../../lib/contentChecks';
 import { formatDate } from '../../lib/format';
 import { generateSlug } from '../../lib/slug';
+import { renderBlogContentHtml } from '../../lib/renderBlogContent';
+import { BlogContent } from '../../components/BlogContent';
 import type { Blog, BlogStatus } from '../../types/blog';
 import type { MediaAsset } from '../../types/media';
 import '../../styles/bm-content.css';
@@ -85,7 +87,9 @@ export default function BlogEditorPage() {
   const [pendingInlineInsert, setPendingInlineInsert] = useState<MediaAsset | null>(null);
   const [pendingInlineReplace, setPendingInlineReplace] = useState<MediaAsset | null>(null);
   const [revisions, setRevisions] = useState<RevisionSummary[]>([]);
+  const [contentVersion, setContentVersion] = useState(0);
   const contentReady = useRef(false);
+  const editorRef = useRef<RichEditorHandle>(null);
 
   const loadRevisions = useCallback(async (blogId: string) => {
     try {
@@ -172,13 +176,15 @@ export default function BlogEditorPage() {
 
     const timer = window.setInterval(() => {
       setAutoSaveStatus('saving');
+      editorRef.current?.flushPendingChanges();
+      const latestContent = editorRef.current?.getContent() || content;
       try {
         localStorage.setItem(
           DRAFT_STORAGE_KEY,
           JSON.stringify({
             title,
             settings,
-            content,
+            content: latestContent,
             blogId: id || null,
             savedAt: new Date().toISOString()
           })
@@ -191,7 +197,7 @@ export default function BlogEditorPage() {
         void adminFetch(`/api/admin/blogs/${id}/draft`, {
           method: 'PUT',
           token,
-          body: { title, contentBlocks: content.json },
+          body: { title, contentBlocks: latestContent.json },
           onUnauthorized: handleUnauthorized
         })
           .then(() => {
@@ -240,6 +246,11 @@ export default function BlogEditorPage() {
     [settings.tags]
   );
 
+  const previewHtml = useMemo(
+    () => renderBlogContentHtml(content.json),
+    [content.json]
+  );
+
   const save = async (statusOverride?: BlogStatus) => {
     if (!title.trim()) {
       setError('Title is required.');
@@ -249,6 +260,10 @@ export default function BlogEditorPage() {
     setSaving(true);
     setError('');
     setMessage('');
+
+    editorRef.current?.flushPendingChanges();
+    const latestContent = editorRef.current?.getContent() || content;
+    setContent(latestContent);
 
     const status = statusOverride || settings.status;
     const payload = {
@@ -264,7 +279,7 @@ export default function BlogEditorPage() {
       metaDescription: settings.metaDescription.trim(),
       scheduledFor: settings.scheduledFor ? new Date(settings.scheduledFor).toISOString() : null,
       expiresAt: settings.expiresAt ? new Date(settings.expiresAt).toISOString() : null,
-      contentBlocks: content.json
+      contentBlocks: latestContent.json
     };
 
     try {
@@ -318,6 +333,7 @@ export default function BlogEditorPage() {
         json: (data.blog.contentBlocks as Record<string, unknown>) || current.json,
         wordCount: data.blog.wordCount || 0
       }));
+      setContentVersion((value) => value + 1);
       await loadRevisions(id);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to restore revision.');
@@ -327,6 +343,17 @@ export default function BlogEditorPage() {
   if (loading) {
     return <div className="py-16 text-center text-yellow-400">Loading editor...</div>;
   }
+
+  const handlePreviewToggle = () => {
+    if (!preview) {
+      editorRef.current?.flushPendingChanges();
+      const latest = editorRef.current?.getContent();
+      if (latest) {
+        setContent(latest);
+      }
+    }
+    setPreview((value) => !value);
+  };
 
   const previewTitle = title || 'Untitled post';
   const previewUrl = `buddingmariners.com/blog/${settings.slug || 'your-slug'}`;
@@ -368,7 +395,7 @@ export default function BlogEditorPage() {
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
-            onClick={() => setPreview((value) => !value)}
+            onClick={handlePreviewToggle}
             className="inline-flex items-center gap-2 rounded-lg border border-white/10 px-4 py-2 text-sm font-semibold text-white/80 transition hover:border-yellow-400/40 hover:text-yellow-300"
           >
             <Eye className="h-4 w-4" />
@@ -410,7 +437,8 @@ export default function BlogEditorPage() {
 
           <div className={preview ? 'hidden' : undefined} aria-hidden={preview}>
             <RichEditor
-              key={id || 'new'}
+              ref={editorRef}
+              key={`${id || 'new'}-${contentVersion}`}
               initialContent={initialContent}
               token={token}
               onUnauthorized={handleUnauthorized}
@@ -436,11 +464,9 @@ export default function BlogEditorPage() {
           </div>
 
           {preview ? (
-            <article
-              className="bm-rich-editor bm-blog-content rounded-xl border border-white/10 bg-[#0d0d0d] p-8"
-              dangerouslySetInnerHTML={{
-                __html: content.html || '<p class="text-white/40">Nothing to preview yet.</p>'
-              }}
+            <BlogContent
+              html={previewHtml || '<p class="text-white/40">Nothing to preview yet.</p>'}
+              className="rounded-xl border border-white/10 bg-[#0d0d0d] p-8"
             />
           ) : null}
         </div>

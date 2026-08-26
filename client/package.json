@@ -27,6 +27,7 @@
     "@tiptap/pm": "^3.29.2",
     "@tiptap/react": "^3.29.2",
     "@tiptap/starter-kit": "^3.29.2",
+    "@tiptap/static-renderer": "^3.29.2",
     "@tiptap/suggestion": "^3.29.2",
     "framer-motion": "^10.18.0",
     "jspdf": "^4.2.1",

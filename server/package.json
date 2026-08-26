@@ -12,8 +12,9 @@
     "migrate": "node scripts/migrate.js",
     "check:serverless": "node scripts/check-serverless-compat.js",
     "check:content": "node scripts/check-content-render.js",
+    "check:image": "node scripts/check-image-config.js",
     "check:sitemap": "node scripts/check-sitemap.js",
-    "check:all": "npm run check:serverless && npm run check:content && npm run check:sitemap",
+    "check:all": "npm run check:serverless && npm run check:content && npm run check:image && npm run check:sitemap",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

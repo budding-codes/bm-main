@@ -114,5 +114,108 @@ check('plain text is derived', result.contentText.includes('Admissions 2026'));
 check('word count is populated', result.wordCount > 0);
 check('cloudinary ids are collected', result.mediaPublicIds.includes('bm-blog/images/a'));
 
+const imageResult = renderContent({
+	type: 'doc',
+	content: [
+		{
+			type: 'image',
+			attrs: {
+				src: 'https://res.cloudinary.com/demo/image/upload/bm-blog/images/ship.jpg',
+				alt: 'Training vessel',
+				width: 480,
+				height: 320,
+				align: 'center',
+				layout: 'wrap-left',
+				caption: 'Cadets on deck',
+				spacing: 'large'
+			}
+		}
+	]
+});
+
+check('image figure renders with layout attrs', imageResult.contentHtml.includes('bm-content-image-figure--layout-wrap-left'));
+check('image figure renders caption', imageResult.contentHtml.includes('<figcaption class="bm-content-image-caption">Cadets on deck</figcaption>'));
+check('image figure renders spacing class', imageResult.contentHtml.includes('bm-content-image-figure--spacing-large'));
+check('image width is preserved', imageResult.contentHtml.includes('width="480"'));
+check('image alt is preserved', imageResult.contentHtml.includes('alt="Training vessel"'));
+
+const wrapRightResult = renderContent({
+	type: 'doc',
+	content: [
+		{
+			type: 'paragraph',
+			content: [{ type: 'text', text: 'Text beside the image.' }]
+		},
+		{
+			type: 'image',
+			attrs: {
+				src: 'https://res.cloudinary.com/demo/image/upload/bm-blog/images/ship.jpg',
+				alt: 'Training vessel',
+				width: 320,
+				height: 240,
+				layout: 'wrap-right'
+			}
+		},
+		{
+			type: 'paragraph',
+			content: [{ type: 'text', text: 'More wrapped text.' }]
+		}
+	]
+});
+
+check(
+	'wrap-right renders floated figure',
+	wrapRightResult.contentHtml.includes('bm-content-image-figure--layout-wrap-right')
+);
+check('wrap-right preserves width', wrapRightResult.contentHtml.includes('width="320"'));
+check('legacy plain image still renders', renderContent({
+	type: 'doc',
+	content: [{ type: 'image', attrs: { src: 'https://res.cloudinary.com/demo/image/upload/bm-blog/images/legacy.jpg', alt: 'Legacy' } }]
+}).contentHtml.includes('<img class="bm-content-image"'));
+
+const centeredListResult = renderContent({
+	type: 'doc',
+	content: [
+		{
+			type: 'bulletList',
+			content: [
+				{
+					type: 'listItem',
+					attrs: { textAlign: 'center' },
+					content: [
+						{
+							type: 'paragraph',
+							attrs: { textAlign: 'center' },
+							content: [{ type: 'text', text: 'Centered bullet' }]
+						}
+					]
+				}
+			]
+		}
+	]
+});
+
+check(
+	'centered list item keeps text-align on li and p',
+	centeredListResult.contentHtml.includes('<li style="text-align:center">') &&
+		centeredListResult.contentHtml.includes('<p style="text-align:center">Centered bullet</p>')
+);
+
+const justifiedParagraphResult = renderContent({
+	type: 'doc',
+	content: [
+		{
+			type: 'paragraph',
+			attrs: { textAlign: 'justify' },
+			content: [{ type: 'text', text: 'Justified body copy.' }]
+		}
+	]
+});
+
+check(
+	'justified paragraph renders text-align style',
+	justifiedParagraphResult.contentHtml === '<p style="text-align:justify">Justified body copy.</p>'
+);
+
 console.log(failed === 0 ? '\nContent rendering is unchanged.' : `\n${failed} check(s) failed.`);
 process.exit(failed === 0 ? 0 : 1);
