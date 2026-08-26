@@ -25,6 +25,15 @@ import { adminFetch } from '../../lib/api';
 import type { MediaAsset } from '../../types/media';
 import { TableInsertPopover } from './TableInsertPopover';
 import { FontFamilySelector } from './FontFamilySelector';
+import { LinkPopover } from './LinkPopover';
+import {
+  applyTextLink,
+  canApplyTextLink,
+  captureSelection,
+  getActiveTextLinkHref,
+  removeTextLink,
+  type SavedSelection
+} from './linkCommands';
 import {
   TEXT_ALIGNS,
   TEXT_ALIGN_ICONS,
@@ -44,23 +53,38 @@ type EditorToolbarProps = {
 export function EditorToolbar({ editor, token, onUnauthorized, onRequestMediaLibrary }: EditorToolbarProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const tableButtonRef = useRef<HTMLDivElement>(null);
+  const linkButtonRef = useRef<HTMLDivElement>(null);
+  const savedSelectionRef = useRef<SavedSelection | null>(null);
   const [uploading, setUploading] = useState(false);
   const [tablePickerOpen, setTablePickerOpen] = useState(false);
+  const [linkPopoverOpen, setLinkPopoverOpen] = useState(false);
 
   const alignState = useEditorState({
     editor,
     selector: ({ editor: current }) => getAlignToolbarState(current)
   });
 
-  const setLink = () => {
-    const previous = editor.getAttributes('link').href as string | undefined;
-    const url = window.prompt('Link URL', previous || 'https://');
-    if (url === null) return;
-    if (url === '') {
-      editor.chain().focus().extendMarkRange('link').unsetLink().run();
+  const openLinkPopover = () => {
+    if (!canApplyTextLink(editor) && !editor.isActive('link')) {
       return;
     }
-    editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
+    savedSelectionRef.current = captureSelection(editor);
+    setLinkPopoverOpen(true);
+  };
+
+  const closeLinkPopover = () => {
+    setLinkPopoverOpen(false);
+    savedSelectionRef.current = null;
+  };
+
+  const handleApplyLink = (url: string) => {
+    applyTextLink(editor, url, savedSelectionRef.current ?? undefined);
+    closeLinkPopover();
+  };
+
+  const handleRemoveLink = () => {
+    removeTextLink(editor, savedSelectionRef.current ?? undefined);
+    closeLinkPopover();
   };
 
   const insertYoutube = () => {
@@ -233,9 +257,30 @@ export function EditorToolbar({ editor, token, onUnauthorized, onRequestMediaLib
       <div className="bm-editor-toolbar-divider" />
 
       <div className="bm-editor-toolbar-group">
-        <button type="button" className={`bm-editor-btn ${editor.isActive('link') ? 'is-active' : ''}`} onClick={setLink} title="Link">
-          <LinkIcon size={15} />
-        </button>
+        <div ref={linkButtonRef} className="bm-editor-toolbar-anchor">
+          <button
+            type="button"
+            className={`bm-editor-btn ${editor.isActive('link') ? 'is-active' : ''}`}
+            title="Link"
+            aria-expanded={linkPopoverOpen}
+            disabled={!canApplyTextLink(editor) && !editor.isActive('link')}
+            onMouseDown={(event) => {
+              event.preventDefault();
+              openLinkPopover();
+            }}
+          >
+            <LinkIcon size={15} />
+          </button>
+          {linkPopoverOpen ? (
+            <LinkPopover
+              initialUrl={getActiveTextLinkHref(editor)}
+              showRemove={editor.isActive('link')}
+              onApply={handleApplyLink}
+              onRemove={handleRemoveLink}
+              onClose={closeLinkPopover}
+            />
+          ) : null}
+        </div>
         <button
           type="button"
           className="bm-editor-btn"

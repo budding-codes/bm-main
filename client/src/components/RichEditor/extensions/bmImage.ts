@@ -18,6 +18,7 @@ import {
   type ImageLayout,
   type ImageSpacing
 } from '../imageUtils';
+import { buildLinkHtmlAttributes } from '../../../lib/linkUtils';
 
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
@@ -31,6 +32,7 @@ declare module '@tiptap/core' {
         aspectRatio?: number;
         layout?: ImageLayout;
       }) => ReturnType;
+      setImageLink: (href: string | null) => ReturnType;
       replaceImage: (attrs: { src: string; alt?: string; preserveConfig?: boolean }) => ReturnType;
     };
   }
@@ -113,6 +115,23 @@ function parseCaption(element: Element): string {
   return caption?.textContent?.trim() || '';
 }
 
+function parseImageHref(element: Element): string | null {
+  const anchor = element.closest('a');
+  const href = anchor?.getAttribute('href');
+  return href || null;
+}
+
+function wrapImageContent(
+  imgNode: ['img', Record<string, unknown>],
+  href: string | null | undefined
+): ['img', Record<string, unknown>] | ['a', Record<string, unknown>, ['img', Record<string, unknown>]] {
+  const linkAttrs = href ? buildLinkHtmlAttributes(href) : null;
+  if (!linkAttrs) {
+    return imgNode;
+  }
+  return ['a', linkAttrs, imgNode];
+}
+
 function buildImageHtmlAttributes(attrs: ReturnType<typeof normalizeImageAttrs>) {
   return {
     class: buildImageClassName(attrs.align),
@@ -177,6 +196,11 @@ export const BmImage = Image.extend({
         default: true,
         parseHTML: (element) => element.getAttribute('data-lock-aspect') !== 'false',
         renderHTML: () => ({})
+      },
+      href: {
+        default: null,
+        parseHTML: (element) => parseImageHref(element),
+        renderHTML: () => ({})
       }
     };
   },
@@ -210,12 +234,14 @@ export const BmImage = Image.extend({
       ...HTMLAttributes
     });
     const imgAttrs = mergeAttributes(this.options.HTMLAttributes, buildImageHtmlAttributes(normalized));
+    const imgNode = ['img', imgAttrs] as ['img', Record<string, unknown>];
+    const linkedImg = wrapImageContent(imgNode, normalized.href);
 
     if (!shouldRenderFigure(normalized)) {
-      return ['img', imgAttrs];
+      return linkedImg;
     }
 
-    const figureChildren: Array<string | Record<string, unknown> | unknown[]> = [['img', imgAttrs]];
+    const figureChildren: Array<string | Record<string, unknown> | unknown[]> = [linkedImg];
     if (normalized.caption) {
       figureChildren.push(['figcaption', { class: 'bm-content-image-caption' }, normalized.caption]);
     }
@@ -310,6 +336,10 @@ export const BmImage = Image.extend({
             })
             .run();
         },
+      setImageLink:
+        (href) =>
+        ({ chain }) =>
+          chain().focus().updateAttributes(this.name, { href: href || null }).run(),
       replaceImage:
         ({ src, alt, preserveConfig = true }) =>
         ({ chain, editor }) => {

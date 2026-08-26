@@ -1,5 +1,6 @@
 const sanitizeHtml = require('sanitize-html');
 const { isValidFontId, getFontCssClass } = require('../../../shared/content/fontRegistry');
+const { isExternalLink } = require('../../../shared/content/linkUtils');
 
 function sanitizeFontSpanAttribs(attribs) {
 	const next = { ...attribs };
@@ -89,7 +90,21 @@ const SANITIZE_OPTIONS = {
 		}
 	},
 	transformTags: {
-		a: sanitizeHtml.simpleTransform('a', { rel: 'noopener noreferrer nofollow' }, true),
+		a: (tagName, attribs) => {
+			const href = attribs.href || '';
+			const next = { ...attribs };
+			if (!next.class) {
+				next.class = 'bm-content-link';
+			}
+			if (isExternalLink(href)) {
+				next.target = '_blank';
+				next.rel = 'noopener noreferrer nofollow';
+			} else {
+				delete next.target;
+				delete next.rel;
+			}
+			return { tagName, attribs: next };
+		},
 		span: (tagName, attribs) => ({
 			tagName,
 			attribs: sanitizeFontSpanAttribs(attribs)

@@ -1122,3 +1122,146 @@
     max-width: 140px;
   }
 }
+
+.bm-bubble-link-anchor {
+  position: relative;
+  display: inline-flex;
+}
+
+.bm-link-popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+  width: min(320px, calc(100vw - 24px));
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  background: #1c1c1f;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+  font-family: Inter, Poppins, sans-serif;
+}
+
+.bm-editor-toolbar-anchor .bm-link-popover,
+.bm-image-toolbar-anchor .bm-link-popover {
+  left: 0;
+  transform: none;
+}
+
+.bm-link-popover-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.bm-link-popover-label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.bm-link-popover-input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  background: #111114;
+  color: #fff;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.bm-link-popover-input:focus {
+  outline: none;
+  border-color: rgba(250, 204, 21, 0.55);
+  box-shadow: 0 0 0 2px rgba(250, 204, 21, 0.15);
+}
+
+.bm-link-popover-input[aria-invalid='true'] {
+  border-color: rgba(248, 113, 113, 0.65);
+}
+
+.bm-link-popover-error {
+  margin: 8px 0 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #fca5a5;
+}
+
+.bm-link-popover-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.bm-link-popover-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.bm-link-popover-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.bm-link-popover-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.bm-link-popover-btn--primary {
+  border-color: rgba(250, 204, 21, 0.35);
+  background: rgba(250, 204, 21, 0.16);
+  color: #facc15;
+}
+
+.bm-image-link-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.65);
+  color: #facc15;
+  pointer-events: none;
+}
+
+.bm-blog-content .bm-content-image-figure a,
+.bm-blog-content a > .bm-content-image {
+  display: inline-block;
+  text-decoration: none;
+}
+
+.bm-blog-content .bm-content-image-figure a:focus-visible {
+  outline: 2px solid #facc15;
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+.bm-content-link:focus-visible {
+  outline: 2px solid #facc15;
+  outline-offset: 2px;
+  border-radius: 2px;
+}

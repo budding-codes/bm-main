@@ -3,6 +3,7 @@ const IMAGE_MAX_WIDTH = 1200;
 const IMAGE_ALIGNMENTS = new Set(['left', 'center', 'right']);
 const IMAGE_LAYOUTS = new Set(['inline', 'wrap-left', 'wrap-right', 'full-width']);
 const IMAGE_SPACINGS = new Set(['small', 'medium', 'large']);
+const { sanitizeLinkUrl } = require('../../../shared/content/linkUtils');
 
 function isImageAlignment(value) {
 	return typeof value === 'string' && IMAGE_ALIGNMENTS.has(value);
@@ -45,6 +46,7 @@ function normalizeImageAttrs(attrs = {}) {
 	const caption = typeof attrs.caption === 'string' ? attrs.caption.trim() : '';
 	const src = typeof attrs.src === 'string' ? attrs.src : '';
 	const alt = typeof attrs.alt === 'string' ? attrs.alt : '';
+	const href = sanitizeLinkUrl(typeof attrs.href === 'string' ? attrs.href : '');
 
 	if (layout === 'full-width') {
 		width = null;
@@ -63,6 +65,7 @@ function normalizeImageAttrs(attrs = {}) {
 	return {
 		src,
 		alt,
+		href,
 		width,
 		height,
 		align,

@@ -11,6 +11,14 @@ import {
   Underline
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { LinkPopover } from './LinkPopover';
+import {
+  applyTextLink,
+  captureSelection,
+  getActiveTextLinkHref,
+  removeTextLink,
+  type SavedSelection
+} from './linkCommands';
 import {
   TEXT_ALIGNS,
   TEXT_ALIGN_ICONS,
@@ -29,7 +37,9 @@ type BubbleToolbarProps = {
 
 export function BubbleToolbar({ editor }: BubbleToolbarProps) {
   const [alignMenuOpen, setAlignMenuOpen] = useState(false);
+  const [linkPopoverOpen, setLinkPopoverOpen] = useState(false);
   const alignMenuRef = useRef<HTMLDivElement>(null);
+  const savedSelectionRef = useRef<SavedSelection | null>(null);
 
   const alignState = useEditorState({
     editor,
@@ -64,7 +74,29 @@ export function BubbleToolbar({ editor }: BubbleToolbarProps) {
 
   useEffect(() => {
     setAlignMenuOpen(false);
+    setLinkPopoverOpen(false);
   }, [alignState.selectionAlign]);
+
+  const openLinkPopover = () => {
+    savedSelectionRef.current = captureSelection(editor);
+    setAlignMenuOpen(false);
+    setLinkPopoverOpen(true);
+  };
+
+  const closeLinkPopover = () => {
+    setLinkPopoverOpen(false);
+    savedSelectionRef.current = null;
+  };
+
+  const handleApplyLink = (url: string) => {
+    applyTextLink(editor, url, savedSelectionRef.current ?? undefined);
+    closeLinkPopover();
+  };
+
+  const handleRemoveLink = () => {
+    removeTextLink(editor, savedSelectionRef.current ?? undefined);
+    closeLinkPopover();
+  };
 
   useEffect(() => {
     if (!alignMenuOpen) {
@@ -92,14 +124,7 @@ export function BubbleToolbar({ editor }: BubbleToolbarProps) {
   }, [alignMenuOpen]);
 
   const setLink = () => {
-    const previous = editor.getAttributes('link').href as string | undefined;
-    const url = window.prompt('Link URL', previous || 'https://');
-    if (url === null) return;
-    if (url === '') {
-      editor.chain().focus().extendMarkRange('link').unsetLink().run();
-      return;
-    }
-    editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
+    openLinkPopover();
   };
 
   const displayAlign: TextAlignValue =
@@ -182,16 +207,31 @@ export function BubbleToolbar({ editor }: BubbleToolbarProps) {
       >
         <Highlighter size={14} />
       </button>
-      <button
-        type="button"
-        className={`bm-editor-btn${alignState.link ? ' is-active' : ''}`}
-        title="Link"
-        aria-label="Link"
-        aria-pressed={alignState.link}
-        onClick={setLink}
-      >
-        <LinkIcon size={14} />
-      </button>
+      <div className="bm-bubble-link-anchor">
+        <button
+          type="button"
+          className={`bm-editor-btn${alignState.link ? ' is-active' : ''}`}
+          title="Link"
+          aria-label="Link"
+          aria-pressed={alignState.link}
+          aria-expanded={linkPopoverOpen}
+          onMouseDown={(event) => {
+            event.preventDefault();
+            setLink();
+          }}
+        >
+          <LinkIcon size={14} />
+        </button>
+        {linkPopoverOpen ? (
+          <LinkPopover
+            initialUrl={getActiveTextLinkHref(editor)}
+            showRemove={alignState.link}
+            onApply={handleApplyLink}
+            onRemove={handleRemoveLink}
+            onClose={closeLinkPopover}
+          />
+        ) : null}
+      </div>
 
       <span className="bm-bubble-toolbar-divider" aria-hidden="true" />
 

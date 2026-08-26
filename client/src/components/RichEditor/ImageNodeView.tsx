@@ -1,3 +1,4 @@
+import { Link2 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { NodeViewWrapper, type NodeViewProps } from '@tiptap/react';
 import {
@@ -197,6 +198,11 @@ export function ImageNodeView({ node, updateAttributes, selected, editor }: Node
           maxWidth: '100%'
         }}
       >
+        {normalized.href ? (
+          <span className="bm-image-link-badge" title={`Linked to ${normalized.href}`} aria-label="Image has a link">
+            <Link2 size={12} />
+          </span>
+        ) : null}
         <img
           ref={imgRef}
           src={normalized.src}

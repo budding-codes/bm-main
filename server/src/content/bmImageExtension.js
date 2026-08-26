@@ -11,6 +11,7 @@ const {
 	buildFigureClassName,
 	shouldRenderFigure
 } = require('./imageUtils');
+const { buildLinkHtmlAttributes } = require('../../../shared/content/linkUtils');
 
 function parseNumericAttr(value) {
 	if (!value) {
@@ -89,6 +90,20 @@ function parseCaption(element) {
 	return caption?.textContent?.trim() || '';
 }
 
+function parseImageHref(element) {
+	const anchor = element.closest('a');
+	const href = anchor?.getAttribute('href');
+	return href || null;
+}
+
+function wrapImageContent(imgNode, href) {
+	const linkAttrs = href ? buildLinkHtmlAttributes(href) : null;
+	if (!linkAttrs) {
+		return imgNode;
+	}
+	return ['a', linkAttrs, imgNode];
+}
+
 function buildImageHtmlAttributes(attrs) {
 	return {
 		class: buildImageClassName(attrs.align),
@@ -153,6 +168,11 @@ const BmImage = Image.extend({
 				default: true,
 				parseHTML: (element) => element.getAttribute('data-lock-aspect') !== 'false',
 				renderHTML: () => ({})
+			},
+			href: {
+				default: null,
+				parseHTML: (element) => parseImageHref(element),
+				renderHTML: () => ({})
 			}
 		};
 	},
@@ -176,12 +196,14 @@ const BmImage = Image.extend({
 			...HTMLAttributes
 		});
 		const imgAttrs = mergeAttributes(this.options.HTMLAttributes, buildImageHtmlAttributes(normalized));
+		const imgNode = ['img', imgAttrs];
+		const linkedImg = wrapImageContent(imgNode, normalized.href);
 
 		if (!shouldRenderFigure(normalized)) {
-			return ['img', imgAttrs];
+			return linkedImg;
 		}
 
-		const figureChildren = [['img', imgAttrs]];
+		const figureChildren = [linkedImg];
 		if (normalized.caption) {
 			figureChildren.push(['figcaption', { class: 'bm-content-image-caption' }, normalized.caption]);
 		}

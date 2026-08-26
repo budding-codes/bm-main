@@ -1,3 +1,5 @@
+import { sanitizeLinkUrl } from '../../lib/linkUtils';
+
 export const IMAGE_MIN_WIDTH = 80;
 export const IMAGE_MAX_WIDTH = 1200;
 export const IMAGE_ALIGNMENTS = ['left', 'center', 'right'] as const;
@@ -13,6 +15,7 @@ export type ImageSizePreset = (typeof IMAGE_SIZE_PRESET_KEYS)[number];
 export type NormalizedImageAttrs = {
   src: string;
   alt: string;
+  href: string | null;
   width: number | null;
   height: number | null;
   align: ImageAlignment | null;
@@ -96,6 +99,7 @@ export function normalizeImageAttrs(attrs: Record<string, unknown> = {}): Normal
   const caption = typeof attrs.caption === 'string' ? attrs.caption.trim() : '';
   const src = typeof attrs.src === 'string' ? attrs.src : '';
   const alt = typeof attrs.alt === 'string' ? attrs.alt : '';
+  const href = sanitizeLinkUrl(typeof attrs.href === 'string' ? attrs.href : '');
 
   if (layout === 'full-width') {
     width = null;
@@ -114,6 +118,7 @@ export function normalizeImageAttrs(attrs: Record<string, unknown> = {}): Normal
   return {
     src,
     alt,
+    href,
     width,
     height,
     align,

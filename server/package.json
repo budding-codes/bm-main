@@ -14,8 +14,9 @@
     "check:content": "node scripts/check-content-render.js",
     "check:font-registry": "node scripts/check-font-registry.js",
     "check:image": "node scripts/check-image-config.js",
+    "check:link": "node scripts/check-link-utils.js",
     "check:sitemap": "node scripts/check-sitemap.js",
-    "check:all": "npm run check:serverless && npm run check:content && npm run check:font-registry && npm run check:image && npm run check:sitemap",
+    "check:all": "npm run check:serverless && npm run check:content && npm run check:font-registry && npm run check:image && npm run check:link && npm run check:sitemap",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

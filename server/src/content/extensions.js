@@ -9,6 +9,7 @@ const { TaskList, TaskItem } = require('@tiptap/extension-list');
 const { Callout } = require('./calloutExtension');
 const { BmFontFamily } = require('./bmFontFamilyExtension');
 const { BmImage } = require('./bmImageExtension');
+const { BmLink } = require('./bmLinkExtension');
 
 /**
  * The authoritative document schema.
@@ -23,13 +24,10 @@ const { BmImage } = require('./bmImageExtension');
 const contentExtensions = [
 	StarterKit.configure({
 		heading: { levels: [1, 2, 3, 4] },
-		link: {
-			openOnClick: false,
-			autolink: true,
-			HTMLAttributes: { class: 'bm-content-link', rel: 'noopener noreferrer nofollow', target: '_blank' }
-		},
+		link: false,
 		codeBlock: { HTMLAttributes: { class: 'bm-content-code-block' } }
 	}),
+	BmLink,
 	BmImage.configure({
 		inline: false,
 		allowBase64: false,

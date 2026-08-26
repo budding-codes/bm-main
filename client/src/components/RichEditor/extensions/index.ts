@@ -11,6 +11,7 @@ import { TaskList, TaskItem } from '@tiptap/extension-list';
 import { Callout } from './callout';
 import { BmFontFamily } from './bmFontFamily';
 import { BmImage } from './bmImage';
+import { BmLink } from './bmLink';
 import { BmTypography } from './bmTypography';
 
 /**
@@ -32,17 +33,10 @@ export function createEditorExtensions(placeholder?: string) {
   return [
     StarterKit.configure({
       heading: { levels: [1, 2, 3, 4] },
-      link: {
-        openOnClick: false,
-        autolink: true,
-        HTMLAttributes: {
-          class: 'bm-content-link',
-          rel: 'noopener noreferrer nofollow',
-          target: '_blank'
-        }
-      },
+      link: false,
       codeBlock: { HTMLAttributes: { class: 'bm-content-code-block' } }
     }),
+    BmLink,
     BmImage.configure({
       inline: false,
       allowBase64: false,

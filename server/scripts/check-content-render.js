@@ -63,7 +63,7 @@ const DOCUMENT = {
 const EXPECTED_HTML = '<h2 style="text-align:center">Admissions 2026</h2>'
 	+ '<p>Plain <strong>bold</strong> <em>italic</em> <s>strike</s> <code>code</code> <mark>highlight</mark> '
 	+ '<sub>sub</sub><sup>sup</sup> <a target="_blank" rel="noopener noreferrer nofollow" class="bm-content-link" '
-	+ 'href="https://buddingmariners.com">link</a> &amp; &lt;escaped&gt; "quotes"</p>'
+	+ 'href="https://buddingmariners.com/">link</a> &amp; &lt;escaped&gt; "quotes"</p>'
 	+ '<ul><li><p>Bullet</p></li></ul><ol><li><p>Ordered</p></li></ol>'
 	+ '<ul class="bm-content-task-list" data-type="taskList"><li data-checked="true" data-type="taskItem">'
 	+ '<label><input type="checkbox" checked="checked" /><span></span></label><div><p>Task</p></div></li></ul>'

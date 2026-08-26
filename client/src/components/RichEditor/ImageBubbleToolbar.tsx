@@ -6,6 +6,7 @@ import {
   ChevronDown,
   ImageIcon,
   LayoutTemplate,
+  Link as LinkIcon,
   Maximize2,
   Trash2
 } from 'lucide-react';
@@ -32,6 +33,8 @@ import {
   type ImageSizePreset,
   type ImageSpacing
 } from './imageUtils';
+import { LinkPopover } from './LinkPopover';
+import { applyImageLink, getActiveImageLinkHref, removeImageLink } from './linkCommands';
 
 export type ImageBubbleToolbarHandle = {
   flushPendingChanges: () => void;
@@ -43,7 +46,7 @@ type ImageBubbleToolbarProps = {
   toolbarRef?: Ref<ImageBubbleToolbarHandle>;
 };
 
-type PanelKey = 'layout' | 'size' | 'advanced' | null;
+type PanelKey = 'layout' | 'size' | 'advanced' | 'link' | null;
 
 export function ImageBubbleToolbar({ editor, onRequestReplace, toolbarRef }: ImageBubbleToolbarProps) {
   const [, rerender] = useReducer((value: number) => value + 1, 0);
@@ -59,6 +62,7 @@ export function ImageBubbleToolbar({ editor, onRequestReplace, toolbarRef }: Ima
   const currentAlign = isImageAlignment(attrs.align) ? attrs.align : null;
   const currentLayout = isImageLayout(attrs.layout) ? attrs.layout : 'inline';
   const currentSpacing = isImageSpacing(attrs.spacing) ? attrs.spacing : 'medium';
+  const currentHref = getActiveImageLinkHref(editor);
   const lockAspect = attrs.lockAspectRatio;
   const sizePreset = detectSizePreset(attrs);
   const aspectRatio = resolveImageAspectRatio(attrs.width, attrs.height, null);
@@ -350,6 +354,35 @@ export function ImageBubbleToolbar({ editor, onRequestReplace, toolbarRef }: Ima
         </div>
 
         <span className="bm-image-bubble-divider" />
+
+        <div className="bm-image-toolbar-anchor">
+          <button
+            type="button"
+            className={`bm-editor-btn ${openPanel === 'link' || currentHref ? 'is-active' : ''}`}
+            title="Image link"
+            aria-label="Image link"
+            aria-expanded={openPanel === 'link'}
+            onClick={() => togglePanel('link')}
+          >
+            <LinkIcon size={14} />
+          </button>
+          {openPanel === 'link' ? (
+            <LinkPopover
+              initialUrl={currentHref}
+              placeholder="Paste destination URL"
+              showRemove={Boolean(currentHref)}
+              onApply={(url) => {
+                applyImageLink(editor, url);
+                setOpenPanel(null);
+              }}
+              onRemove={() => {
+                removeImageLink(editor);
+                setOpenPanel(null);
+              }}
+              onClose={() => setOpenPanel(null)}
+            />
+          ) : null}
+        </div>
 
         <button
           type="button"
