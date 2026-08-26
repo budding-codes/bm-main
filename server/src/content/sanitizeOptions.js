@@ -17,7 +17,7 @@ const SANITIZE_OPTIONS = {
 	],
 	allowedAttributes: {
 		a: ['href', 'title', 'target', 'rel', 'class'],
-		img: ['src', 'alt', 'title', 'width', 'height', 'class', 'loading', 'decoding'],
+		img: ['src', 'alt', 'title', 'width', 'height', 'class', 'loading', 'decoding', 'data-align'],
 		iframe: ['src', 'width', 'height', 'allow', 'allowfullscreen', 'frameborder', 'title', 'class', 'start'],
 		input: ['type', 'checked', 'disabled'],
 		th: ['colspan', 'rowspan', 'colwidth', 'style', 'class'],
@@ -39,7 +39,9 @@ const SANITIZE_OPTIONS = {
 		'*': {
 			'text-align': [/^(left|right|center|justify)$/],
 			width: [/^\d+(?:\.\d+)?(px|%)$/],
-			'min-width': [/^\d+(?:\.\d+)?(px|%)$/]
+			'min-width': [/^\d+(?:\.\d+)?(px|%)$/],
+			'max-width': [/^\d+(?:\.\d+)?(px|%)$/],
+			height: [/^(auto|\d+(?:\.\d+)?(px|%))$/]
 		}
 	},
 	transformTags: {

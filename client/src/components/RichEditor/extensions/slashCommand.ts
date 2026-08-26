@@ -2,6 +2,7 @@ import { Extension } from '@tiptap/core';
 import { ReactRenderer } from '@tiptap/react';
 import Suggestion, { type SuggestionProps } from '@tiptap/suggestion';
 import tippy, { type Instance as TippyInstance } from 'tippy.js';
+import { insertTableSafely } from '../tableUtils';
 import { SlashCommandMenu, type SlashCommandItem, type SlashCommandMenuHandle } from '../SlashCommandMenu';
 
 function buildCommands(): SlashCommandItem[] {
@@ -74,8 +75,10 @@ function buildCommands(): SlashCommandItem[] {
       description: '3 × 3 table with header',
       icon: '⊞',
       group: 'Text',
-      command: ({ editor, range }) =>
-        editor.chain().focus().deleteRange(range).insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()
+      command: ({ editor, range }) => {
+        editor.chain().focus().deleteRange(range).run();
+        insertTableSafely(editor, 3, 3);
+      }
     },
     {
       title: 'Divider',

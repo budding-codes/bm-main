@@ -73,9 +73,9 @@ const EXPECTED_HTML = '<h2 style="text-align:center">Admissions 2026</h2>'
 	+ 'src="https://res.cloudinary.com/demo/image/upload/bm-blog/images/a.jpg" alt="Ship" />'
 	+ '<div><iframe class="bm-content-embed" width="640" height="480" allowfullscreen="true" '
 	+ 'src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?rel=1" start="0"></iframe></div>'
-	+ '<table class="bm-content-table" style="min-width:145px"><colgroup><col style="width:120px" />'
+	+ '<div class="tableWrapper"><table class="bm-content-table" style="min-width:145px"><colgroup><col style="width:120px" />'
 	+ '<col style="min-width:25px" /></colgroup><tbody><tr><th colspan="1" rowspan="1" colwidth="120"><p>H</p></th>'
-	+ '<td colspan="1" rowspan="1"><p>C</p></td></tr></tbody></table>'
+	+ '<td colspan="1" rowspan="1"><p>C</p></td></tr></tbody></table></div>'
 	+ '<div data-variant="warning" data-type="callout" class="bm-content-callout"><p>Careful</p></div>'
 	+ '<p><br />after break</p>';
 

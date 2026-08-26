@@ -1,5 +1,4 @@
 import StarterKit from '@tiptap/starter-kit';
-import Image from '@tiptap/extension-image';
 import Youtube from '@tiptap/extension-youtube';
 import Highlight from '@tiptap/extension-highlight';
 import TextAlign from '@tiptap/extension-text-align';
@@ -10,6 +9,7 @@ import CharacterCount from '@tiptap/extension-character-count';
 import { Table, TableRow, TableHeader, TableCell } from '@tiptap/extension-table';
 import { TaskList, TaskItem } from '@tiptap/extension-list';
 import { Callout } from './callout';
+import { BmImage } from './bmImage';
 
 /**
  * Document schema shared with the server renderer.
@@ -31,7 +31,7 @@ export function createEditorExtensions(placeholder?: string) {
       },
       codeBlock: { HTMLAttributes: { class: 'bm-content-code-block' } }
     }),
-    Image.configure({
+    BmImage.configure({
       inline: false,
       allowBase64: false,
       HTMLAttributes: { class: 'bm-content-image', loading: 'lazy', decoding: 'async' }
@@ -44,7 +44,11 @@ export function createEditorExtensions(placeholder?: string) {
     TextAlign.configure({ types: ['heading', 'paragraph'] }),
     Subscript,
     Superscript,
-    Table.configure({ resizable: true, HTMLAttributes: { class: 'bm-content-table' } }),
+    Table.configure({
+      resizable: true,
+      renderWrapper: true,
+      HTMLAttributes: { class: 'bm-content-table' }
+    }),
     TableRow,
     TableHeader,
     TableCell,

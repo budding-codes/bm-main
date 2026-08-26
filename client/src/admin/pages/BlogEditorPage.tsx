@@ -10,6 +10,7 @@ import { formatDate } from '../../lib/format';
 import { generateSlug } from '../../lib/slug';
 import type { Blog, BlogStatus } from '../../types/blog';
 import type { MediaAsset } from '../../types/media';
+import '../../styles/bm-content.css';
 
 type PostSettings = {
   status: BlogStatus;
@@ -80,8 +81,9 @@ export default function BlogEditorPage() {
   const [slugTouched, setSlugTouched] = useState(false);
   const [autoSaveStatus, setAutoSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
   const [mediaPickerOpen, setMediaPickerOpen] = useState(false);
-  const [mediaPickerTarget, setMediaPickerTarget] = useState<'cover' | 'inline'>('cover');
+  const [mediaPickerTarget, setMediaPickerTarget] = useState<'cover' | 'inline' | 'inline-replace'>('cover');
   const [pendingInlineInsert, setPendingInlineInsert] = useState<MediaAsset | null>(null);
+  const [pendingInlineReplace, setPendingInlineReplace] = useState<MediaAsset | null>(null);
   const [revisions, setRevisions] = useState<RevisionSummary[]>([]);
   const contentReady = useRef(false);
 
@@ -406,28 +408,41 @@ export default function BlogEditorPage() {
             required
           />
 
-          {preview ? (
-            <article
-              className="bm-rich-editor rounded-xl border border-white/10 bg-[#0d0d0d] p-8"
-              dangerouslySetInnerHTML={{
-                __html: content.html || '<p class="text-white/40">Nothing to preview yet.</p>'
-              }}
-            />
-          ) : (
+          <div className={preview ? 'hidden' : undefined} aria-hidden={preview}>
             <RichEditor
               key={id || 'new'}
               initialContent={initialContent}
               token={token}
               onUnauthorized={handleUnauthorized}
               onUpdate={setContent}
-              pendingImage={pendingInlineInsert}
-              onPendingImageConsumed={() => setPendingInlineInsert(null)}
+              pendingImage={
+                pendingInlineReplace
+                  ? { asset: pendingInlineReplace, mode: 'replace' }
+                  : pendingInlineInsert
+              }
+              onPendingImageConsumed={() => {
+                setPendingInlineInsert(null);
+                setPendingInlineReplace(null);
+              }}
               onRequestMediaLibrary={() => {
                 setMediaPickerTarget('inline');
                 setMediaPickerOpen(true);
               }}
+              onRequestImageReplace={() => {
+                setMediaPickerTarget('inline-replace');
+                setMediaPickerOpen(true);
+              }}
             />
-          )}
+          </div>
+
+          {preview ? (
+            <article
+              className="bm-rich-editor bm-blog-content rounded-xl border border-white/10 bg-[#0d0d0d] p-8"
+              dangerouslySetInnerHTML={{
+                __html: content.html || '<p class="text-white/40">Nothing to preview yet.</p>'
+              }}
+            />
+          ) : null}
         </div>
 
         <aside className="space-y-4">
@@ -686,12 +701,20 @@ export default function BlogEditorPage() {
 
       <MediaPicker
         open={mediaPickerOpen}
-        title={mediaPickerTarget === 'cover' ? 'Choose cover image' : 'Insert image'}
+        title={
+          mediaPickerTarget === 'cover'
+            ? 'Choose cover image'
+            : mediaPickerTarget === 'inline-replace'
+              ? 'Replace image'
+              : 'Insert image'
+        }
         selectableKinds={['image']}
         onClose={() => setMediaPickerOpen(false)}
         onSelect={(asset) => {
           if (mediaPickerTarget === 'cover') {
             setSettings((current) => ({ ...current, thumbnailUrl: asset.url }));
+          } else if (mediaPickerTarget === 'inline-replace') {
+            setPendingInlineReplace(asset);
           } else {
             setPendingInlineInsert(asset);
           }

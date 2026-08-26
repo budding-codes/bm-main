@@ -1,8 +1,9 @@
 import { useEditor, EditorContent } from '@tiptap/react';
 import { BubbleMenu } from '@tiptap/react/menus';
-import { useEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { EditorToolbar } from './EditorToolbar';
 import { BubbleToolbar } from './BubbleToolbar';
+import { ImageBubbleToolbar } from './ImageBubbleToolbar';
 import { createEditorExtensions } from './extensions';
 import { SlashCommandExtension } from './extensions/slashCommand';
 import type { MediaAsset } from '../../types/media';
@@ -16,16 +17,32 @@ export type RichEditorUpdate = {
   characterCount: number;
 };
 
+export type PendingImageAction = {
+  asset: MediaAsset;
+  mode: 'insert' | 'replace';
+};
+
 type RichEditorProps = {
   initialContent?: Record<string, unknown> | string | null;
   onUpdate: (update: RichEditorUpdate) => void;
   token: string;
   onUnauthorized?: () => void;
   onRequestMediaLibrary?: () => void;
-  pendingImage?: MediaAsset | null;
+  onRequestImageReplace?: () => void;
+  pendingImage?: PendingImageAction | MediaAsset | null;
   onPendingImageConsumed?: () => void;
   placeholder?: string;
 };
+
+function resolvePendingImage(pending?: PendingImageAction | MediaAsset | null): PendingImageAction | null {
+  if (!pending) {
+    return null;
+  }
+  if ('asset' in pending) {
+    return pending;
+  }
+  return { asset: pending, mode: 'insert' };
+}
 
 export function RichEditor({
   initialContent,
@@ -33,12 +50,17 @@ export function RichEditor({
   token,
   onUnauthorized,
   onRequestMediaLibrary,
+  onRequestImageReplace,
   pendingImage,
   onPendingImageConsumed,
   placeholder
 }: RichEditorProps) {
   const onUpdateRef = useRef(onUpdate);
   onUpdateRef.current = onUpdate;
+  const contentWrapperRef = useRef<HTMLDivElement>(null);
+  const [editorScrollTarget, setEditorScrollTarget] = useState<HTMLElement | Window>(() =>
+    typeof window !== 'undefined' ? window : (null as unknown as Window)
+  );
 
   const editor = useEditor({
     extensions: [
@@ -64,11 +86,32 @@ export function RichEditor({
   });
 
   useEffect(() => {
-    if (!editor || !pendingImage) return;
-    editor.chain().focus().setImage({
-      src: pendingImage.url,
-      alt: pendingImage.alt || pendingImage.displayName || ''
-    }).run();
+    const action = resolvePendingImage(pendingImage);
+    if (!editor || !action) {
+      return;
+    }
+
+    const alt = action.asset.alt || action.asset.displayName || '';
+    if (action.mode === 'replace' && editor.isActive('image')) {
+      editor
+        .chain()
+        .focus()
+        .replaceImage({
+          src: action.asset.url,
+          alt
+        })
+        .run();
+    } else {
+      editor
+        .chain()
+        .focus()
+        .setImage({
+          src: action.asset.url,
+          alt
+        })
+        .run();
+    }
+
     onPendingImageConsumed?.();
   }, [editor, pendingImage, onPendingImageConsumed]);
 
@@ -77,6 +120,24 @@ export function RichEditor({
       editor?.destroy();
     };
   }, [editor]);
+
+  useLayoutEffect(() => {
+    if (contentWrapperRef.current) {
+      setEditorScrollTarget(contentWrapperRef.current);
+    }
+  }, []);
+
+  const imageBubbleMenuOptions = useMemo(
+    () => ({
+      strategy: 'fixed' as const,
+      placement: 'top' as const,
+      offset: 10,
+      flip: { padding: 12 },
+      shift: { padding: 12 },
+      scrollTarget: editorScrollTarget
+    }),
+    [editorScrollTarget]
+  );
 
   if (!editor) {
     return null;
@@ -90,10 +151,31 @@ export function RichEditor({
         onUnauthorized={onUnauthorized}
         onRequestMediaLibrary={onRequestMediaLibrary}
       />
-      <BubbleMenu editor={editor}>
+      <BubbleMenu
+        editor={editor}
+        pluginKey="imageBubbleMenu"
+        appendTo={() => document.body}
+        options={imageBubbleMenuOptions}
+        shouldShow={({ editor: current }) => current.isActive('image')}
+      >
+        <ImageBubbleToolbar
+          editor={editor}
+          onRequestReplace={() => onRequestImageReplace?.()}
+        />
+      </BubbleMenu>
+      <BubbleMenu
+        editor={editor}
+        shouldShow={({ editor: current, state }) => {
+          if (current.isActive('image')) {
+            return false;
+          }
+          const { from, to, empty } = state.selection;
+          return !empty && from !== to;
+        }}
+      >
         <BubbleToolbar editor={editor} />
       </BubbleMenu>
-      <div className="bm-editor-content-wrapper">
+      <div ref={contentWrapperRef} className="bm-editor-content-wrapper">
         <EditorContent editor={editor} />
       </div>
       <div className="bm-editor-status-bar">

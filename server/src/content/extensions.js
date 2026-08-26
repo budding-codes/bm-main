@@ -1,5 +1,4 @@
 const { StarterKit } = require('@tiptap/starter-kit');
-const { Image } = require('@tiptap/extension-image');
 const { Youtube } = require('@tiptap/extension-youtube');
 const { Highlight } = require('@tiptap/extension-highlight');
 const { TextAlign } = require('@tiptap/extension-text-align');
@@ -8,6 +7,7 @@ const { Superscript } = require('@tiptap/extension-superscript');
 const { Table, TableRow, TableHeader, TableCell } = require('@tiptap/extension-table');
 const { TaskList, TaskItem } = require('@tiptap/extension-list');
 const { Callout } = require('./calloutExtension');
+const { BmImage } = require('./bmImageExtension');
 
 /**
  * The authoritative document schema.
@@ -29,7 +29,7 @@ const contentExtensions = [
 		},
 		codeBlock: { HTMLAttributes: { class: 'bm-content-code-block' } }
 	}),
-	Image.configure({
+	BmImage.configure({
 		inline: false,
 		allowBase64: false,
 		HTMLAttributes: { class: 'bm-content-image', loading: 'lazy', decoding: 'async' }
@@ -42,7 +42,11 @@ const contentExtensions = [
 	TextAlign.configure({ types: ['heading', 'paragraph'] }),
 	Subscript,
 	Superscript,
-	Table.configure({ resizable: true, HTMLAttributes: { class: 'bm-content-table' } }),
+	Table.configure({
+		resizable: true,
+		renderWrapper: true,
+		HTMLAttributes: { class: 'bm-content-table' }
+	}),
 	TableRow,
 	TableHeader,
 	TableCell,

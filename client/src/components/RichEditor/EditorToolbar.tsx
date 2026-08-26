@@ -26,6 +26,7 @@ import {
 import { useRef, useState } from 'react';
 import { adminFetch } from '../../lib/api';
 import type { MediaAsset } from '../../types/media';
+import { TableInsertPopover } from './TableInsertPopover';
 
 type EditorToolbarProps = {
   editor: Editor;
@@ -36,7 +37,9 @@ type EditorToolbarProps = {
 
 export function EditorToolbar({ editor, token, onUnauthorized, onRequestMediaLibrary }: EditorToolbarProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const tableButtonRef = useRef<HTMLDivElement>(null);
   const [uploading, setUploading] = useState(false);
+  const [tablePickerOpen, setTablePickerOpen] = useState(false);
 
   const setLink = () => {
     const previous = editor.getAttributes('link').href as string | undefined;
@@ -169,13 +172,20 @@ export function EditorToolbar({ editor, token, onUnauthorized, onRequestMediaLib
         <button type="button" className={`bm-editor-btn ${editor.isActive('blockquote') ? 'is-active' : ''}`} onClick={() => editor.chain().focus().toggleBlockquote().run()}>
           <Quote size={15} />
         </button>
-        <button
-          type="button"
-          className="bm-editor-btn"
-          onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}
-        >
-          <TableIcon size={15} />
-        </button>
+        <div ref={tableButtonRef} className="bm-editor-toolbar-anchor">
+          <button
+            type="button"
+            className={`bm-editor-btn${editor.isActive('table') ? ' is-active' : ''}`}
+            title="Insert table"
+            aria-expanded={tablePickerOpen}
+            onClick={() => setTablePickerOpen((open) => !open)}
+          >
+            <TableIcon size={15} />
+          </button>
+          {tablePickerOpen ? (
+            <TableInsertPopover editor={editor} onClose={() => setTablePickerOpen(false)} />
+          ) : null}
+        </div>
       </div>
 
       <div className="bm-editor-toolbar-divider" />
