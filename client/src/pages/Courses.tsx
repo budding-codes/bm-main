@@ -233,7 +233,7 @@ const Courses = () => {
       {/* Why Choose Section */}
       <section className="bg-black py-12">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-8">Why Choose BM Offline Academy?</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-8">Why Choose Budding Mariners ?</h2>
           <div className="flex flex-col md:flex-row justify-center gap-8">
             <div className="flex-1 flex flex-col items-center">
               <User className="h-10 w-10 text-yellow-400 mb-2" />
