@@ -1,8 +1,8 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { canonicalUrl } from '../lib/site';
-import ojas from '../../assets/ojas.png';
-import shahwanaz from '../../assets/shahnawaz.png';
+import ojas from '../../assets/ojas.jpeg';
+import shahwanaz from '../../assets/shahnawaz.jpeg';
 import ourstory from '../../assets/optimized/our story-800w.webp';
 
 const founders = [
