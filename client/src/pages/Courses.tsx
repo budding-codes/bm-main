@@ -3,12 +3,11 @@ import { Helmet } from 'react-helmet-async';
 import { canonicalUrl } from '../lib/site';
 import { motion } from 'framer-motion';
 import { Clock, Users, Star, BookOpen, CheckCircle, User, Award } from 'lucide-react';
-import image1 from '../../assets/course1.png';
-import image2 from '../../assets/course2.png';
-import image3 from '../../assets/DNS.png';
-import image4 from '../../assets/sctw.png';
-import image5 from '../../assets/Marine engg.png';
-import image6 from '../../assets/optimized/roadmap-800w.webp';
+import nurtureImage from '../../assets/optimized/batch-nurture.webp';
+import dropperImage from '../../assets/optimized/batch-dropper.webp';
+import appearingImage from '../../assets/optimized/batch-appearing.webp';
+import sponsorshipImage from '../../assets/optimized/batch-sponsorship.webp';
+import udaanImage from '../../assets/optimized/batch-udaan.webp';
 
 const Courses = () => {
   const [activeTab, setActiveTab] = useState('all');
@@ -24,27 +23,12 @@ const Courses = () => {
   const courses = [
     {
       id: 1,
-      title: 'Fateh GP Rating',
-      type: 'offline',
-      duration: '3 months',
-      students: '200+',
-      rating: 4.8,
-      image: image2,
-      features: [
-        'Interview Training',
-        'Written Training',
-        'Forms Notification'
-      ],
-      badge: 'yellow'
-    },
-    {
-      id: 2,
       title: 'Nurture Batch',
       type: 'offline',
       duration: '1 year',
       students: '100+',
       rating: 5.0,
-      image: image1,
+      image: nurtureImage,
       features: [
         'For 11th Standard Students',
         'IMUCET Top Rankers Batch',
@@ -53,15 +37,30 @@ const Courses = () => {
       badge: 'green'
     },
     {
+      id: 2,
+      title: 'Dropper Batch',
+      type: 'offline',
+      duration: '6 months',
+      students: '150+',
+      rating: 4.8,
+      image: dropperImage,
+      features: [
+        'For 12th Pass Students',
+        'Merchant Navy Entrance Prep',
+        'Sponsorship Guidance'
+      ],
+      badge: 'red'
+    },
+    {
       id: 3,
-      title: 'Foundation Batch',
+      title: 'Appearing Batch',
       type: 'offline',
       duration: '1 year',
       students: '300+',
       rating: 4.9,
-      image: image3,
+      image: appearingImage,
       features: [
-        'For 12th Standard Students',
+        'For 12th Appearing Students',
         'The Best Batch for Merchant Navy Success',
         'Boards + Merchant Navy Entrance Prep'
       ],
@@ -69,14 +68,14 @@ const Courses = () => {
     },
     {
       id: 4,
-      title: 'Sponsorship Batch',
+      title: 'Sponsorship Preparation Batch',
       type: 'offline',
       duration: '2 months',
       students: '150+',
       rating: 4.7,
-      image: image6,
+      image: sponsorshipImage,
       features: [
-        'For IMUCET Rankers',
+        'For IMUCET Qualified Students',
         'Prepare for February 2026 Batch',
         'Fastest Form Notifications'
       ],
@@ -89,7 +88,7 @@ const Courses = () => {
       duration: '4 months',
       students: '120+',
       rating: 4.6,
-      image: image5,
+      image: udaanImage,
       features: [
         'Special Batch for Improvement/NIOS Students',
         'Get Your Dream Merchant Navy Sponsorship',
@@ -97,21 +96,6 @@ const Courses = () => {
       ],
       badge: 'blue'
     }
-    // {
-    //   id: 6,
-    //   title: 'STCW/Basic Safety Training',
-    //   type: 'offline',
-    //   duration: '1 month',
-    //   students: '100+',
-    //   rating: 4.5,
-    //   image: image4,
-    //   features: [
-    //     'Fire Fighting',
-    //     'First Aid',
-    //     'Personal Survival'
-    //   ],
-    //   badge: 'red'
-    // }
   ];
 
   const badgeColors: Record<string, string> = {
@@ -193,7 +177,7 @@ const Courses = () => {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
                 <div className="relative">
-                  <div className="w-full h-40 bg-white flex items-center justify-center">
+                  <div className="w-full aspect-video bg-white flex items-center justify-center">
                     <img 
                       src={course.image} 
                       alt={course.title}
@@ -203,10 +187,10 @@ const Courses = () => {
                   <div className="absolute top-3 left-3">
                     <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${badgeColors[course.badge]}`}>
                       {course.badge === 'green' && 'Nurture'}
-                      {course.badge === 'yellow' && (course.title === 'Fateh GP Rating' ? 'GP Rating' : 'Sponsorship')}
-                      {course.badge === 'purple' && 'Foundation'}
+                      {course.badge === 'red' && 'Dropper'}
+                      {course.badge === 'purple' && 'Appearing'}
+                      {course.badge === 'yellow' && 'Sponsorship'}
                       {course.badge === 'blue' && 'Udaan'}
-                      {course.badge === 'red' && 'STCW'}
                     </span>
                   </div>
                   <div className="absolute top-3 right-3 flex items-center bg-white/90 px-2 py-1 rounded-full">

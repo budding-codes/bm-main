@@ -25,6 +25,11 @@ const PRIORITY = [
   { file: 'S9.png', widths: [400], quality: 80 },
   { file: 'our story.jpg', widths: [800, 1400], quality: 80 },
   { file: 'roadmap.png', widths: [800, 1400], quality: 80 },
+  { file: 'batch-nurture.png', widths: [800], quality: 82 },
+  { file: 'batch-dropper.png', widths: [800], quality: 82 },
+  { file: 'batch-appearing.png', widths: [800], quality: 82 },
+  { file: 'batch-sponsorship.png', widths: [800], quality: 82 },
+  { file: 'batch-udaan.png', widths: [800], quality: 82 },
   { file: 'yellow on orange logomark.png', widths: [120, 240], quality: 85 },
 ];
 
