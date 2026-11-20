@@ -3,6 +3,12 @@ import { Helmet } from 'react-helmet-async';
 import { Download, FileText } from 'lucide-react';
 import { canonicalUrl } from '../lib/site';
 
+/* =========================================================================
+   OLD FREE MATERIALS (Google Drive links) — COMMENTED OUT.
+   To restore: comment out the NEW `materials` array below, then remove the
+   comment markers around this block, and restore the per-index title
+   rendering commented out inside the card markup below.
+   =========================================================================
 const materials = [
 	{
 		title: 'TS REHMAN (EXPECTED QUESTIONS)',
@@ -133,8 +139,49 @@ const materials = [
 		download: 'https://drive.google.com/file/d/11Fe7RtVDWg--99m00LWSz1WS9fyHxYPa/view?usp=drive_link',
 	},
 	{
-		title: '7 ISLANDS (EXPECTED QUESTIONS)',
+		title: '7 ISLANDS (EXPECTED QUESTIONS)',
 		download: 'https://drive.google.com/file/d/1-RhjXwTWsw0bnPESQBwCu8diF234elM-/view?usp=drive_link',
+	},
+];
+========================================================================= */
+
+// NEW free materials — self-hosted PDFs served from client/public/materials/
+const materials = [
+	{
+		title: 'Most Asked Technical Questions',
+		download: '/materials/50_Most_Asked_Technical_Questions_with_button.pdf',
+	},
+	{
+		title: 'Companies and Their Eligibility',
+		download: '/materials/Company_and_Eligibility_with_button.pdf',
+	},
+	{
+		title: 'Choose your Target Company',
+		download: '/materials/How_to_Choose_the_Perfect_Company_with_button.pdf',
+	},
+	{
+		title: 'Formula Sheet (A-Z)',
+		download: '/materials/IMU_CET_Physics_Maths_Formulas_with_button.pdf',
+	},
+	{
+		title: 'Paper Analysis',
+		download: '/materials/IMU_CET_Shift1_Topic_Analysis_with_button.pdf',
+	},
+	{
+		title: 'IMUCET Syllabus A-Z',
+		download: '/materials/IMUCET_SYLLABUS_ANALYSIS_3_with_button.pdf',
+	},
+	{
+		title: 'Eligibility to Join the Merchant Navy',
+		download: '/materials/Merchant_Navy_Eligibility_A_to_Z_with_button.pdf',
+	},
+	{
+		title: 'Merchant Navy Handbook',
+		download: '/materials/Merchant_Navy_Handbook_with_button.pdf',
+	},
+	{
+		title: 'Most Asked Non-Technical Questions',
+		download: '/materials/Non_Technical_Questions_with_button.pdf',
 	},
 ];
 
@@ -193,6 +240,9 @@ const FreeMaterials = () => {
 							</span>
 						</div>
 						<div className="font-bold text-base text-black mb-6">
+							{/* OLD per-index titles — belong to the commented-out materials
+							    list above. Commented out together with it; to restore,
+							    uncomment both and remove the {mat.title} line below.
 							{idx === 0 && "TS REHMAN (EXPECTED QUESTIONS)"}
 							{idx === 1 && "SIMS IMPORTANT QUESTIONS"}
 							{idx === 2 && "SI UNITS"}
@@ -225,12 +275,15 @@ const FreeMaterials = () => {
 							{idx === 29 && "ALL ABOUT DNS"}
 							{idx === 30 && "ALL ABOUT B.TECH"}
 							{idx === 31 && "ALL ABOUT B.SC"}
-							{idx === 32 && "7 ISLANDS (EXPECTED QUESTIONS)"}
+							{idx === 32 && "7 ISLANDS (EXPECTED QUESTIONS)"}
+							*/}
+							{mat.title}
 						</div>
 						<a
 							href={mat.download}
 							target="_blank"
 							rel="noopener noreferrer"
+							download
 							className="w-full bg-black text-yellow-400 py-2 rounded font-bold flex items-center justify-center gap-2 hover:bg-yellow-400 hover:text-black transition"
 						>
 							<Download className="w-4 h-4" />
