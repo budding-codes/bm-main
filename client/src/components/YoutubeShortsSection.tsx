@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, memo } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Instagram } from 'lucide-react';
 
 const youtubeShorts = [
   { id: 1, link: 'https://youtube.com/shorts/-1sAw0gCnlQ?si=kbIwdLJtxNgo1CBu' },
@@ -35,29 +35,56 @@ const youtubeShorts = [
   { id: 30, link: 'https://youtube.com/shorts/5wM0nkcbeJU?si=m0PBeAYPL5lzrm8p' },
 ];
 
+const instagramReels = [
+  { id: 31, link: 'https://www.instagram.com/reel/De4adZGtIuE/' },
+  { id: 32, link: 'https://www.instagram.com/reel/DezPxNctWRA/' },
+  { id: 33, link: 'https://www.instagram.com/reel/DernpafOUdE/' },
+  { id: 34, link: 'https://www.instagram.com/reel/DejxRKJhu7W/' },
+  { id: 35, link: 'https://www.instagram.com/reel/DeUNr4kADU-/' },
+  { id: 36, link: 'https://www.instagram.com/reel/Dd_fNmChcoN/' },
+];
+
+const allVideos = [
+  ...youtubeShorts.map((video) => ({ ...video, type: 'youtube' as const })),
+  ...instagramReels.map((video) => ({ ...video, type: 'instagram' as const })),
+];
+
+type StoryVideo = (typeof allVideos)[number];
+
 const getShortId = (url: string) => {
   const match = url.match(/shorts\/([a-zA-Z0-9_-]{11})/);
   return match ? match[1] : '';
 };
 
-const getEmbedLink = (url: string) => {
-  const id = getShortId(url);
-  return id ? `https://www.youtube.com/embed/${id}?autoplay=0` : '';
+const getReelId = (url: string) => {
+  const match = url.match(/reel\/([a-zA-Z0-9_-]+)/);
+  return match ? match[1] : '';
 };
 
-const YoutubeShortCard = memo(function YoutubeShortCard({
+const getEmbedLink = (video: StoryVideo) => {
+  if (video.type === 'instagram') {
+    const reelId = getReelId(video.link);
+    return reelId ? `https://www.instagram.com/reel/${reelId}/embed` : '';
+  }
+  const shortId = getShortId(video.link);
+  return shortId ? `https://www.youtube.com/embed/${shortId}?autoplay=0` : '';
+};
+
+const StoryVideoCard = memo(function StoryVideoCard({
   video,
   index,
   centerIndex,
 }: {
-  video: (typeof youtubeShorts)[0];
+  video: StoryVideo;
   index: number;
   centerIndex: number;
 }) {
   const [isVisible, setIsVisible] = useState(false);
+  const [thumbError, setThumbError] = useState(false);
   const videoRef = useRef<HTMLDivElement>(null);
   const isCenter = index === centerIndex;
-  const accessibleTitle = `Budding Mariners short video ${index + 1}`;
+  const isInstagram = video.type === 'instagram';
+  const accessibleTitle = `Budding Mariners ${isInstagram ? 'Instagram reel' : 'short video'} ${index + 1}`;
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -74,8 +101,6 @@ const YoutubeShortCard = memo(function YoutubeShortCard({
     return () => observer.disconnect();
   }, []);
 
-  const shortId = getShortId(video.link);
-
   return (
     <div
       ref={videoRef}
@@ -90,18 +115,43 @@ const YoutubeShortCard = memo(function YoutubeShortCard({
         <div className="flex-1 min-h-0">
           {isVisible && isCenter ? (
             <iframe
-              src={getEmbedLink(video.link)}
+              src={getEmbedLink(video)}
               title={accessibleTitle}
               width="100%"
               height="100%"
               loading="lazy"
-              allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              scrolling={isInstagram ? 'no' : undefined}
+              allow={
+                isInstagram
+                  ? 'autoplay; encrypted-media; picture-in-picture; fullscreen'
+                  : 'accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
+              }
               allowFullScreen
               className="w-full h-full min-h-[180px] bg-black rounded-t-2xl border-0"
             />
+          ) : isInstagram ? (
+            thumbError ? (
+              <div className="w-full h-full min-h-[180px] flex flex-col items-center justify-center gap-3">
+                <div className="w-14 h-14 rounded-full p-[2px] bg-gradient-to-tr from-yellow-300 via-pink-500 to-purple-600">
+                  <div className="w-full h-full rounded-full bg-gray-900 flex items-center justify-center">
+                    <Instagram className="text-white/70" size={24} />
+                  </div>
+                </div>
+                <span className="text-white/50 text-xs">Instagram Reel</span>
+              </div>
+            ) : (
+              <img
+                src={`/reels/${getReelId(video.link)}.jpg`}
+                alt={accessibleTitle}
+                loading="lazy"
+                decoding="async"
+                className="w-full h-full min-h-[180px] object-cover"
+                onError={() => setThumbError(true)}
+              />
+            )
           ) : (
             <img
-              src={`https://img.youtube.com/vi/${shortId}/hqdefault.jpg`}
+              src={`https://img.youtube.com/vi/${getShortId(video.link)}/hqdefault.jpg`}
               alt={accessibleTitle}
               loading="lazy"
               decoding="async"
@@ -114,8 +164,14 @@ const YoutubeShortCard = memo(function YoutubeShortCard({
 
         <div className="px-3 py-2 md:px-4 md:py-2 flex items-center justify-end shrink-0">
           <div className="flex items-center space-x-1">
-            <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-            <span className="text-white/60 text-xs">SHORTS</span>
+            <div
+              className={`w-2 h-2 rounded-full animate-pulse ${
+                isInstagram
+                  ? 'bg-gradient-to-tr from-yellow-300 via-pink-500 to-purple-600'
+                  : 'bg-red-500'
+              }`}
+            />
+            <span className="text-white/60 text-xs">{isInstagram ? 'REELS' : 'SHORTS'}</span>
           </div>
         </div>
       </div>
@@ -124,7 +180,7 @@ const YoutubeShortCard = memo(function YoutubeShortCard({
 });
 
 export default function YoutubeShortsSection() {
-  const [centerIndex, setCenterIndex] = useState(Math.floor(youtubeShorts.length / 2));
+  const [centerIndex, setCenterIndex] = useState(Math.floor(allVideos.length / 2));
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const scrollToIndex = (index: number) => {
@@ -166,9 +222,9 @@ export default function YoutubeShortsSection() {
 
           <button
             type="button"
-            onClick={() => setCenterIndex((prev) => Math.min(youtubeShorts.length - 1, prev + 1))}
+            onClick={() => setCenterIndex((prev) => Math.min(allVideos.length - 1, prev + 1))}
             className="absolute right-0 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white p-2 rounded-full z-10"
-            disabled={centerIndex === youtubeShorts.length - 1}
+            disabled={centerIndex === allVideos.length - 1}
             aria-label="Next short"
           >
             <ChevronRight size={24} />
@@ -178,14 +234,14 @@ export default function YoutubeShortsSection() {
             ref={scrollContainerRef}
             className="flex overflow-x-auto space-x-4 md:space-x-6 pb-6 scrollbar-hide snap-x snap-mandatory scroll-smooth px-8 mt-10"
           >
-            {youtubeShorts.map((video, index) => (
-              <YoutubeShortCard key={video.id} video={video} index={index} centerIndex={centerIndex} />
+            {allVideos.map((video, index) => (
+              <StoryVideoCard key={video.id} video={video} index={index} centerIndex={centerIndex} />
             ))}
           </div>
         </div>
 
-        <div className="flex justify-center mt-4 md:mt-6 space-x-2">
-          {youtubeShorts.map((_, index) => (
+        <div className="flex flex-wrap justify-center mt-4 md:mt-6 gap-x-2 gap-y-2">
+          {allVideos.map((_, index) => (
             <button
               key={index}
               type="button"
