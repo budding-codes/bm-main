@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect, lazy, Suspense } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { canonicalUrl } from '../lib/site';
-import { motion, useMotionValue, useTransform, PanInfo } from 'framer-motion';
-import compass from '../../assets/optimized/compass-440w.webp';
+// Wheel animation commented out (not deleted) — uncomment to restore
+import { motion, useMotionValue, useTransform /* , PanInfo — only used by the commented-out compass wheel */ } from 'framer-motion';
+// import compass from '../../assets/optimized/compass-440w.webp'; // compass wheel image — commented out (not deleted)
 import bg640 from '../../assets/optimized/BG Header-640w.webp';
 import bg1024 from '../../assets/optimized/BG Header-1024w.webp';
 import bg1920 from '../../assets/optimized/BG Header-1920w.webp';
@@ -78,12 +79,13 @@ const Home = () => {
     );
   };
 
-  const handleCompassDrag = (_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-    const deltaX = info.delta.x;
-    const currentRotation = compassRotation.get();
-    const newRotation = currentRotation + deltaX * 0.2;
-    compassRotation.set(Math.max(-90, Math.min(90, newRotation)));
-  };
+  // Compass wheel drag handler — commented out (not deleted)
+  // const handleCompassDrag = (_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+  //   const deltaX = info.delta.x;
+  //   const currentRotation = compassRotation.get();
+  //   const newRotation = currentRotation + deltaX * 0.2;
+  //   compassRotation.set(Math.max(-90, Math.min(90, newRotation)));
+  // };
 
   const companyLogos = [
     { name: 'CL1', url: cl1 },
@@ -154,7 +156,7 @@ const Home = () => {
           </div>
         </div>
 
-        {/* Compass Wheel */}
+        {/* Compass Wheel — commented out (not deleted), uncomment the block below to restore
         <motion.div
           className="absolute z-20"
           drag
@@ -182,6 +184,7 @@ const Home = () => {
             />
           </div>
         </motion.div>
+        */}
       </section>
 
       {/* Statistics Section */}
